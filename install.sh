@@ -1,5 +1,5 @@
 #!/bin/bash
-
+export HOME=/home/nils
 sudo mkdir /tmp/setup-li-ni/
 sudo cp -r * /tmp/setup-li-ni/
 cd $HOME
