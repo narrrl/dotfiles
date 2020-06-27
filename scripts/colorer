@@ -1,0 +1,64 @@
+#!/usr/bin/env python3
+import os
+import sys
+import glob
+import re
+
+
+HOME = "/home/nr99/"
+CACHE_DIR = HOME + ".cache/colorer/"
+
+if sys.argv[1] == "-R":
+    with open(CACHE_DIR + "colorscheme", "r") as file_flux:
+        COLORSCHEME = file_flux.read()
+else:
+    COLORSCHEME = HOME + ".config/colorer/colorschemes/" + sys.argv[1]
+
+TEMPLATES = glob.glob(HOME + ".config/colorer/templates/*")
+
+colors = dict()
+
+# Get the keys and values from the file to a dict
+with open(COLORSCHEME, "r") as file_flux:
+    for line in file_flux:
+        key = line.split(" ")[0]
+        color = line.split(" ")[1]
+        color = color.replace("\n", "")
+        colors[key] = color
+
+# write files from templates
+for file in TEMPLATES:
+    input_flux = open(file, "r");
+    output_flux = open(CACHE_DIR + file.split("/")[-1], "w");
+
+    for line in input_flux:
+        for color in colors.items():
+            if re.search("{" + color[0] + "}", line) != None:
+                line = re.sub("{" + color[0] + "}", color[1], line)
+                #line = line.replace("\n", "")
+
+        output_flux.write(line)
+
+    input_flux.close()
+    output_flux.close()
+
+with open(CACHE_DIR + "colorscheme", "w") as file_flux:
+    file_flux.write(COLORSCHEME)
+
+# Reload everything
+
+os.system("xrdb ~/.Xresources")
+os.system("pkill -USR1 polybar")
+os.system("killall dunst && dunst &")
+
+# Reload terminals with escape sequences
+tty_pattern = "/dev/pts/[0-9]*"
+with open(CACHE_DIR + "sequences", "r") as file:
+    sequences = file.read()
+
+for term in glob.glob(tty_pattern):
+    with open(term, "w") as file:
+        file.write(sequences)
+
+os.system("feh --bg-fill " + colors['wp'])
+

@@ -138,7 +138,14 @@ ex ()
   fi
 }
 
+# makes console vim like
+set -o vi
+
 export BROWSER="/usr/bin/brave"
 export VISUAL=nvim
 export EDITOR=nvim
-alias "v=nvim"
+export JAVA_HOME=/usr/lib/jvm/java-14-openjdk
+export JDK_HOME=${JAVA_HOME}
+alias v="nvim"
+alias sv="sudo nvim"
+alias launchpolybar="~/.config/polybar/launch.sh"

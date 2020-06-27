@@ -1,0 +1,11 @@
+INDEX VERSION 1.131+/home/nr99/.config/coc/extensions/coc-java-data/jdt_ws_01e26b4dbe2b2faa9fa10626ed5e05bb/.metadata/.plugins/org.eclipse.jdt.core
+120584473.index
+226777137.index
+3842426239.index
+642393680.index
+120078591.index
+3149414151.index
+3880026327.index
+105082040.index
+1912178600.index
+86460914.index

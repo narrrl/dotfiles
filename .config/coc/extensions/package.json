@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "coc-java": ">=1.4.11"
+  }
+}
