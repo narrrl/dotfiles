@@ -149,3 +149,4 @@ export JDK_HOME=${JAVA_HOME}
 alias v="nvim"
 alias sv="sudo nvim"
 alias launchpolybar="~/.config/polybar/launch.sh"
+alias pacautoremove="pacman -Qdtq | sudo pacman -Rs -"
