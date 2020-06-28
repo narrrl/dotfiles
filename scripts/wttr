@@ -1,3 +1,14 @@
 #!/bin/bash
 
-curl http://wttr.in/karlsruhe
+if (($# > 2)); then
+    echo "Too many arguments"
+    exit 2
+fi
+
+
+if [ "$2" == "-a" ]; then
+    curl -s http://wttr.in/$1 | head -n 7
+else
+    curl -s http://wttr.in/$1
+fi
+
