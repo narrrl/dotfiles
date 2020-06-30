@@ -1,10 +1,17 @@
 #!/bin/bash
-choices="Logout\nPoweroff\nReboot"
+
+lock() {
+    i3lock
+}
+
+choices="Lock\nSuspend\nLogout\nPoweroff\nReboot"
 chosen=$(echo -e $choices | rofi -dmenu -i -p "Power Menu" -theme ~/.cache/colorer/rofi.rasi)
 echo "$chosen"
 
 case "$chosen" in
-		Logout) bspc quit ;;
-		Poweroff) poweroff ;;
-		Reboot) reboot ;; 
+        Lock) lock ;;
+        Suspend) lock && systemctl suspend ;;
+		Logout) i3-msg exit ;;
+		Poweroff) systemctl poweroff ;;
+		Reboot) systemctl reboot ;;
 esac
