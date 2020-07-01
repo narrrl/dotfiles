@@ -17,6 +17,7 @@ x-scheme-handler/mailto=userapp-Evolution.desktop
 message/rfc822=userapp-Evolution.desktop
 application/pdf=epdfview.desktop
 application/x-bittorrent=deluge.desktop
+x-scheme-handler/discord-424004941485572097=discord-424004941485572097.desktop
 
 [Added Associations]
 x-scheme-handler/http=userapp-brave.desktop;

@@ -18,7 +18,6 @@ set nobackup
 set undodir=~/.vim/undodir
 set undofile
 set incsearch
-set termguicolors
 set scrolloff=8
 
 " Give more space for displaying messages.

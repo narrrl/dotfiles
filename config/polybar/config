@@ -38,7 +38,7 @@ font-3=Source Han Sans JP:style=Regular:size=11:antialias=true;3
 
 
 height = 45
-radius = 20
+;radius = 20
 ;Works very well with a ;radius like this! Put it on every bar.
 
 background = ${colors.background}

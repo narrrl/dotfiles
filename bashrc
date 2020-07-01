@@ -150,3 +150,8 @@ alias v="nvim"
 alias sv="sudo nvim"
 alias launchpolybar="~/.config/polybar/launch.sh"
 alias pacautoremove="pacman -Qdtq | sudo pacman -Rs -"
+export GTK_IM_MODULE=ibus
+export XMODIFIERS=@im=ibus
+export QT_IM_MODULE=ibus
+alias la="ls -a"
+alias findpid="pstree -p | grep"

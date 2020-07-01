@@ -3,7 +3,7 @@
 
 # Set mod key (Mod1=<Alt>, Mod4=<Super>)
 set $mod Mod4
-set $terminal alacritty
+set $terminal urxvt
 
 # set default desktop layout (default is tiling)
 # workspace_layout tabbed <stacking|tabbed>
@@ -67,8 +67,10 @@ bindsym $mod+F4 exec $terminal -e 'mocp'
 bindsym $mod+F5 exec discord
 bindsym $mod+Shift+F5 exec evolution
 bindsym $mod+F6 exec spotify
+bindsym $mod+Shift+F6 exec anki
 bindsym $mod+F7 exec steam
 bindsym $mod+Ctrl+r exec obs
+bindsym $mod+Shift+f exec launcher
 bindsym $mod+Ctrl+n exec playerctl next
 bindsym $mod+Ctrl+p exec playerctl previous
 bindsym $mod+Ctrl+h exec playerctl play-pause
@@ -254,27 +256,17 @@ mode "resize" {
         bindsym Escape mode "default"
 }
 
-# Lock screen
-bindsym $mod+9 exec --no-startup-id blurlock
-
 # Autostart applications
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-#exec --no-startup-id manjaro-hello
 exec --no-startup-id nm-applet
 exec --no-startup-id xfce4-power-manager
 exec --no-startup-id pamac-tray
-exec --no-startup-id clipit
-# exec --no-startup-id blueman-applet
-# exec_always --no-startup-id sbxkb
-exec --no-startup-id start_conky_maia
-# exec --no-startup-id start_conky_green
 exec --no-startup-id xautolock -time 10 -locker blurlock
-exec --no-startup-id compton
 exec_always --no-startup-id ff-theme-util
 exec_always --no-startup-id fix_xcursor
 exec --no-startup-id ~/scripts/spotify/launchlistener.sh
 exec --no-startup-id ~/.config/polybar/launch.sh &
-exec_always --no-startup-id nvidia-settings --load-config-only
+exec --no-startup-id nvidia-settings
 
 # Color palette used for the terminal ( ~/.Xresources file )
 # Colors are gathered based on the documentation:
@@ -319,32 +311,33 @@ set $gray #a89984
 set $darkgray #1d2021
 
 # Start i3bar to display a workspace bar (plus the system information i3status if available)
-# bar {
-# 	i3bar_command i3bar
-# 	status_command i3status
-# 	position top
-#
-# ## please set your primary output first. Example: 'xrandr --output eDP1 --primary'
-# #	tray_output primary
-# #	tray_output eDP1
-#
-# 	bindsym button4 nop
-# 	bindsym button5 nop
-# #   font xft:URWGothic-Book 11
-# 	strip_workspace_numbers yes
-#
-#     colors {
-#         # bar background color
-#         background $bg
-#         # text color used for blocks that do not have a color specified.
-#         statusline $yellow
-#         # workspaces section
-#         #                    border  backgr. text
-#         focused_workspace    $aqua $aqua $darkgray
-#         inactive_workspace   $darkgray $darkgray $yellow
-#         active_workspace     $darkgray $darkgray $yellow
-#         urgent_workspace     $red $red $bg
-#     }
+bar {
+ 	i3bar_command i3bar
+ 	status_command i3status
+ 	position bottom
+
+ ## please set your primary output first. Example: 'xrandr --output eDP1 --primary'
+ #	tray_output primary
+ #	tray_output eDP1
+
+ 	bindsym button4 nop
+ 	bindsym button5 nop
+ #   font xft:URWGothic-Book 11
+ 	strip_workspace_numbers yes
+
+     colors {
+         # bar background color
+         background $bg
+         # text color used for blocks that do not have a color specified.
+         statusline $yellow
+         # workspaces section
+         #                    border  backgr. text
+         focused_workspace    $aqua $aqua $darkgray
+         inactive_workspace   $darkgray $darkgray $yellow
+         active_workspace     $darkgray $darkgray $yellow
+         urgent_workspace     $red $red $bg
+     }
+ }
 
 
 # hide/unhide i3status bar
