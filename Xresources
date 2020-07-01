@@ -39,6 +39,7 @@ URxvt.transparent:   true
 URxvt.shading:       50
 
 !! URxvt Appearance
+urxvt.termName: rxvt-unicode
 URxvt.geometry: 92x24
 URxvt.cursorBlink: true
 URxvt.cursorUnderline: false
@@ -48,12 +49,17 @@ URxvt.scrollBar_right: false
 URxvt.urgentOnBell: true
 URxvt.depth: 24
 URxvt.iso14755: false
+URxvt.letterSpace: -1
 
-URxvt.font:     xft:bitstream vera sans mono:size=16:antialias=true
-URxvt.boldFont: xft:bitstream vera sans mono:bold:size=16:antialias=true
+urxvt.font: xft:DejaVu Sans Mono:pixelsize=13
+urxvt.boldFont: xft:DejaVu Sans Mono:pixelsize=13:weight=bold
 
 !! resize font extension
 urxvt.perl-ext-common: default,tabbed,matcher,resize-font,-tabbed
+URxvt.resize-font.smaller:	C-k
+URxvt.resize-font.bigger:	C-j
+
+
 URxvt.perl-ext-common: selection-to-clipboard
 
 URxvt.keysym.Shift-Control-V: eval:paste_clipboard
