@@ -148,10 +148,6 @@ export JAVA_HOME=/usr/lib/jvm/java-14-openjdk
 export JDK_HOME=${JAVA_HOME}
 alias v="nvim"
 alias sv="sudo nvim"
-alias launchpolybar="~/.config/polybar/launch.sh"
 alias pacautoremove="pacman -Qdtq | sudo pacman -Rs -"
-export GTK_IM_MODULE=ibus
-export XMODIFIERS=@im=ibus
-export QT_IM_MODULE=ibus
 alias la="ls -a"
 alias findpid="pstree -p | grep"
