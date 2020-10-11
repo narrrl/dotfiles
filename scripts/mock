@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if (($# < 1)); then
+    echo "Write something to mock"
+    exit 2
+fi
+
+str="$*"
+
+for((i=0;i<${#str};i++));
+do
+    n="${str:${i}:1}";
+    ((${RANDOM}%2))&&printf "${n^^}"||printf "${n,,}";
+done
+
+printf "\n"
