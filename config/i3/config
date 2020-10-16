@@ -61,7 +61,7 @@ bindsym $mod+Ctrl+s exec flameshot gui
 
 # Start Applications
 bindsym $mod+Shift+f exec killall conky
-bindsym $mod+Ctrl+f exec start_conky_maia
+bindsym $mod+Ctrl+f exec start_conky_bar
 bindsym $mod+Ctrl+b exec $terminal -e 'bmenu'
 bindsym $mod+F2 exec brave
 bindsym $mod+F3 exec $terminal -e 'ranger'
@@ -258,7 +258,7 @@ exec --no-startup-id nm-applet
 exec --no-startup-id xfce4-power-manager
 exec --no-startup-id pamac-tray
 exec --no-startup-id picom --config /home/niru/.config/compton.conf
-exec --no-startup-id start_conky_maia
+exec --no-startup-id start_conky_bar
 exec_always --no-startup-id ff-theme-util
 exec_always --no-startup-id fix_xcursor
 # Color palette used for the terminal ( ~/.Xresources file )
