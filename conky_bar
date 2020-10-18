@@ -1,6 +1,8 @@
 --[[
 #=================================================
 # Author  : Zvonimir Kucis
+#
+# Edit    : Nils Pukropp (For personal use)
 #=================================================
 ]]
 
@@ -142,11 +144,4 @@ ${voffset 5}${color1}Used: ${color3}${fs_used /home/niru/data/}${color1}${goto 2
 ${color2}${fs_bar /home/niru/data/}
 ${voffset 2}${color1}Read: ${color3}${diskio_read /dev/sdd1}${goto 200}${color1}Write:${goto 250}${color3}${diskio_write /dev/sdd1}
 ${color2}${diskiograph_read /dev/sdd1 40,130} ${alignr}${diskiograph_write /dev/sdd1 40,130}
-#------------+
-# NETWORK
-#------------+
-${voffset 10}${color1}${font :size=14:bold}NETWORK ${hr 2}${font}
-${voffset 5}${color3}Up: ${upspeedf wlo1} KiB/s${alignr}Down: ${downspeedf wlo1} KiB/s
-${color2}${upspeedgraph wlo1 40,130 -l}$alignr${downspeedgraph wlo1 40, 130 -l}
-#------------+
 ]]

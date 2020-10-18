@@ -22,22 +22,28 @@ else
 	yay -S gtk-theme-arc-gruvbox-git ttf-font-awesome-4 ttf-twemoji arc-icon-theme
 fi
 
-printf "Copying .confg\n"
-cp -r $DIR/config/* $HOME/.config/
-printf "Copying scripts\n"
-cp -r $DIR/scripts $HOME/.scripts
-printf "Copying dmenu config\n"
-cp -r $DIR/dmenurc $HOME/.dmenurc
-printf "Copying gtk-2 config\n"
-cp $DIR/gtkrc-2.0 $HOME/.gtkrc-2.0
-printf "Copying .profile\n"
-cp $DIR/profile $HOME/.profile
-printf "Copying Xresources\n"
-cp $DIR/Xresources $HOME/.Xresources
-printf "Copying conky_bar to /usr/share/conky/. Sudo required!\n"
-sudo cp $DIR/conky_bar /usr/share/conky/
-printf "Copying conky start executable to /usr/bin/. Sudo required!\n"
-sudo cp $DIR/start_conky_bar /usr/bin/
+echo -n "Want to apply user settings? (y/n)?"
+read answer
+if [ "$answer" != "${answer#[Yy]}" ] ;then
+	printf "Copying .confg\n"
+	cp -r $DIR/config/* $HOME/.config/
+	printf "Copying scripts\n"
+	cp -r $DIR/scripts $HOME/.scripts
+	printf "Copying dmenu config\n"
+	cp -r $DIR/dmenurc $HOME/.dmenurc
+	printf "Copying gtk-2 config\n"
+	cp $DIR/gtkrc-2.0 $HOME/.gtkrc-2.0
+	printf "Copying .profile\n"
+	cp $DIR/profile $HOME/.profile
+	printf "Copying Xresources\n"
+	cp $DIR/Xresources $HOME/.Xresources
+	printf "Copying conky_bar to /usr/share/conky/. Sudo required!\n"
+	sudo cp $DIR/conky_bar /usr/share/conky/
+	printf "Copying conky start executable to /usr/bin/. Sudo required!\n"
+	sudo cp $DIR/start_conky_bar /usr/bin/
+else
+	printf "Skipping user settings!\n"
+fi
 
 printf "done!\n"
 
