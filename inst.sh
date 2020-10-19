@@ -2,10 +2,10 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-if pacman -Qi playerctl brave py3status picom neovim > /dev/null ; then
+if pacman -Qi gcc playerctl brave py3status picom alacritty xwallpaper python-dbus > /dev/null ; then
 	printf "Required packages installed! skipping...\n"
 else
-	sudo pacman -S playerctl brave py3status picom neovim
+	sudo pacman -S gcc playerctl brave py3status picom alacritty xwallpaper python-dbus
 fi
 
 if pacman -Qi yay > /dev/null ; then
@@ -41,6 +41,8 @@ if [ "$answer" != "${answer#[Yy]}" ] ;then
 	sudo cp $DIR/conky_bar /usr/share/conky/
 	printf "Copying conky start executable to /usr/bin/. Sudo required!\n"
 	sudo cp $DIR/start_conky_bar /usr/bin/
+	printf "Copying bashrc\n"
+	cp $DIR/bashrc $HOME/.bashrc
 else
 	printf "Skipping user settings!\n"
 fi
@@ -52,12 +54,13 @@ if [ "$answer" != "${answer#[Yy]}" ] ; then
 	cd $HOME
 	sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-	printf "In nvim type :PlugInstall to install settings and plugins\n"
 	sudo su
 	cd $HOME
-	sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-	exit
+    sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs
+	   https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+	printf "In nvim type :PlugInstall to install settings and plugins\n"
+else
+    printf "Skipping nvim installation\n"
+fi
 printf "done!\n"
-
-
+exit 1
