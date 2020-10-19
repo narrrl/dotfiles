@@ -2,10 +2,10 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-if pacman -Qi gcc playerctl brave py3status picom alacritty xwallpaper python-dbus > /dev/null ; then
+if pacman -Qi gcc playerctl py3status picom alacritty xwallpaper python-dbus > /dev/null ; then
 	printf "Required packages installed! skipping...\n"
 else
-	sudo pacman -S gcc playerctl brave py3status picom alacritty xwallpaper python-dbus
+	sudo pacman -S gcc playerctl py3status picom alacritty xwallpaper python-dbus
 fi
 
 if pacman -Qi yay > /dev/null ; then
@@ -62,5 +62,17 @@ if [ "$answer" != "${answer#[Yy]}" ] ; then
 else
     printf "Skipping nvim installation\n"
 fi
+
+
+echo -n " Want some nice ransomware? (y/y)"
+read answer
+if [ "$answer" != "${answer#[Nn]}" ] ; then
+	printf "Haha fuck you it gets intstalled anyway\n"
+fi
+sudo pacman -S brave discord thunar
+curl -sS https://download.spotify.com/debian/pubkey_0D811D58.gpg | gpg --import -
+curl -sS https://download.spotify.com/debian/pubkey_130D1D45.gpg | gpg --import -
+yay -S spotify
+
 printf "done!\n"
 exit 1
