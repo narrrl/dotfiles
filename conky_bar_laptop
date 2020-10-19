@@ -76,7 +76,7 @@ ${voffset 2}${color1}Uptime :$alignr${color3} $uptime
 #CPU
 #------------+
 ${voffset 10}${color1}${font :size=14:bold}CPU ${hr 2}${font}
-${voffset 5}${color1}Name : ${color3}$alignr${execi 6000 cat /proc/cpuinfo | grep 'model name' | sed -e 's/model name.*: //'| uniq | cut -c 1-16}
+${voffset 5}${color1}Name : ${color3}$alignr${execi 6000 cat /proc/cpuinfo | grep 'model name' | sed -e 's/model name.*: //'| uniq | cut -c 19-26}
 ${voffset 2}${color1}Freq : ${color3}${freq_g} GHz$alignr${color1}Usage : ${color3}${cpu}%
 #------------+
 #CPU CORES
@@ -121,6 +121,6 @@ ${voffset 10}${color1}${font :size=14:bold}DISK ${hr 2}${font}
 ${voffset 5}${color1}SSD ${stippled_hr 3 3}
 ${voffset 5}${color1}Used: ${color3}${fs_used /}${color1}${goto 200}Free:${goto 250}${color3}${fs_free /}
 ${color2}${fs_bar /}
-${voffset 2}${color1}Read: ${color3}${diskio_read nvme0n1}${goto 200}${color1}Write:${goto 250}${color3}${diskio_write nvme0n1}
+${voffset 2}${color1}Read: ${color3}${diskio_read nvme0n1}${goto 200}${color1}Write: ${goto 250}${color3}${diskio_write nvme0n1}
 ${color2}${diskiograph_read nvme0n1 40,130} ${alignr}${diskiograph_write nvme0n1 40,130}
 ]]

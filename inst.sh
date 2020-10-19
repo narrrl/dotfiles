@@ -45,6 +45,19 @@ else
 	printf "Skipping user settings!\n"
 fi
 
+echo -n " Want nvim installed? (y/n)"
+read answer
+if [ "$answer" != "${answer#[Yy]}" ] ; then
+	sudo pacman -S neovim nodejs
+	cd $HOME
+	sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+	printf "In nvim type :PlugInstall to install settings and plugins\n"
+	sudo su
+	cd $HOME
+	sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+	exit
 printf "done!\n"
 
 
