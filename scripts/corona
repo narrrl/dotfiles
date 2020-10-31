@@ -8,10 +8,8 @@ fi
 if [ "$1" == "-ls" ]; then
     curl -s https://corona-stats.online?top=$2
     exit 0
-fi
-
-if [ "$1" == "-c" ]; then
+elif [ "$1" == "-c" ]; then
     curl -s https://corona-stats.online/$2
 else
-    printf "Unknown option {$1}"
+    printf "Unknown option: $1"
 fi

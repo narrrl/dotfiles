@@ -1,0 +1,10 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =8
+let g:netrw_dirhist_8='/home/niru/Documents/Projects/niruTB'
+let g:netrw_dirhist_7='/home/niru/Documents/Projects/niruTB/src/main/java/nirusu/nirutb'
+let g:netrw_dirhist_6='/home/niru/Documents/Projects/niruTB/src/main/java/nirusu'
+let g:netrw_dirhist_5='/home/niru/Documents/Projects/niruTB/src/main/java'
+let g:netrw_dirhist_4='/home/niru/Documents/Projects/niruTB/src/main'
+let g:netrw_dirhist_3='/home/niru/Documents/Projects/niruTB/src'
+let g:netrw_dirhist_2='/home/niru/Documents/Projects/niruTB'
+let g:netrw_dirhist_1='/home/niru/dotfiles'

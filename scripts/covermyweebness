@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if (($# != 1)); then
+    xwallpaper --zoom ~/.config/tutorium.png
+    exit 1
+elif [ "$1" == "restore" ]; then
+    xwallpaper --zoom ~/.config/wall.png
+    exit 1
+else
+    printf "Invalid argument: $1\n"
+    exit 2
+fi
