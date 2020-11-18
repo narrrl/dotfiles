@@ -18,7 +18,7 @@ DMENU_SB="#665c54"
 DMENU_SF="#fbf1c7"
 
 ## command for the terminal application to be used:
-TERMINAL_CMD="terminal -e"
+TERMINAL_CMD="alacritty -e"
 
 ## export our variables
 DMENU_OPTIONS="-fn $DMENU_FN -nb $DMENU_NB -nf $DMENU_NF -sf $DMENU_SF -sb $DMENU_SB"
