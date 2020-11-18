@@ -63,6 +63,15 @@ else
     printf "Skipping nvim installation\n"
 fi
 
+echo -n " Want us-de keyboard layout installed? (y/n)"
+read answer
+if [ "$answer" != "${answer#[Yy]}" ] ; then
+	sudo cp $DIR/usde /usr/share/X11/xkb/symbols/
+	setxkbmap -layout usde
+else
+    printf "Skipping nvim installation\n"
+fi
+
 
 echo -n " Want some nice ransomware? (y/y)"
 read answer
