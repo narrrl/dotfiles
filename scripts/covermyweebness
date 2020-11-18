@@ -1,12 +1,14 @@
 #!/bin/bash
 
 if (($# != 1)); then
+    killall wallpapercycle > /dev/null
     xwallpaper --zoom ~/.config/tutorium.png
-    exit 1
 elif [ "$1" == "restore" ]; then
     xwallpaper --zoom ~/.config/wall.png
-    exit 1
+elif [ "$1" == "cycle" ]; then
+    wallpapercycle $HOME/Pictures/wallpaper/ &>/dev/null &
 else
     printf "Invalid argument: $1\n"
     exit 2
 fi
+exit 0
