@@ -42,6 +42,8 @@ if [ "$answer" != "${answer#[Yy]}" ] ;then
 	printf "Copying conky start executable to /usr/bin/. Sudo required!\n"
 	sudo cp $DIR/start_conky_bar /usr/bin/
 	printf "Copying bashrc\n"
+	# nice prompt
+	git clone https://github.com/magicmonty/bash-git-prompt.git ~/.bash-git-prompt --depth=1
 	cp $DIR/bashrc $HOME/.bashrc
 else
 	printf "Skipping user settings!\n"
