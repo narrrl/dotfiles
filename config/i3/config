@@ -10,7 +10,7 @@ set $terminal alacritty
 
 # Configure border style <normal|1pixel|pixel xx|none|pixel>
 default_border pixel 1
-default_floating_border normal
+default_floating_border pixel 1
 
 # Hide borders
 hide_edge_borders none
@@ -18,7 +18,6 @@ hide_edge_borders none
 # change borders
 bindsym $mod+u border none
 bindsym $mod+y border pixel 1
-bindsym $mod+n border normal
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
@@ -60,12 +59,10 @@ bindsym $mod+Ctrl+s exec flameshot gui
 # bindsym XF86MonBrightnessDown exec "xbacklight -dec 10; notify-send 'brightness down'"
 
 # Start Applications
-bindsym $mod+Shift+f exec killall conky
-bindsym $mod+Ctrl+f exec start_conky_bar
+#bindsym $mod+Shift+f exec killall conky
+#bindsym $mod+Ctrl+f exec start_conky_bar
+#bindsym $mod+Ctrl+f exec wallpapercycle /home/niru/Pictures/wallpaper/
 bindsym $mod+Ctrl+b exec $terminal -e 'bmenu'
-bindsym $mod+F2 exec brave
-bindsym $mod+F3 exec $terminal -e 'ranger'
-bindsym $mod+F4 exec $terminal -e 'mocp'
 bindsym $mod+Ctrl+r exec obs
 bindsym $mod+Ctrl+n exec playerctl next
 bindsym $mod+Ctrl+p exec playerctl previous
@@ -253,11 +250,14 @@ mode "resize" {
 }
 
 # Autostart applications
+#exec --no-startup-id wallpapercycle /home/niru/Pictures/wallpaper/
+exec xwallpaper --zoom $HOME/.config/wall.jpeg
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id nm-applet
 exec --no-startup-id xfce4-power-manager
 exec --no-startup-id pamac-tray
 exec --no-startup-id picom --config /home/niru/.config/compton.conf
+exec --no-startup-id nividia-settings -l
 #exec --no-startup-id start_conky_bar
 exec_always --no-startup-id ff-theme-util
 exec_always --no-startup-id fix_xcursor
@@ -335,7 +335,7 @@ bindsym $mod+m bar mode toggle
 
 # blue gruvbox
 # class                 border|backgr|text|indicator|child_border
-client.focused          $blue $blue $darkgray $purple $darkgray
+client.focused          $darkgray $darkgray $yellow $purple #b8bb26
 client.focused_inactive $darkgray $darkgray $yellow $purple $darkgray
 client.unfocused        $darkgray $darkgray $yellow $purple $darkgray
 client.urgent           $red $red $white $red $red
