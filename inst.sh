@@ -1,4 +1,4 @@
-#!/bin/bash
+!/bin/bash
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
@@ -19,7 +19,7 @@ fi
 if pacman -Qi gtk-theme-arc-gruvbox-git ttf-font-awesome-4 ttf-twemoji arc-icon-theme > /dev/null ; then
 	printf "Yay packages isntalled! skipping...\n"
 else
-	yay -S gtk-theme-arc-gruvbox-git ttf-font-awesome-4 ttf-twemoji arc-icon-theme
+	yay -S moka-icon-theme gtk-theme-arc-gruvbox-git ttf-font-awesome-4 ttf-twemoji arc-icon-theme
 fi
 
 echo -n "Want to apply user settings? (y/n)?"
