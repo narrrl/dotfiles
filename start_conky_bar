@@ -1,5 +1,0 @@
-#!/bin/bash
-
-conky -c /usr/share/conky/conky_bar &&
-
-exit 0
