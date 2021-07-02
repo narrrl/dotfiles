@@ -1,0 +1,8 @@
+gtk-theme-name="Pop-dark"
+gtk-icon-theme-name="Pop"
+gtk-font-name="Fira Sans 14"
+gtk-cursor-theme-name="Bibata-Modern-Classic"
+gtk-xft-antialias=1
+gtk-xft-hinting=1
+gtk-xft-hintstyle="hintfull"
+gtk-xft-rgba="rgb"
