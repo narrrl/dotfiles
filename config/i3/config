@@ -13,19 +13,22 @@ set $mod Mod4
 set $terminal kitty
 set $innergap 10
 set $outergap 0
-set_from_resource $color1 i3wm.color2 #000000
-set_from_resource $color2 i3wm.color3 #000000
+set_from_resource $color1 i3wm.color1 #000000
+set_from_resource $color2 i3wm.foreground #000000
 
 font xft:Fira Code 14
 
 # Do not follow the mouse
 focus_follows_mouse no
 
+# You can also use any non-zero value if you'd like to have a border
+for_window [class=".*"] border pixel 4
+
 # Window border
-new_window pixel 3
-default_border pixel 3
+new_window pixel 4
+default_border pixel 4
 smart_borders on
-border_radius 5
+# border_radius 7
 
 # border color
 client.focused			$color2 $color2 $color2 $color1 $color2
@@ -48,8 +51,8 @@ bindsym $mod+Return exec $terminal
 bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
-bindsym $mod+d exec --no-startup-id ~/.config/polybar/shades/scripts/launcher.sh
-bindsym $mod+p exec --no-startup-id ~/.config/polybar/shades/scripts/powermenu.sh
+bindsym $mod+d exec --no-startup-id ~/.config/polybar/scripts/launcher.sh
+bindsym $mod+p exec --no-startup-id ~/.config/polybar/scripts/powermenu.sh
 
 # change focus
 bindsym $mod+h focus left
@@ -93,6 +96,18 @@ set $ws8 "8"
 set $ws9 "9"
 set $ws10 "10"
 
+# workspace $ws1 output DP-0
+# workspace $ws3 output DP-0
+# workspace $ws5 output DP-0
+# workspace $ws7 output DP-0
+# workspace $ws9 output DP-0
+# 
+# workspace $ws2 output HDMI-0
+# workspace $ws4 output HDMI-0
+# workspace $ws6 output HDMI-0
+# workspace $ws8 output HDMI-0
+# workspace $ws10 output HDMI-0
+
 # switch to workspace
 bindsym $mod+1 workspace number $ws1
 bindsym $mod+2 workspace number $ws2
@@ -105,17 +120,31 @@ bindsym $mod+8 workspace number $ws8
 bindsym $mod+9 workspace number $ws9
 bindsym $mod+0 workspace number $ws10
 
-# move focused container to workspace
-bindsym $mod+Shift+1 move container to workspace number $ws1
-bindsym $mod+Shift+2 move container to workspace number $ws2
-bindsym $mod+Shift+3 move container to workspace number $ws3
-bindsym $mod+Shift+4 move container to workspace number $ws4
-bindsym $mod+Shift+5 move container to workspace number $ws5
-bindsym $mod+Shift+6 move container to workspace number $ws6
-bindsym $mod+Shift+7 move container to workspace number $ws7
-bindsym $mod+Shift+8 move container to workspace number $ws8
-bindsym $mod+Shift+9 move container to workspace number $ws9
-bindsym $mod+Shift+0 move container to workspace number $ws10
+
+# move focused container
+bindsym $mod+Ctrl+1 move container to workspace $ws1
+bindsym $mod+Ctrl+2 move container to workspace $ws2
+bindsym $mod+Ctrl+3 move container to workspace $ws3
+bindsym $mod+Ctrl+4 move container to workspace $ws4
+bindsym $mod+Ctrl+5 move container to workspace $ws5
+bindsym $mod+Ctrl+6 move container to workspace $ws6
+bindsym $mod+Ctrl+7 move container to workspace $ws7
+bindsym $mod+Ctrl+8 move container to workspace $ws8
+bindsym $mod+Ctrl+9 move container to workspace $ws9
+bindsym $mod+Ctrl+0 move container to workspace $ws10
+
+# move to workspace with focused container
+bindsym $mod+Shift+1 move container to workspace $ws1; workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2; workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3; workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4; workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5; workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6; workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7; workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8; workspace $ws8
+bindsym $mod+Shift+9 move container to workspace $ws9; workspace $ws9
+bindsym $mod+Shift+0 move container to workspace $ws10; workspace $ws10
+
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
@@ -144,15 +173,19 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 # autostart
+exec --no-startup-id nvidia-settings --assign CurrentMetaMode="DPY-0: 3440x1440_165 @3440x1440 +0+0 {AllowGSYNCCompatible=On, ViewPortIn=3440x1440, ViewPortOut=3440x1440+0+0, ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}"
+# exec_always --no-startup-id wal -R
 exec --no-startup-id picom --config /home/niru/.config/picom.conf
 exec --no-startup-id pasystray
-exec --no-startup-id ~/.config/polybar/launch.sh --shades
-# exec_always setxkbmap us -variant dpe
-exec_always --no-startup-id ibus-daemon -drxR
+exec --no-startup-id ~/.config/polybar/launch.sh &
+exec --no-startup-id discover-overlay
+exec_always setxkbmap us -variant dpe
+# exec_always --no-startup-id ibus-daemon -drxR
 exec_always --no-startup-id xbindkeys
 
 # applications
 bindsym $mod+Ctrl+s exec flameshot gui
+bindsym $mod+Shift+p exec ./.config/polybar/launch.sh &
 
 # per window
 # bindsym $mod+Ctrl+space [class="$terminal"] floating toggle, resize set 800 600
