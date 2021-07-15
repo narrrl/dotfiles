@@ -1,1 +1,0 @@
-mpd-discord-rpc &
