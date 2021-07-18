@@ -3,6 +3,7 @@
 # Color files
 PFILE="$HOME/.config/polybar/colors.ini"
 RFILE="$HOME/.config/polybar/scripts/rofi/colors.rasi"
+DUNSTFILE="$HOME/.config/dunst/dunstrc"
 
 # Get colors
 pywal_get() {
@@ -30,6 +31,11 @@ change_color() {
 	sed -i -e "s/shade6 = #.*/shade6 = $SH6/g" $PFILE
 	sed -i -e "s/shade7 = #.*/shade7 = $SH7/g" $PFILE
 	sed -i -e "s/shade8 = #.*/shade8 = $SH8/g" $PFILE
+	sed -i -e "s/backgound = \"#.*\"/background = \"$BG\"/g" $DUNSTFILE
+	sed -i -e "s/frame_color = \"#.*\"/frame_color = \"$BG\"/g" $DUNSTFILE
+	sed -i -e "s/foreground = \"#.*\"/foreground = \"$FG\"/g" $DUNSTFILE
+	killall dunst
+	notify-send "Changed colors!"
 
 	# rofi
 	cat > $RFILE <<- EOF
