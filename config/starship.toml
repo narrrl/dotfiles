@@ -1,0 +1,15 @@
+add_newline = false
+[character]
+success_symbol = ""
+# error_symbol = "[✗](red)"
+vicmd_symbol = ""
+[username]
+show_always = true
+[directory]
+read_only = "  "
+read_only_style = "red"
+[package]
+symbol = " "
+[rust]
+# symbol = " "
+
