@@ -21,6 +21,7 @@ set undodir=~/.vim/undodir
 set undofile
 set incsearch
 set scrolloff=8
+set clipboard+=unnamedplus
 
 set cmdheight=2
 
@@ -45,7 +46,6 @@ Plug 'sheerun/vim-polyglot'
 Plug 'lervag/vimtex'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'andweeb/presence.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/playground'
 Plug 'rust-lang/rust.vim'
@@ -66,6 +66,7 @@ Plug 'dylanaraps/wal.vim'
 Plug 'drewtempelmeyer/palenight.vim'
 Plug 'mhinz/vim-rfc'
 Plug 'sbdchd/neoformat'
+Plug 'Yggdroot/indentLine'
 call plug#end()
 
 set background=dark
@@ -76,15 +77,6 @@ let g:airline_theme='qwq'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
-
-" discord
-let g:presence_auto_update       = 1
-let g:presence_editing_text      = "Editing %s"
-let g:presence_workspace_text    = "Working on %s"
-let g:presence_neovim_image_text = "The One True Text Editor"
-let g:presence_main_image        = "neovim"
-let g:presence_client_id         = "793271441293967371"
-let g:presence_debounce_timeout  = 15
 
 
 lua require'nvim-treesitter.configs'.setup { highlight = { enable = true } }
@@ -107,6 +99,7 @@ nnoremap <leader>u :UndotreeShow<CR>
 nnoremap <Leader>ps :Rg<SPACE>
 nnoremap <C-p> :GFiles<CR>
 nnoremap <Leader>pf :Files<CR>
+nnoremap <Leader>pb :Buffers<CR>
 nnoremap <Leader><CR> :so ~/.config/nvim/init.vim<CR>
 nnoremap <Leader>+ :vertical resize +5<CR>
 nnoremap <Leader>- :vertical resize -5<CR>
