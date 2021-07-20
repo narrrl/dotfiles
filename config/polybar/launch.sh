@@ -11,7 +11,6 @@ killall -q polybar
 while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
 
 # Launch the bar
-wal -R
-seep 5
+wal -n -R
 polybar -q TOP &
 polybar -q BOTTOM &
