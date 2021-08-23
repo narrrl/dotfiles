@@ -11,8 +11,8 @@
 
 set $mod Mod4
 set $terminal kitty
-set $innergap 10
-set $outergap 0
+set $innergap 20
+set $outergap 10
 set_from_resource $color1 i3wm.color1 #000000
 set_from_resource $color2 i3wm.foreground #000000
 
@@ -39,7 +39,9 @@ client.urgent 			$color1 $color1 $color1 $color2 $color1
 # Setup gaps
 gaps inner $innergap
 gaps outer $outergap
-smart_gaps on
+# smart_gaps on
+gaps top 50
+gaps bottom 50
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -52,7 +54,7 @@ bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
 bindsym $mod+d exec --no-startup-id ~/.config/polybar/scripts/launcher.sh
-bindsym $mod+p exec --no-startup-id ~/.config/polybar/scripts/powermenu.sh
+bindsym $mod+p exec --no-startup-id ~/.config/polybar/scripts/powermenu.py
 
 # change focus
 bindsym $mod+h focus left
@@ -173,21 +175,24 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 # autostart
-exec --no-startup-id nvidia-settings --assign CurrentMetaMode="DPY-0: 3440x1440_165 @3440x1440 +0+0 {AllowGSYNCCompatible=On, ViewPortIn=3440x1440, ViewPortOut=3440x1440+0+0, ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}"
+# ForceCompositionPipeline can be set in xorg conf
+# exec --no-startup-id nvidia-settings --assign CurrentMetaMode="DPY-0: 3440x1440_165 @3440x1440 +0+0 {AllowGSYNCCompatible=On, ViewPortIn=3440x1440, ViewPortOut=3440x1440+0+0, ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}"
 # exec_always --no-startup-id wal -R
-exec --no-startup-id picom --config /home/niru/.config/picom.conf
-exec --no-startup-id pasystray
+exec --no-startup-id picom --config /home/niru/.config/picom.conf &
+exec --no-startup-id pasystray &
 exec --no-startup-id ~/.config/polybar/launch.sh &
-exec --no-startup-id discover-overlay
-exec_always setxkbmap us -variant dpe
+exec --no-startup-id ~/.fehbg &
+exec --no-startup-id greenclip daemon &
+# exec --no-startup-id discover-overlay
+exec_always setxkbmap us -variant dpe &
 # exec_always --no-startup-id ibus-daemon -drxR
-exec_always --no-startup-id xbindkeys
+# exec_always --no-startup-id xbindkeys &
 
 # applications
-bindsym $mod+Ctrl+s exec flameshot gui
-bindsym $mod+Shift+p exec ./.config/polybar/launch.sh &
-
+bindsym $mod+Ctrl+s exec flameshot gui &
+bindsym $mod+Shift+p exec ~/.config/polybar/launch.sh &
+bindsym $mod+c exec ~/.config/polybar/scripts/clipboard.sh &
 # per window
 # bindsym $mod+Ctrl+space [class="$terminal"] floating toggle, resize set 800 600
-for_window [class="$terminal" floating] resize set 800 600
+for_window [floating] resize set 800 600
 for_window [urgent=latest] focus
