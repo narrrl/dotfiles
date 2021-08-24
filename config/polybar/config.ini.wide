@@ -85,7 +85,7 @@ foreground = ${color.foreground}
 ;   radius-{top,bottom}
 radius-top = 0.0
 radius-bottom = 0.0
-offset-y = 15
+offset-y = 5
 
 ; Under-/overline pixel size and argb color
 ; Individual values can be defined using:
@@ -306,18 +306,18 @@ bottom = true
 tray-position = right
 width = 650
 # background = #00000000
-offset-x = 30
+offset-x = 5
 [bar/systeminfo]
 inherit = bar/main
 modules-right= cpu temperature memory filesystem network
 bottom = true
 width = 2250
-offset-x = 1160
+offset-x = 1185
 [bar/applications]
 inherit = bar/main
 modules-left = title github reddit gmail twitter
 width = 1080
-offset-x = 30
+offset-x = 5
 [bar/spotifybar]
 inherit = bar/main
 modules-center = spotify spotify-prev spotify-play-pause spotify-next
@@ -327,4 +327,4 @@ offset-x = 1420
 inherit = bar/main
 modules-right = pulseaudio-control date
 width = 570
-offset-x = 2840
+offset-x = 2865

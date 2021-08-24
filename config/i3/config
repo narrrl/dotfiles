@@ -22,11 +22,11 @@ font xft:Fira Code 14
 focus_follows_mouse no
 
 # You can also use any non-zero value if you'd like to have a border
-for_window [class=".*"] border pixel 4
+for_window [class=".*"] border pixel 0
 
 # Window border
-new_window pixel 4
-default_border pixel 4
+new_window pixel 0
+default_border pixel 0
 smart_borders on
 # border_radius 7
 

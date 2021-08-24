@@ -23,14 +23,14 @@ change_color() {
 	sed -i -e "s/background = #.*/background = $TBG/g" $PFILE
 	sed -i -e "s/foreground = #.*/foreground = $FG/g" $PFILE
 	sed -i -e "s/foreground-alt = #.*/foreground-alt = $FGA/g" $PFILE
-	sed -i -e "s/shade1 = #.*/shade1 = $SH1/g" $PFILE
-	sed -i -e "s/shade2 = #.*/shade2 = $SH2/g" $PFILE
-	sed -i -e "s/shade3 = #.*/shade3 = $SH3/g" $PFILE
-	sed -i -e "s/shade4 = #.*/shade4 = $SH4/g" $PFILE
-	sed -i -e "s/shade5 = #.*/shade5 = $SH5/g" $PFILE
-	sed -i -e "s/shade6 = #.*/shade6 = $SH6/g" $PFILE
-	sed -i -e "s/shade7 = #.*/shade7 = $SH7/g" $PFILE
-	sed -i -e "s/shade8 = #.*/shade8 = $SH8/g" $PFILE
+	sed -i -e "s/shade1 = #.*/shade1 = $TSH1/g" $PFILE
+	sed -i -e "s/shade2 = #.*/shade2 = $TSH2/g" $PFILE
+	sed -i -e "s/shade3 = #.*/shade3 = $TSH3/g" $PFILE
+	sed -i -e "s/shade4 = #.*/shade4 = $TSH4/g" $PFILE
+	sed -i -e "s/shade5 = #.*/shade5 = $TSH5/g" $PFILE
+	sed -i -e "s/shade6 = #.*/shade6 = $TSH6/g" $PFILE
+	sed -i -e "s/shade7 = #.*/shade7 = $TSH7/g" $PFILE
+	sed -i -e "s/shade8 = #.*/shade8 = $TSH8/g" $PFILE
 	sed -i -e "s/backgound = \"#.*\"/background = \"$BG\"/g" $DUNSTFILE
 	sed -i -e "s/frame_color = \"#.*\"/frame_color = \"$BG\"/g" $DUNSTFILE
 	sed -i -e "s/foreground = \"#.*\"/foreground = \"$FG\"/g" $DUNSTFILE
@@ -72,7 +72,9 @@ if [[ -f "/usr/bin/wal" ]]; then
 	TBG=`printf "%s\n" "#dd${background:1}"`
 	BG=`printf "%s\n" "$background"`
 	FG=`printf "%s\n" "$foreground"`
+	TFG=`printf "%s\n" "#dd${foreground:1}"`
 	FGA=`printf "%s\n" "$color8"`
+	TFGA=`printf "%s\n" "#dd${color8:1}"`
 	SH1=`printf "%s\n" "$color1"`
 	SH2=`printf "%s\n" "$color2"`
 	SH3=`printf "%s\n" "$color1"`
@@ -81,6 +83,14 @@ if [[ -f "/usr/bin/wal" ]]; then
 	SH6=`printf "%s\n" "$color2"`
 	SH7=`printf "%s\n" "$color1"`
 	SH8=`printf "%s\n" "$color7"`
+	TSH1=`printf "%s\n" "#BF${color1:1}"`
+	TSH2=`printf "%s\n" "#BF${color2:1}"`
+	TSH3=`printf "%s\n" "#BF${color1:1}"`
+	TSH4=`printf "%s\n" "#BF${color2:1}"`
+	TSH5=`printf "%s\n" "#BF${color1:1}"`
+	TSH6=`printf "%s\n" "#BF${color2:1}"`
+	TSH7=`printf "%s\n" "#BF${color1:1}"`
+	TSH8=`printf "%s\n" "#BF${color7:1}"`
 
 	change_color
 else

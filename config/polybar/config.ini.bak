@@ -85,7 +85,7 @@ foreground = ${color.foreground}
 ;   radius-{top,bottom}
 radius-top = 0.0
 radius-bottom = 0.0
-offset-y = 15
+offset-y = 5
 
 ; Under-/overline pixel size and argb color
 ; Individual values can be defined using:
