@@ -53,8 +53,8 @@ bindsym $mod+Return exec $terminal
 bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
-bindsym $mod+d exec --no-startup-id ~/.config/polybar/scripts/launcher.sh
-bindsym $mod+p exec --no-startup-id ~/.config/polybar/scripts/powermenu.py
+bindsym $mod+d exec --no-startup-id ~/.config/rofi/launchers/misc/launcher.sh &
+bindsym $mod+p exec --no-startup-id ~/.config/rofi/powermenu/powermenu.sh &
 
 # change focus
 bindsym $mod+h focus left
@@ -183,6 +183,7 @@ exec --no-startup-id pasystray &
 exec --no-startup-id ~/.config/polybar/launch.sh &
 exec --no-startup-id ~/.fehbg &
 exec --no-startup-id greenclip daemon &
+exec --no-startup-id ~/.config/polybar/scripts/map_mono_mic.sh &
 # exec --no-startup-id discover-overlay
 exec_always setxkbmap us -variant dpe &
 # exec_always --no-startup-id ibus-daemon -drxR
@@ -192,6 +193,8 @@ exec_always setxkbmap us -variant dpe &
 bindsym $mod+Ctrl+s exec flameshot gui &
 bindsym $mod+Shift+p exec ~/.config/polybar/launch.sh &
 bindsym $mod+c exec ~/.config/polybar/scripts/clipboard.sh &
+# workflow
+bindsym Mod1+Tab workspace back_and_forth
 # per window
 # bindsym $mod+Ctrl+space [class="$terminal"] floating toggle, resize set 800 600
 # for_window [floating] resize set 800 600
