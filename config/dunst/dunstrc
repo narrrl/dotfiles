@@ -1,6 +1,6 @@
 [global]
     frame_width = 1
-    frame_color = "#141617"
+    frame_color = "#0D1116"
 
     font = Noto Sans 10
 
@@ -68,7 +68,7 @@
     # the top and down respectevly.
     # The width can be negative.  In this case the actual width is the
     # screen width minus the width defined in within the geometry option.
-    geometry = "0x4-25+25"
+    geometry = "0x4+30+15"
 
     # Shrink window if it's smaller than the width.  Will be ignored if
     # width is 0.
@@ -164,35 +164,35 @@
     # Xev might be helpful to find names for keys.
 
     # Close notification.
-    #close = mod1+space
+    close = mod1+space
 
     # Close all notifications.
     # close_all = ctrl+shift+space
-    #close_all = ctrl+mod1+space
+    close_all = ctrl+mod1+space
 
     # Redisplay last message(s).
     # On the US keyboard layout "grave" is normally above TAB and left
     # of "1".
-    #history = ctrl+mod4+h
+    history = ctrl+mod4+h
 
     # Context menu.
-    #context = ctrl+mod1+c
+    context = ctrl+mod1+c
 
 [urgency_low]
     # IMPORTANT: colors have to be defined in quotation marks.
     # Otherwise the "#" and following would be interpreted as a comment.
     background = "#1d2021"
-    foreground = "#EE0E61"
+    foreground = "#e6e1c7"
     timeout = 10
 
 [urgency_normal]
     background = "#1d2021"
-    foreground = "#EE0E61"
+    foreground = "#e6e1c7"
     timeout = 10
 
 [urgency_critical]
     background = "#1d2021"
-    foreground = "#EE0E61"
+    foreground = "#e6e1c7"
     timeout = 0
 
 
@@ -253,7 +253,7 @@
 #    category = email.arrived
 #    urgency = normal
 #    background = "#2F899E"
-#    foreground = "#FFA247"
+#    foreground = "#e6e1c7"
 #
 #[mute.sh]
 #     appname = mute
@@ -264,40 +264,40 @@
 #    appname = JDownloader
 #    category = JD
 #    background = "#FFA247"
-#    foreground = "#FFFFFF"
+#    foreground = "#e6e1c7"
 #
 #[newsbeuter]
 #    summary = *Feeds*
 #    background = "#A8EB41"
-#    foreground = "#FFFFFF"
+#    foreground = "#e6e1c7"
 #
 #[irc]
 #        appname = weechat
 #        timeout = 0
 #        background = "#0033bb"
-#        foreground = "#dddddd"
+#        foreground = "#e6e1c7"
 ##
 #[weechat hl]
 #     appname = weechat
 #     category = weechat.HL
 #     background = "#FF5C47"
-#     foreground = "#FFFFFF"
+#     foreground = "#e6e1c7"
 ##
 #[weechat pn]
 #     appname = weechat
 #     category = weechat.PM
 #     background = "#D53B84"
-#     foreground = "#FFFFFF"
+#     foreground = "#e6e1c7"
 #
 #[CMUS]
 #    appname = CMUS
 #    category = cmus
 #    background = "#6C4AB7"
-#    foreground = "#FFE756"
+#    foreground = "#e6e1c7"
 #
 #
 #     background = "#30AB70"
-#     foreground = "#F67245"
+#     foreground = "#e6e1c7"
 #
 # vim: ft=cfg
 #[play_sound]
