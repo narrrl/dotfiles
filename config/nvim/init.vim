@@ -29,8 +29,13 @@ set updatetime=50
 
 set shortmess+=c
 
+if (has("termguicolors"))
+    set termguicolors
+    " hi LineNr ctermbg=NONE guibg=NONE
+endif
+
 set colorcolumn=100
-highlight ColorColumn ctermbg=0 guibg=lightgrey
+" highlight ColorColumn ctermbg=0 guibg=lightgrey
 
 
 call plug#begin('~/.vim/plugged')
@@ -58,20 +63,26 @@ Plug 'mbbill/undotree'
 Plug 'vuciv/vim-bujo'
 Plug 'tpope/vim-dispatch'
 Plug 'theprimeagen/vim-be-good'
-Plug 'gruvbox-community/gruvbox'
+" Plug 'gruvbox-community/gruvbox'
+Plug 'rktjmp/lush.nvim'
+Plug 'ellisonleao/gruvbox.nvim'
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'tpope/vim-projectionist'
-Plug 'sainnhe/gruvbox-material'
+" Plug 'sainnhe/gruvbox-material'
 Plug 'dylanaraps/wal.vim'
 Plug 'drewtempelmeyer/palenight.vim'
 Plug 'mhinz/vim-rfc'
 Plug 'sbdchd/neoformat'
 Plug 'Yggdroot/indentLine'
+Plug 'navarasu/onedark.nvim'
 call plug#end()
 
+" let g:nvcode_termcolors=256
+" let g:onedark_style = 'darker'
 set background=dark
-colorscheme "wal"
-hi Normal ctermbg=none
+colorscheme gruvbox
+hi! Normal ctermbg=NONE guibg=NONE
+hi! NonText ctermbg=NONE guibg=NONE guifg=NONE ctermfg=NONE
 " airline
 let g:airline_theme='qwq'
 let g:airline#extensions#tabline#enabled = 1
@@ -79,7 +90,20 @@ let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
 
 
-lua require'nvim-treesitter.configs'.setup { highlight = { enable = true } }
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = "all", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  highlight = {
+    enable = true,              -- false will disable the whole extension
+    disable = {},  -- list of language that will be disabled
+    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+    -- Instead of true it can also be a list of languages
+    additional_vim_regex_highlighting = false,
+  },
+}
+EOF
 
 let g:vim_be_good_log_file = 1
 let g:vim_apm_log = 1
@@ -111,12 +135,6 @@ nnoremap <Leader>- :vertical resize -5<CR>
 nnoremap <Leader>rp :resize 100<CR>
 nnoremap <silent> <leader>o :<C-u>call append(line("."),   repeat([""], v:count1))<CR>
 nnoremap <silent> <leader>O :<C-u>call append(line(".")-1, repeat([""], v:count1))<CR>
-
-" greatest remap ever
-vnoremap <leader>p "_dP
-nnoremap <leader>y "+y
-vnoremap <leader>y "+y
-nnoremap <leader>Y gg"+yG
 
 nnoremap <leader>d "_d
 vnoremap <leader>d "_d
