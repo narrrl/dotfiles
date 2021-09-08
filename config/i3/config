@@ -193,6 +193,9 @@ exec_always setxkbmap us -variant dpe &
 bindsym $mod+Ctrl+s exec flameshot gui &
 bindsym $mod+Shift+p exec ~/.config/polybar/launch.sh &
 bindsym $mod+c exec ~/.config/polybar/scripts/clipboard.sh &
+bindsym $mod+Ctrl+space exec playerctl play-pause
+bindsym $mod+Ctrl+n exec playerctl next
+bindsym $mod+Ctrl+p exec playerctl previous
 # workflow
 bindsym Mod1+Tab workspace back_and_forth
 # per window
