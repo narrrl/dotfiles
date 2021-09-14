@@ -1,6 +1,6 @@
 [global]
     frame_width = 1
-    frame_color = "#0D1116"
+    frame_color = "#0f0c15"
 
     font = Noto Sans 10
 
@@ -50,7 +50,7 @@
 
     # Split notifications into multiple lines if they don't fit into
     # geometry.
-    word_wrap = no
+    word_wrap = yes
 
     # Ignore newlines '\n' in notifications.
     ignore_newline = no
@@ -68,7 +68,7 @@
     # the top and down respectevly.
     # The width can be negative.  In this case the actual width is the
     # screen width minus the width defined in within the geometry option.
-    geometry = "0x4+30+15"
+    geometry = "0x4+20+15"
 
     # Shrink window if it's smaller than the width.  Will be ignored if
     # width is 0.
@@ -77,7 +77,7 @@
     # The transparency of the window.  Range: [0; 100].
     # This option will only work if a compositing windowmanager is
     # present (e.g. xcompmgr, compiz, etc.).
-    transparency = 15
+    transparency = 50
 
     # Don't remove messages, if the user is idle (no mouse or keyboard input)
     # for longer than idle_threshold seconds.
@@ -181,18 +181,18 @@
 [urgency_low]
     # IMPORTANT: colors have to be defined in quotation marks.
     # Otherwise the "#" and following would be interpreted as a comment.
-    background = "#1d2021"
-    foreground = "#e6e1c7"
+    background = "#141414"
+    foreground = "#ede3d9"
     timeout = 10
 
 [urgency_normal]
-    background = "#1d2021"
-    foreground = "#e6e1c7"
+    background = "#141414"
+    foreground = "#ede3d9"
     timeout = 10
 
 [urgency_critical]
-    background = "#1d2021"
-    foreground = "#e6e1c7"
+    background = "#141414"
+    foreground = "#ede3d9"
     timeout = 0
 
 
@@ -253,7 +253,7 @@
 #    category = email.arrived
 #    urgency = normal
 #    background = "#2F899E"
-#    foreground = "#e6e1c7"
+#    foreground = "#ede3d9"
 #
 #[mute.sh]
 #     appname = mute
@@ -264,40 +264,40 @@
 #    appname = JDownloader
 #    category = JD
 #    background = "#FFA247"
-#    foreground = "#e6e1c7"
+#    foreground = "#ede3d9"
 #
 #[newsbeuter]
 #    summary = *Feeds*
 #    background = "#A8EB41"
-#    foreground = "#e6e1c7"
+#    foreground = "#ede3d9"
 #
 #[irc]
 #        appname = weechat
 #        timeout = 0
 #        background = "#0033bb"
-#        foreground = "#e6e1c7"
+#        foreground = "#ede3d9"
 ##
 #[weechat hl]
 #     appname = weechat
 #     category = weechat.HL
 #     background = "#FF5C47"
-#     foreground = "#e6e1c7"
+#     foreground = "#ede3d9"
 ##
 #[weechat pn]
 #     appname = weechat
 #     category = weechat.PM
 #     background = "#D53B84"
-#     foreground = "#e6e1c7"
+#     foreground = "#ede3d9"
 #
 #[CMUS]
 #    appname = CMUS
 #    category = cmus
 #    background = "#6C4AB7"
-#    foreground = "#e6e1c7"
+#    foreground = "#ede3d9"
 #
 #
 #     background = "#30AB70"
-#     foreground = "#e6e1c7"
+#     foreground = "#ede3d9"
 #
 # vim: ft=cfg
 #[play_sound]

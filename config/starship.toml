@@ -1,7 +1,8 @@
 add_newline = false
 [character]
+format = "$symbol "
 success_symbol = ""
-# error_symbol = "[✗](red)"
+error_symbol = "[✗](red)"
 vicmd_symbol = ""
 [username]
 show_always = true

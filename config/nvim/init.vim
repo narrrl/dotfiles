@@ -39,6 +39,7 @@ set colorcolumn=100
 
 
 call plug#begin('~/.vim/plugged')
+Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'rust-lang/rust.vim'
 Plug 'chrisbra/csv.vim'
@@ -80,7 +81,7 @@ call plug#end()
 " let g:nvcode_termcolors=256
 " let g:onedark_style = 'darker'
 set background=dark
-colorscheme gruvbox
+colorscheme tokyonight
 hi! Normal ctermbg=NONE guibg=NONE
 hi! NonText ctermbg=NONE guibg=NONE guifg=NONE ctermfg=NONE
 " airline
