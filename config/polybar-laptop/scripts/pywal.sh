@@ -2,7 +2,7 @@
 
 # Color files
 PFILE="$HOME/.config/polybar/colors.ini"
-RFILE="$HOME/.config/polybar/scripts/rofi/colors.rasi"
+# RFILE="$HOME/.config/polybar/scripts/rofi/colors.rasi"
 DUNSTFILE="$HOME/.config/dunst/dunstrc"
 
 # Get colors
@@ -38,19 +38,19 @@ change_color() {
 	notify-send "Changed colors!"
 
 	# rofi
-	cat > $RFILE <<- EOF
-	/* colors */
+	# cat > $RFILE <<- EOF
+	# /* colors */
 
-	* {
-	  al:    #00000000;
-	  bg:    ${BG}FF;
-	  bg1:   ${SH2}FF;
-	  bg2:   ${SH3}FF;
-	  bg3:   ${SH4}FF;
-	  bg4:   ${SH5}FF;
-	  fg:    ${FG}FF;
-	}
-	EOF
+	# * {
+	#   al:    #00000000;
+	#   bg:    ${BG}FF;
+	#   bg1:   ${SH2}FF;
+	#   bg2:   ${SH3}FF;
+	#   bg3:   ${SH4}FF;
+	#   bg4:   ${SH5}FF;
+	#   fg:    ${FG}FF;
+	# }
+	# EOF
 
 	polybar-msg cmd restart
 }
