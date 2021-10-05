@@ -14,4 +14,4 @@ fish_vi_key_bindings
 if test -e ~/.cache/wal/colors.fish
     source ~/.cache/wal/colors.fish
 end
-source ~/.cache/wal/colors.fish
+zoxide init --cmd "cd" fish | source
