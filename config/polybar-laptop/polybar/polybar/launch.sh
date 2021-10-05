@@ -19,4 +19,3 @@ polybar -q systeminfo &
 polybar -q applications &
 polybar -q topinfo &
 polybar -q spotifybar &
-polybar -q spotifycontrolbar &
