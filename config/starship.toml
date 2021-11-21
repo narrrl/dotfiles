@@ -1,16 +1,27 @@
 add_newline = false
+format = """
+$username\
+$git_branch\
+$git_commit\
+$git_state\
+$git_metrics\
+$git_status\
+$status\
+$linebreak
+$directory\
+$character"""
 [character]
-format = "$symbol "
-success_symbol = ""
-error_symbol = "[✗](red)"
-vicmd_symbol = ""
-[username]
-show_always = true
+success_symbol = ">"
+error_symbol = "[X](red)"
+vicmd_symbol = "<"
 [directory]
 read_only = "  "
 read_only_style = "red"
 [package]
 symbol = " "
-[rust]
-# symbol = " "
-
+[username]
+format = "[$user]($style) "
+disabled = false
+show_always = true
+[git_branch]
+symbol = ""
