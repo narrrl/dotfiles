@@ -8,15 +8,12 @@ DIR="$HOME/.config/polybar"
 killall -q polybar
 
 # Wait until the processes have been shut down
-while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
+# while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
 
-# Launch the bar
-wal -n -R
-# polybar -q redirect-top &
-# polybar -q redirect-bottom &
-polybar -q workspaces &
-polybar -q systeminfo &
-polybar -q applications &
-polybar -q topinfo &
-polybar -q spotifybar &
-polybar -q spotifycontrolbar &
+polybar --config=$DIR/config.ini -q workspaces &
+polybar --config=$DIR/config.ini -q workspaces2 &
+polybar --config=$DIR/config.ini -q systeminfo &
+polybar --config=$DIR/config.ini -q applications &
+polybar --config=$DIR/config.ini -q topinfo &
+polybar --config=$DIR/config.ini -q spotifycontrolbar &
+polybar --config=$DIR/config.ini -q tray &

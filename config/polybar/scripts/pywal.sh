@@ -2,7 +2,6 @@
 
 # Color files
 PFILE="$HOME/.config/polybar/colors.ini"
-RFILE="$HOME/.config/polybar/scripts/rofi/colors.rasi"
 DUNSTFILE="$HOME/.config/dunst/dunstrc"
 
 # Get colors
@@ -38,19 +37,19 @@ change_color() {
 	notify-send "Changed colors!"
 
 	# rofi
-	cat > $RFILE <<- EOF
-	/* colors */
+	# cat > $RFILE <<- EOF
+	# /* colors */
 
-	* {
-	  al:    #00000000;
-	  bg:    ${BG}FF;
-	  bg1:   ${SH2}FF;
-	  bg2:   ${SH3}FF;
-	  bg3:   ${SH4}FF;
-	  bg4:   ${SH5}FF;
-	  fg:    ${FG}FF;
-	}
-	EOF
+	# * {
+	#   al:    #00000000;
+	#   bg:    ${BG}FF;
+	#   bg1:   ${SH2}FF;
+	#   bg2:   ${SH3}FF;
+	#   bg3:   ${SH4}FF;
+	#   bg4:   ${SH5}FF;
+	#   fg:    ${FG}FF;
+	# }
+	# EOF
 
 	polybar-msg cmd restart
 }
@@ -77,20 +76,20 @@ if [[ -f "/usr/bin/wal" ]]; then
 	TFGA=`printf "%s\n" "#dd${color8:1}"`
 	SH1=`printf "%s\n" "$color1"`
 	SH2=`printf "%s\n" "$color2"`
-	SH3=`printf "%s\n" "$color1"`
-	SH4=`printf "%s\n" "$color2"`
-	SH5=`printf "%s\n" "$color1"`
-	SH6=`printf "%s\n" "$color2"`
-	SH7=`printf "%s\n" "$color1"`
-	SH8=`printf "%s\n" "$color7"`
+	SH3=`printf "%s\n" "$color3"`
+	SH4=`printf "%s\n" "$color4"`
+	SH5=`printf "%s\n" "$color5"`
+	SH6=`printf "%s\n" "$color6"`
+	SH7=`printf "%s\n" "$color7"`
+	SH8=`printf "%s\n" "$color8"`
 	TSH1=`printf "%s\n" "#BF${color1:1}"`
 	TSH2=`printf "%s\n" "#BF${color2:1}"`
-	TSH3=`printf "%s\n" "#BF${color1:1}"`
-	TSH4=`printf "%s\n" "#BF${color2:1}"`
-	TSH5=`printf "%s\n" "#BF${color1:1}"`
-	TSH6=`printf "%s\n" "#BF${color2:1}"`
-	TSH7=`printf "%s\n" "#BF${color1:1}"`
-	TSH8=`printf "%s\n" "#BF${color7:1}"`
+	TSH3=`printf "%s\n" "#BF${color3:1}"`
+	TSH4=`printf "%s\n" "#BF${color4:1}"`
+	TSH5=`printf "%s\n" "#BF${color5:1}"`
+	TSH6=`printf "%s\n" "#BF${color6:1}"`
+	TSH7=`printf "%s\n" "#BF${color7:1}"`
+	TSH8=`printf "%s\n" "#BF${color8:1}"`
 
 	change_color
 else
