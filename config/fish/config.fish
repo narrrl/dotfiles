@@ -14,4 +14,5 @@ fish_vi_key_bindings
 if test -e ~/.cache/wal/colors.fish
     source ~/.cache/wal/colors.fish
 end
-zoxide init --cmd "cd" fish | source
+zoxide init --cmd cd fish | source
+set -gx PATH /home/niru/.local/bin $PATH
