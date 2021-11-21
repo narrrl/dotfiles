@@ -39,7 +39,9 @@ set colorcolumn=100
 
 
 call plug#begin('~/.vim/plugged')
-Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
+Plug 'tpope/vim-fugitive'
+Plug 'joom/latex-unicoder.vim'
+Plug 'davidhalter/jedi-vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'rust-lang/rust.vim'
 Plug 'chrisbra/csv.vim'
@@ -61,34 +63,34 @@ Plug 'rbong/vim-flog'
 Plug 'junegunn/gv.vim'
 Plug 'vim-utils/vim-man'
 Plug 'mbbill/undotree'
-Plug 'vuciv/vim-bujo'
 Plug 'tpope/vim-dispatch'
 Plug 'theprimeagen/vim-be-good'
 " Plug 'gruvbox-community/gruvbox'
-Plug 'rktjmp/lush.nvim'
 Plug 'ellisonleao/gruvbox.nvim'
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'tpope/vim-projectionist'
 " Plug 'sainnhe/gruvbox-material'
 Plug 'dylanaraps/wal.vim'
 Plug 'drewtempelmeyer/palenight.vim'
-Plug 'mhinz/vim-rfc'
 Plug 'sbdchd/neoformat'
 Plug 'Yggdroot/indentLine'
 Plug 'navarasu/onedark.nvim'
+Plug 'akinsho/toggleterm.nvim'
+Plug 'ellisonleao/glow.nvim'
 call plug#end()
 
-" let g:nvcode_termcolors=256
+let g:nvcode_termcolors=256
 " let g:onedark_style = 'darker'
 set background=dark
-colorscheme tokyonight
+colorscheme palenight
 hi! Normal ctermbg=NONE guibg=NONE
 hi! NonText ctermbg=NONE guibg=NONE guifg=NONE ctermfg=NONE
 " airline
 let g:airline_theme='qwq'
-let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#buffer_nr_show = 1
 
 
 lua <<EOF
@@ -103,6 +105,26 @@ require'nvim-treesitter.configs'.setup {
     -- Instead of true it can also be a list of languages
     additional_vim_regex_highlighting = false,
   },
+}
+EOF
+
+lua <<EOF
+vim.o.hidden = true
+require("toggleterm").setup{
+  size = function(term)
+    if term.direction == "horizontal" then
+      return 30
+    elseif term.direction == "vertical" then
+      return 69
+    end
+  end,
+  open_mapping = [[<c-\>]],
+  hide_numbers = true,
+  shade_terminals = true,
+  persist_size = true,
+  direction = 'vertical',
+  close_on_exit = true,
+  shell = vim.o.shell, 
 }
 EOF
 
@@ -158,3 +180,11 @@ inoremap <C-c> <esc>
 
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+" nnoremap <F5> :lua require("nabla").action()<CR>
+
+augroup fmt
+  autocmd!
+  autocmd BufWritePre * undojoin | Neoformat
+augroup END
+
+autocmd BufWritePre * :%s/\s\+$//e
