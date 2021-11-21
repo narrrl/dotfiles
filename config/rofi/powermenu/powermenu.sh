@@ -97,11 +97,9 @@ case $chosen in
     $logout)
 		ans=$(confirm_exit &)
 		if [[ $ans == "yes" || $ans == "YES" || $ans == "y" || $ans == "Y" ]]; then
-			if [[ "$DESKTOP_SESSION" == "Openbox" ]]; then
-				openbox --exit
-			elif [[ "$DESKTOP_SESSION" == "bspwm" ]]; then
+			if wmctrl -m | grep -q 'bspwm'; then
 				bspc quit
-			elif [[ "$DESKTOP_SESSION" == "i3" ]]; then
+			else	
 				i3-msg exit
 			fi
 		elif [[ $ans == "no" || $ans == "NO" || $ans == "n" || $ans == "N" ]]; then
