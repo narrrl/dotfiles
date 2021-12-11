@@ -15,5 +15,5 @@ polybar --config=$DIR/config.ini -q workspaces2 &
 polybar --config=$DIR/config.ini -q systeminfo &
 polybar --config=$DIR/config.ini -q applications &
 polybar --config=$DIR/config.ini -q topinfo &
-polybar --config=$DIR/config.ini -q spotifycontrolbar &
-polybar --config=$DIR/config.ini -q tray &
+# polybar --config=$DIR/config.ini -q spotifycontrolbar &
+# polybar --config=$DIR/config.ini -q tray &

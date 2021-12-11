@@ -1,6 +1,9 @@
 #! /bin/sh
 
 # picom --config $HOME/.config/picom.conf --experimental-backends &
+
+# openrgb --server &
+# openrgb -p default &
 picom --config $HOME/.config/picom.conf &
 $HOME/.config/polybar/scripts/map_mono_mic.sh &
 gnome-keyring-daemon --start &
