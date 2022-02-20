@@ -1,5 +1,4 @@
 syntax on
-
 " polyglot
 set nocompatible
 set guicursor=
@@ -33,7 +32,7 @@ if (has("termguicolors"))
     set termguicolors
     " hi LineNr ctermbg=NONE guibg=NONE
 endif
-
+set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175
 set colorcolumn=100
 " highlight ColorColumn ctermbg=0 guibg=lightgrey
 
@@ -41,7 +40,7 @@ set colorcolumn=100
 call plug#begin('~/.vim/plugged')
 Plug 'tpope/vim-fugitive'
 Plug 'joom/latex-unicoder.vim'
-Plug 'davidhalter/jedi-vim'
+" Plug 'davidhalter/jedi-vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'rust-lang/rust.vim'
 Plug 'chrisbra/csv.vim'
@@ -64,7 +63,7 @@ Plug 'junegunn/gv.vim'
 Plug 'vim-utils/vim-man'
 Plug 'mbbill/undotree'
 Plug 'tpope/vim-dispatch'
-Plug 'theprimeagen/vim-be-good'
+" Plug 'theprimeagen/vim-be-good'
 " Plug 'gruvbox-community/gruvbox'
 Plug 'ellisonleao/gruvbox.nvim'
 Plug 'octol/vim-cpp-enhanced-highlight'
@@ -73,16 +72,17 @@ Plug 'tpope/vim-projectionist'
 Plug 'dylanaraps/wal.vim'
 Plug 'drewtempelmeyer/palenight.vim'
 Plug 'sbdchd/neoformat'
-Plug 'Yggdroot/indentLine'
+"Plug 'Yggdroot/indentLine'
 Plug 'navarasu/onedark.nvim'
 Plug 'akinsho/toggleterm.nvim'
-Plug 'ellisonleao/glow.nvim'
+"Plug 'ellisonleao/glow.nvim'
+Plug 'neovimhaskell/haskell-vim'
 call plug#end()
 
 let g:nvcode_termcolors=256
 " let g:onedark_style = 'darker'
 set background=dark
-colorscheme palenight
+colorscheme gruvbox
 hi! Normal ctermbg=NONE guibg=NONE
 hi! NonText ctermbg=NONE guibg=NONE guifg=NONE ctermfg=NONE
 " airline
@@ -91,6 +91,7 @@ let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
+let g:coc_config_file="$HOME/.config/coc/coc-settings.json"
 
 
 lua <<EOF
@@ -124,12 +125,12 @@ require("toggleterm").setup{
   persist_size = true,
   direction = 'vertical',
   close_on_exit = true,
-  shell = vim.o.shell, 
+  shell = vim.o.shell,
 }
 EOF
 
-let g:vim_be_good_log_file = 1
-let g:vim_apm_log = 1
+" let g:vim_be_good_log_file = 1
+" let g:vim_apm_log = 1
 let g:rustfmt_autosave = 1
 
 if executable('rg')
