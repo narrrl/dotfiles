@@ -82,14 +82,22 @@ if [[ -f "/usr/bin/wal" ]]; then
 	SH6=`printf "%s\n" "$color6"`
 	SH7=`printf "%s\n" "$color7"`
 	SH8=`printf "%s\n" "$color8"`
-	TSH1=`printf "%s\n" "#BF${color1:1}"`
-	TSH2=`printf "%s\n" "#BF${color2:1}"`
-	TSH3=`printf "%s\n" "#BF${color3:1}"`
-	TSH4=`printf "%s\n" "#BF${color4:1}"`
-	TSH5=`printf "%s\n" "#BF${color5:1}"`
-	TSH6=`printf "%s\n" "#BF${color6:1}"`
-	TSH7=`printf "%s\n" "#BF${color7:1}"`
-	TSH8=`printf "%s\n" "#BF${color8:1}"`
+	TSH1=`printf "%s\n" "#${color1:1}"`
+	TSH2=`printf "%s\n" "#${color2:1}"`
+	TSH3=`printf "%s\n" "#${color3:1}"`
+	TSH4=`printf "%s\n" "#${color4:1}"`
+	TSH5=`printf "%s\n" "#${color5:1}"`
+	TSH6=`printf "%s\n" "#${color6:1}"`
+	TSH7=`printf "%s\n" "#${color7:1}"`
+	TSH8=`printf "%s\n" "#${color8:1}"`
+	#TSH1=`printf "%s\n" "#BF${color1:1}"`
+	#TSH2=`printf "%s\n" "#BF${color2:1}"`
+	#TSH3=`printf "%s\n" "#BF${color3:1}"`
+	#TSH4=`printf "%s\n" "#BF${color4:1}"`
+	#TSH5=`printf "%s\n" "#BF${color5:1}"`
+	#TSH6=`printf "%s\n" "#BF${color6:1}"`
+	#TSH7=`printf "%s\n" "#BF${color7:1}"`
+	#TSH8=`printf "%s\n" "#BF${color8:1}"`
 
 	change_color
 else
