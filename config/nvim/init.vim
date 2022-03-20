@@ -51,8 +51,7 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'lervag/vimtex'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+Plug 'itchyny/lightline.vim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/playground'
 Plug 'rust-lang/rust.vim'
@@ -65,7 +64,9 @@ Plug 'mbbill/undotree'
 Plug 'tpope/vim-dispatch'
 " Plug 'theprimeagen/vim-be-good'
 " Plug 'gruvbox-community/gruvbox'
+Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
 Plug 'ellisonleao/gruvbox.nvim'
+Plug 'kyazdani42/blue-moon'
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'tpope/vim-projectionist'
 " Plug 'sainnhe/gruvbox-material'
@@ -82,15 +83,10 @@ call plug#end()
 let g:nvcode_termcolors=256
 " let g:onedark_style = 'darker'
 set background=dark
-colorscheme gruvbox
+colorscheme tokyonight
+let g:lightline = {'colorscheme': 'tokyonight'}
 hi! Normal ctermbg=NONE guibg=NONE
 hi! NonText ctermbg=NONE guibg=NONE guifg=NONE ctermfg=NONE
-" airline
-let g:airline_theme='qwq'
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep = '|'
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:coc_config_file="$HOME/.config/coc/coc-settings.json"
 
 
