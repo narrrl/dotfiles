@@ -1,8 +1,8 @@
 
 ## compositors (start only one)
 
-# picom --config $HOME/.config/picom.conf --experimental-backends &
-xcompmgr -c &
+picom --config $HOME/.config/picom.conf --experimental-backends &
+# xcompmgr -c &
 
 # bloat (yay)
 openrgb -m static -c fff5ee &
