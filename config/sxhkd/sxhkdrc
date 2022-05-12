@@ -96,7 +96,8 @@ super + {o,i}
 
 # focus or send to the given desktop
 # beauty
-super + {_,shift + }{equal,asterisk,parenleft,parenright,braceright,plus,braceleft,bracketright,bracketleft,exclam}
+# super + {_,shift + }{equal,asterisk,parenleft,parenright,braceright,plus,braceleft,bracketright,bracketleft,exclam}
+super + {_,shift + }{1,2,3,4,5,6,7,8,9,0}
 	bspc {desktop -f,node -d} {1,2,3,4,5,6,7,8,9,10}
 
 # preselect the direction
@@ -104,7 +105,8 @@ super + ctrl + {Left,Down,Up,Right}
 	bspc node -p {west,south,north,east}
 
 # preselect the ratio
-super + ctrl + {equal,asterisk,parenleft,parenright,braceright,plus,braceleft,bracketright,bracketleft,exclam}
+# {equal,asterisk,parenleft,parenright,braceright,plus,braceleft,bracketright,bracketleft,exclam}
+super + ctrl + {1,2,3,4,5,6,7,8,9,0}
 	bspc node -o 0.{1-9}
 
 # cancel the preselection for the focused node
@@ -130,3 +132,16 @@ super + alt + shift + {h,j,k,l}
 # move a floating window
 super + {Left,Down,Up,Right}
 	bspc node -v {-20 0,0 20,0 -20,20 0}
+
+{XF86AudioPlay, XF86AudioNext, XF86AudioPrev}
+	playerctl {play-pause, next, previous}
+
+shift + {XF86AudioNext,XF86AudioPrev}
+	playerctl position {5+, 5-}
+
+{XF86AudioRaiseVolume, XF86AudioLowerVolume}
+	pactl set-sink-volume 0 {+5%,-5%}
+shift+{XF86AudioRaiseVolume, XF86AudioLowerVolume}
+	pactl set-sink-volume 0 {0.025+,0.025-}
+XF86AudioMute
+	pactl set-sink-mute 0 toggle
