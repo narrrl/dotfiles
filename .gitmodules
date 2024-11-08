@@ -1,3 +1,0 @@
-[submodule "config/ranger/plugins/config/ranger/plugins/zoxide"]
-	path = config/ranger/plugins/config/ranger/plugins/zoxide
-	url = https://github.com/jchook/ranger-zoxide.git
