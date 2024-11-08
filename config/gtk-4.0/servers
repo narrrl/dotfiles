@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xbel version="1.0"
+      xmlns:bookmark="http://www.freedesktop.org/standards/desktop-bookmarks"
+      xmlns:mime="http://www.freedesktop.org/standards/shared-mime-info"
+>
+  <bookmark href="sftp://narl@narl.io:4420/" added="2024-10-30T03:39:26.413209Z" modified="2024-10-30T03:39:26.413214Z" visited="2024-10-30T03:39:26.413210Z">
+    <title>/ on narl.io</title>
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;org.gnome.Nautilus %u&apos;" modified="2024-10-30T03:39:26.413211Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="sftp://narl@192.168.1.6/" added="2024-10-30T03:40:34.414417Z" modified="2024-10-30T03:40:34.414428Z" visited="2024-10-30T03:40:34.414420Z">
+    <title>/ on 192.168.1.6</title>
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;org.gnome.Nautilus %u&apos;" modified="2024-10-30T03:40:34.414423Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="smb://192.168.1.22/" added="2024-11-08T02:04:44.131628Z" modified="2024-11-08T02:04:44.131631Z" visited="2024-11-08T02:04:44.131629Z">
+    <title>Windows shares on 192.168.1.22</title>
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;org.gnome.Nautilus %u&apos;" modified="2024-11-08T02:04:44.131630Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+</xbel>
