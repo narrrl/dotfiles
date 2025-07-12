@@ -1,0 +1,11 @@
+# Ignore everything
+*
+!.gitignore
+
+# Configurations
+!alacritty/
+!dunst/
+!hypr/
+!nvim/
+!waybar/
+zathura/
