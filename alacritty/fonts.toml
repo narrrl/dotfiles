@@ -11,19 +11,19 @@ builtin_box_drawing = true
 
 ## Normal font family.
 [font.normal]
-family = "0xProto Nerd Font Mono"
+family = "0xProto Nerd Font"
 
 ## If the family is not specified, it will fall back to the value specified for the normal font.
 [font.bold]
-family = "0xProto Nerd Font Mono"
+family = "0xProto Nerd Font"
 
 ## If the family is not specified, it will fall back to the value specified for the normal font.
 [font.italic]
-family = "0xProto Nerd Font Mono"
+family = "0xProto Nerd Font"
 
 ## If the family is not specified, it will fall back to the value specified for the normal font.
 [font.bold_italic]
-family = "0xProto Nerd Font Mono"
+family = "0xProto Nerd Font"
 
 ## Offset is the extra space around each character.
 ## 'y' can be thought of as modifying the line spacing, and 'x' as modifying the letter spacing.

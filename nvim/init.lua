@@ -15,6 +15,14 @@ require('mini.deps').setup()
 local add = MiniDeps.add
 
 add({
+	source = 'neovim/nvim-lspconfig'
+})
+
+add({
+	source = 'chomosuke/typst-preview.nvim'
+})
+
+add({
 	source = 'williamboman/mason.nvim'
 })
 
