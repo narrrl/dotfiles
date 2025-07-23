@@ -13,3 +13,5 @@
 !fuzzel/
 !brave-flags.conf
 !chromium-flags.conf
+!README.md
+!rice.png
