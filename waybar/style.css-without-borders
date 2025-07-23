@@ -12,7 +12,7 @@
 
 window#waybar {
   background-color: alpha(@base, 0.6);
-  padding: 10px;
+  margin: 10px;
   transition-property: background-color;
   transition-duration: 0.5s;
   color: @text;
@@ -78,46 +78,51 @@ window#waybar.hidden {
 
 #custom-tlp {
     padding: 0 10px;
-	min-width: 10px;
+	padding-right: 10px;
+	margin-right: 0;
 }
 
-#custom-tlp.charging {
-    color: @teal; 
-  	border-bottom: 3px solid @teal;
+#custom-tlp.ac {
+    color: @green; /* Catppuccin Green for AC power */
 }
 
 #custom-tlp.bat {
-	color: @sapphire;
-  	border-bottom: 3px solid @sapphire;
+    color: @yellow; /* Catppuccin Yellow for Battery power */
 }
 
-#custom-tlp.warning {
-    color: @yellow; 
-  	border-bottom: 3px solid @yellow;
+#battery {
+    color: @text;
+    padding: 0 10px;
+	padding-left: 0;
+	margin-left: 0;
 }
 
-#custom-tlp.critical {
-    color: @red; 
-  	border-bottom: 3px solid @red;
-	animation-name: blink;
-	animation-duration: 0.8s;
-	animation-timing-function: linear;
-	animation-iteration-count: infinite;
-	animation-direction: alternate;
+#battery.charging, #battery.plugged {
+    color: @green;
+}
+
+#battery.warning {
+    color: @yellow;
+}
+
+#battery.critical {
+    color: @red;
+    animation-name: blink;
+    animation-duration: 0.8s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
 }
 
 @keyframes blink {
-  to {
-    color: @yellow;
-  	border-bottom: 3px solid @yellow;
-    opacity: 0.6;
-  }
+    to {
+        color: @text;
+    }
 }
 
 #memory,
 #cpu {
   color: @maroon;
-  border-bottom: 3px solid @maroon;
 }
 
 
@@ -128,7 +133,6 @@ window#waybar.hidden {
 #wireplumber {
   color: @mauve;
   padding-right: 15px;
-  border-bottom: 3px solid @mauve;
 }
 
 #network {

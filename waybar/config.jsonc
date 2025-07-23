@@ -5,7 +5,7 @@
     "height": 35,
     "modules-left": ["hyprland/workspaces", "hyprland/window"],
     "modules-center": [],
-    "modules-right": ["tray", "wireplumber", "network", "cpu", "memory", "custom/tlp", "battery", "clock", "custom/power"],
+    "modules-right": ["tray", "wireplumber", "network", "cpu", "memory", "custom/tlp", "clock", "custom/power"],
 
     "hyprland/workspaces": {
         "format": "{icon}",
