@@ -5,7 +5,7 @@
     "height": 35,
     "modules-left": ["hyprland/workspaces", "hyprland/window"],
     "modules-center": [],
-    "modules-right": ["tray", "wireplumber", "network", "cpu", "memory", "custom/tlp", "clock", "custom/power"],
+    "modules-right": ["tray", "wireplumber", "custom/pixelbuds", "custom/anc", "network", "cpu", "memory", "custom/tlp", "clock", "custom/power"],
 
     "hyprland/workspaces": {
         "format": "{icon}",
@@ -72,7 +72,7 @@
 		"format": "{}",
 		"exec": "~/.config/waybar/scripts/tlp-profile.sh",
 		"return-type": "json",
-		"interval": 10
+		"interval": 5
 	},
 	"battery": {
 		"states": {
@@ -86,4 +86,19 @@
 		"format-full": "{capacity}%",
 		"format-icons": ["", "", "", "", ""]
 	},
+	"custom/pixelbuds": {
+		"format": "{}",
+		"return-type": "json",
+		"exec": "~/.config/waybar/scripts/pixelbuds.sh",
+		"interval": 5, // Check status every 30 seconds
+		"on-click": "bluetoothctl disconnect B4:23:A2:09:D3:53" // Optional: opens Bluetooth manager on click
+	},
+	"custom/anc": {
+		"format": "{}",
+		"return-type": "json",
+		"exec": "~/.config/waybar/scripts/anc_control.sh",
+		"interval": 5, // Check status every 5 seconds
+		"on-click": "~/.config/waybar/scripts/anc_control.sh off", // Left-click
+		"on-click-right": "~/.config/waybar/scripts/anc_control.sh cycle" // Right-click
+	}
 }

@@ -63,12 +63,32 @@ window#waybar.hidden {
 #wireplumber,
 #network,
 #clock,
-#tray {
+#tray,
+#custom-pixelbuds,
+#custom-anc {
   border-radius: 4px;
   margin: 6px 3px;
   padding: 6px 12px;
   background-color: @base;
   color: @text;
+}
+
+#custom-anc.anc-active {
+    color: @sky; 
+  	border-bottom: 3px solid @sky;
+}
+
+#custom-anc.anc-aware {
+    color: @green; 
+  	border-bottom: 3px solid @green;
+}
+
+#custom-anc.anc-off {
+    color: @text; 
+  	border-bottom: 3px solid @text;
+}
+
+#custom-anc.disconnected {
 }
 
 #custom-power {
@@ -150,4 +170,9 @@ tooltip {
 tooltip label {
   padding: 5px;
   background-color: @base;
+}
+
+#custom-pixelbuds.connected {
+    color: @teal; /* A pleasant green */
+    border-bottom: 3px solid @teal;
 }
