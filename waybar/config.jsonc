@@ -34,16 +34,14 @@
         "tooltip-format": "{ifname} via {gwaddr}",
     },
 	"wireplumber": {
-        "format": "{icon} {volume}%",
-        "format-bluetooth": "󰂰",
-        "nospacing": 1,
-        "tooltip-format": "Volume : {volume}%",
-        "format-muted": "󰝟",
+        "format": "{volume}% {icon}",
+        "format-muted": "Muted ",
         "format-icons": {
             "headphone": "",
-            "default": ["󰖀","󰕾",""]
+            "hands-free": "",
+            "default": ["", ""]
         },
-        "on-click": "pamixer -t",
+        "on-click": "pavucontrol",
         "scroll-step": 1
     },
 

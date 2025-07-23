@@ -72,13 +72,13 @@ window#waybar.hidden {
 }
 
 #custom-power {
-  margin-right: 6px;
   color: @red;
+  padding: 6px 12px 6px 10px;
 }
 
 #custom-tlp {
     padding: 0 10px;
-	padding-right: 5px;
+	padding-right: 10px;
 	margin-right: 0;
 }
 
@@ -132,6 +132,7 @@ window#waybar.hidden {
 
 #wireplumber {
   color: @mauve;
+  padding-right: 15px;
 }
 
 #network {
