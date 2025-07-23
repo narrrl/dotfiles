@@ -3,7 +3,7 @@
     "layer": "top",
     "position": "top",
     "height": 35,
-    "modules-left": ["hyprland/workspaces", "hyprland/window"],
+    "modules-left": ["hyprland/workspaces"],
     "modules-center": [],
     "modules-right": ["tray", "wireplumber", "custom/pixelbuds", "custom/anc", "network", "cpu", "memory", "custom/tlp", "clock", "custom/power"],
 
