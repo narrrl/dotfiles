@@ -1,5 +1,7 @@
 [Default Applications]
 application/pdf=org.pwmt.zathura-pdf-poppler.desktop
+image/jpeg=feh.desktop
 
 [Added Associations]
 application/pdf=org.pwmt.zathura-pdf-poppler.desktop;
+image/jpeg=feh.desktop;
