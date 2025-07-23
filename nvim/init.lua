@@ -99,7 +99,43 @@ require('mini.files').setup({
 require('mini.icons').setup({style = 'ascii'})
 require('mini.pick').setup({})
 require('mini.snippets').setup({})
-require('mini.notify').setup({})
+require('mini.notify').setup({
+  -- Content management
+  content = {
+    -- Function which formats the notification message
+    -- By default prepends message with notification time
+    format = nil,
+
+    -- Function which orders notification array from most to least important
+    -- By default orders first by level and then by update timestamp
+    sort = nil,
+  },
+
+  -- Notifications about LSP progress
+  lsp_progress = {
+    -- Whether to enable showing
+    enable = true,
+
+    -- Notification level
+    level = 'INFO',
+
+    -- Duration (in ms) of how long last message should be shown
+    duration_last = 1000,
+  },
+
+  -- Window options
+  window = {
+    -- Floating window config
+    config = {
+	},
+
+    -- Maximum window width as share (between 0 and 1) of available columns
+    max_width_share = 0.382,
+
+    -- Value of 'winblend' option
+    winblend = 0,
+  },
+})
 require('mini.statusline').setup({})
 require('mini.tabline').setup({})
 require('mini.git').setup({})
@@ -190,17 +226,20 @@ table.insert(
 		.. vim.fs.joinpath(rzls_path, "Targets", "Microsoft.NET.Sdk.Razor.DesignTime.targets")
 )
 
-require('roslyn').setup({
+vim.lsp.config("roslyn", {
     cmd = cmd,
     config = {
         -- the rest of your Roslyn configuration
         handlers = require("rzls.roslyn_handlers"),
     },
 })
-require('nvim-treesitter.configs').setup({
+vim.lsp.config('nvim-treesitter.configs', {
   highlight = { enable = true },
 })
 
+vim.cmd("au ColorScheme * highlight MiniNotifyNormal guibg=NONE")
+vim.cmd("au ColorScheme * highlight MiniNotifyTitle guibg=NONE")
+vim.cmd("au ColorScheme * highlight MiniNotifyBorder guibg=NONE")
 require("catppuccin").setup({
     flavour = "auto", -- latte, frappe, macchiato, mocha
     background = { -- :h background
@@ -209,7 +248,7 @@ require("catppuccin").setup({
     },
     transparent_background = true, -- disables setting the background color.
     show_end_of_buffer = false, -- shows the '~' characters after the end of buffers
-    term_colors = true, -- sets terminal colors (e.g. `g:terminal_color_0`)
+    term_colors = false, -- sets terminal colors (e.g. `g:terminal_color_0`)
     dim_inactive = {
         enabled = false, -- dims the background color of inactive window
         shade = "dark",
