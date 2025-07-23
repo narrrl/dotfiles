@@ -16,3 +16,6 @@
 [submodule "nvim/pack/nvim/start/nvim-lspconfig"]
 	path = nvim/pack/nvim/start/nvim-lspconfig
 	url = https://github.com/neovim/nvim-lspconfig
+[submodule "btop/catppuccin-btop"]
+	path = btop/catppuccin-btop
+	url = https://github.com/catppuccin/btop.git
