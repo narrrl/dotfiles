@@ -12,7 +12,7 @@
 
 window#waybar {
   background-color: alpha(@base, 0.6);
-  margin-right: 10px;
+  margin: 10px;
   transition-property: background-color;
   transition-duration: 0.5s;
   color: @text;
@@ -40,8 +40,7 @@ window#waybar.hidden {
 }
 
 #workspaces button.active {
-  color: @base;
-  background-color: @green;
+  border-bottom: 3px solid @green;
 }
 
 #workspaces button:hover {
@@ -52,8 +51,7 @@ window#waybar.hidden {
 }
 
 #workspaces button.urgent {
-  background-color: @red;
-  color: @base;
+  border-bottom: 3px solid @red;
 }
 
 #memory,
