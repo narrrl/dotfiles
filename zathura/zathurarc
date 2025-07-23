@@ -1,1 +1,4 @@
+include catppuccin-mocha
+
 set adjust-open width
+
