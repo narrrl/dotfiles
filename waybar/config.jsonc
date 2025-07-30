@@ -16,7 +16,7 @@
         "max-length": 35
     },
     "clock": {
-        "format": "{:%I:%M %p}",
+        "format": "{:%H:%M}",
         "format-alt": "{:%a, %b %d}",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
     },

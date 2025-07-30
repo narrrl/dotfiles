@@ -74,13 +74,13 @@ window#waybar.hidden {
 }
 
 #custom-anc.anc-active {
-    color: @sky; 
-  	border-bottom: 3px solid @sky;
+    color: @teal; 
+  	border-bottom: 3px solid @teal;
 }
 
 #custom-anc.anc-aware {
-    color: @green; 
-  	border-bottom: 3px solid @green;
+    color: @yellow; 
+  	border-bottom: 3px solid @yellow;
 }
 
 #custom-anc.anc-off {
