@@ -12,6 +12,7 @@
 !mimeapps.list
 !fuzzel/
 !fish/
+fish/fish_variables
 !packages
 !brave-flags.conf
 !chromium-flags.conf
