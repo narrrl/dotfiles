@@ -1,11 +1,23 @@
 // ~/.config/waybar/config.jsonc
-{
+[{
     "layer": "top",
     "position": "top",
+	"output": "!eDP-1",
     "height": 35,
     "modules-left": ["hyprland/workspaces"],
     "modules-center": [],
-    "modules-right": ["tray", "wireplumber", "custom/pixelbuds", "custom/anc", "network", "cpu", "memory", "custom/tlp", "clock", "custom/power"],
+    "modules-right": [
+		"tray", 
+		"wireplumber", 
+		"custom/audio-output", 
+		"network", 
+		"cpu", 
+		"memory", 
+		"custom/tlp",
+		"clock", 
+		"custom/power"
+	],
+
 
     "hyprland/workspaces": {
         "format": "{icon}",
@@ -31,7 +43,7 @@
         "format-wifi": "{essid} ({signalStrength}%): {ipaddr}",
         "format-ethernet": "{ifname}: {ipaddr}",
         "format-disconnected": "Disconnected",
-        "tooltip-format": "{ifname} via {gwaddr}",
+        "tooltip-format": "{ifname} via {gwaddr}"
     },
 	"wireplumber": {
         "format": "{volume}% {icon}",
@@ -80,8 +92,7 @@
 			"critical": 15
 		},
 		"format": "{capacity}%",
-		"format-charging": "{capacity}%",
-		"format-plugged": "{capacity}%",
+		"format-charging": "{capacity}%",		"format-plugged": "{capacity}%",
 		"format-alt": "{time} {icon}",
 		"format-full": "{capacity}%",
 		"format-icons": ["", "", "", "", ""]
@@ -90,15 +101,154 @@
 		"format": "{}",
 		"return-type": "json",
 		"exec": "~/.config/waybar/scripts/pixelbuds.sh",
-		"interval": 5, // Check status every 30 seconds
-		"on-click": "bluetoothctl disconnect B4:23:A2:09:D3:53" // Optional: opens Bluetooth manager on click
+		"interval": 5,
+		"on-click": "bluetoothctl disconnect B4:23:A2:09:D3:53"
 	},
 	"custom/anc": {
 		"format": "{}",
 		"return-type": "json",
 		"exec": "~/.config/waybar/scripts/anc_control.sh",
-		"interval": 5, // Check status every 5 seconds
-		"on-click": "~/.config/waybar/scripts/anc_control.sh off", // Left-click
-		"on-click-right": "~/.config/waybar/scripts/anc_control.sh cycle" // Right-click
+		"interval": 5,
+		"on-click": "~/.config/waybar/scripts/anc_control.sh off",
+		"on-click-right": "~/.config/waybar/scripts/anc_control.sh cycle"
+	},
+    "custom/audio-output": {
+        "format": "{}",
+		"return-type": "json",
+        "exec": "/home/narl/.config/waybar/scripts/get_audio_output.sh",
+        "on-click": "/home/narl/.config/waybar/scripts/cycle_audio_output.sh",
+        "interval": 1
+    },
+	"custom/gamemode": {
+		"format": "󰮂",
+		"on-click": "~/.config/hypr/scripts/gamemode.sh"
 	}
-}
+}, 
+{
+    "layer": "top",
+    "height": 35,
+	"output": "eDP-1",
+    "modules-left": ["hyprland/workspaces"],
+    "modules-center": [],
+    "modules-right": [
+		"tray", 
+		"wireplumber", 
+		"custom/audio-output", 
+		"custom/pixelbuds",
+		"custom/anc",
+		"network", 
+		"cpu", 
+		"memory", 
+		"custom/tlp",
+		"clock", 
+		"custom/power"
+	],
+
+    "hyprland/workspaces": {
+        "format": "{icon}",
+        "on-click": "activate"
+    },
+    "hyprland/window": {
+        "format": "{}",
+        "max-length": 35
+    },
+    "clock": {
+        "format": "{:%H:%M}",
+        "format-alt": "{:%a, %b %d}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+    },
+    "cpu": {
+        "format": "CPU: {usage}%",
+        "tooltip": true
+    },
+    "memory": {
+        "format": "MEM: {}%"
+    },
+    "network": {
+        "format-wifi": "{essid} ({signalStrength}%): {ipaddr}",
+        "format-ethernet": "{ifname}: {ipaddr}",
+        "format-disconnected": "Disconnected",
+        "tooltip-format": "{ifname} via {gwaddr}"
+    },
+	"wireplumber": {
+        "format": "{volume}% {icon}",
+        "format-muted": "Muted ",
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "default": ["", ""]
+        },
+        "on-click": "pavucontrol",
+        "scroll-step": 1
+    },
+
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": " Muted",
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": ["", ""]
+        },
+        "on-click": "pavucontrol"
+    },
+    "tray": {
+        "icon-size": 18,
+        "spacing": 10
+    },
+    "custom/power": {
+        "format": "",
+        "tooltip": false,
+        "on-click": "~/.config/hypr/scripts/powermenu.sh"
+    },
+	"custom/tlp": {
+		"format": "{}",
+		"exec": "~/.config/waybar/scripts/tlp-profile.sh",
+		"return-type": "json",
+		"interval": 5
+	},
+	"battery": {
+		"states": {
+			"warning": 30,
+			"critical": 15
+		},
+		"format": "{capacity}%",
+		"format-charging": "{capacity}%",		"format-plugged": "{capacity}%",
+		"format-alt": "{time} {icon}",
+		"format-full": "{capacity}%",
+		"format-icons": ["", "", "", "", ""]
+	},
+	"custom/pixelbuds": {
+		"format": "{}",
+		"return-type": "json",
+		"exec": "~/.config/waybar/scripts/pixelbuds.sh",
+		"interval": 5,
+		"on-click": "bluetoothctl disconnect B4:23:A2:09:D3:53"
+	},
+	"custom/anc": {
+		"format": "{}",
+		"return-type": "json",
+		"exec": "~/.config/waybar/scripts/anc_control.sh",
+		"interval": 5,
+		"on-click": "~/.config/waybar/scripts/anc_control.sh off",
+		"on-click-right": "~/.config/waybar/scripts/anc_control.sh cycle"
+	},
+    "custom/audio-output": {
+        "format": "{}",
+		"return-type": "json",
+        "exec": "/home/narl/.config/waybar/scripts/get_audio_output.sh",
+        "on-click": "/home/narl/.config/waybar/scripts/cycle_audio_output.sh",
+        "interval": 1
+    },
+	"custom/gamemode": {
+		"format": "󰮂",
+		"on-click": "~/.config/hypr/scripts/gamemode.sh"
+	}
+
+}]
+
+
