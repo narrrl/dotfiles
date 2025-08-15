@@ -77,6 +77,12 @@ window#waybar.hidden {
   color: @text;
 }
 
+#wireplumber.muted, #custom-pixelbuds_pro {
+	background-color: @base;
+	color: @subtext1;
+	border-bottom: 3px solid @subtext1;
+}
+
 #custom-pixelbuds_pro.anc-active {
     color: @sapphire; 
 	border-bottom: 3px solid @sapphire;

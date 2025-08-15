@@ -10,7 +10,7 @@
 		"custom/bluetooth-audio",
 		"custom/pixelbuds_pro",
 		"wireplumber", 
-		"custom/audio-output", 
+		// "custom/audio-output", 
 		"network", 
 		"cpu", 
 		"memory",
@@ -55,13 +55,14 @@
     },
 	"wireplumber": {
         "format": "{volume}%  {icon}",
-        "format-muted": "Muted ",
+        "format-muted": "{node_name}  ",
         "format-icons": {
             "headphone": "",
             "hands-free": "",
-            "default": ["", ""]
+            "default": ["", "", ""]
         },
-        "on-click": "pavucontrol",
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+		"on-click-right": "~/.config/waybar/scripts/cycle_audio_output.sh",
         "scroll-step": 1
     },
 
@@ -161,7 +162,7 @@
 		"custom/bluetooth-audio",
 		// "custom/pixelbuds_pro",
 		"wireplumber", 
-		"custom/audio-output", 
+		// "custom/audio-output", 
 		"network", 
 		"cpu", 
 		"memory",
@@ -206,16 +207,16 @@
     },
 	"wireplumber": {
         "format": "{volume}%  {icon}",
-        "format-muted": "Muted ",
+        "format-muted": "{node_name}  ",
         "format-icons": {
             "headphone": "",
             "hands-free": "",
-            "default": ["", ""]
+            "default": ["", "", ""]
         },
-        "on-click": "pavucontrol",
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+		"on-click-right": "~/.config/waybar/scripts/cycle_audio_output.sh",
         "scroll-step": 1
     },
-
     "custom/bluetooth-audio": {
         "format": "{}",
         "return-type": "json",

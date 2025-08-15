@@ -84,7 +84,7 @@ status() {
 case "$1" in
 	cycle_anc)
 		current_mode=$(pbpctrl get anc 2>/dev/null)
-		next_mode=""
+		next_mode="active"
 		case "$current_mode" in
 			active)
 				next_mode="aware"
@@ -100,10 +100,18 @@ case "$1" in
 		sleep 0.1
 		;;
 	connect)
-		bluetoothctl connect "$MAC_ADDRESS" & disown
+		if bluetoothctl info "$MAC_ADDRESS" | grep -q "Connected: yes"; then
+			notify-send "Pixel Buds Pro 2 are already connected"
+		else
+			bluetoothctl connect "$MAC_ADDRESS" & disown
+		fi
 		;;
 	disconnect)
-		bluetoothctl disconnect "$MAC_ADDRESS" & disown
+		if bluetoothctl info "$MAC_ADDRESS" | grep -q "Connected: yes"; then
+			bluetoothctl disconnect "$MAC_ADDRESS" & disown
+		else
+			notify-send "Pixel Buds Pro 2 aren't connected"
+		fi
 		;;
 	*)
 		status
