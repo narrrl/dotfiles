@@ -2,162 +2,15 @@
 [{
     "layer": "top",
     "position": "top",
-	"output": "!eDP-1",
-    "height": 35,
-    "modules-left": ["hyprland/workspaces"],
-    "modules-center": [],
-    "modules-right": [
-		"wireplumber", 
-		"custom/audio-output", 
-		"network", 
-		"cpu", 
-		"memory",
-		"custom/tlp",
-        "tray",
-		"clock"
-	],
-
-
-    "hyprland/workspaces": {
-        "format": "{icon}",
-        "on-click": "activate"
-    },
-    "hyprland/window": {
-        "format": "{}",
-        "max-length": 35
-    },
-    "clock": {
-        "format": "{:%H:%M}",
-        "format-alt": "{:%a, %b %d}",
-		"on-click-right": "xdg-open https://calendar.proton.me/u/0/month &> /dev/null & disown"
-    },
-    "custom/gpu": {
-        "format": "GPU: {}%",
-        "exec": "~/.config/waybar/scripts/gpu_usage.sh",
-        "interval": 1,
-        "tooltip": true
-    },
-    "cpu": {
-        "format": "CPU: {usage}%",
-        "tooltip": true
-    },
-    "memory": {
-        "format": "MEM: {used}/{total}GB"
-    },
-    "network": {
-        "format-wifi": "{essid} ({signalStrength}%): {ipaddr}",
-        "format-ethernet": "{ifname}: {ipaddr}",
-        "format-disconnected": "Disconnected",
-        "tooltip-format": "{ifname} via {gwaddr}"
-    },
-	"wireplumber": {
-        "format": "{volume}% {icon}",
-        "format-muted": "Muted ",
-        "format-icons": {
-            "headphone": "",
-            "hands-free": "",
-            "default": ["", ""]
-        },
-        "on-click": "pavucontrol",
-        "scroll-step": 1
-    },
-
-    "pulseaudio": {
-        "format": "{icon} {volume}%",
-        "format-muted": " Muted",
-        "format-icons": {
-            "headphone": "",
-            "hands-free": "",
-            "headset": "",
-            "phone": "",
-            "portable": "",
-            "car": "",
-            "default": ["", ""]
-        },
-        "on-click": "pavucontrol"
-    },
-    "tray": {
-        "icon-size": 18,
-        "spacing": 10
-    },
-    "custom/power": {
-        "format": "",
-        "tooltip": false,
-        "on-click": "~/.config/hypr/scripts/powermenu.sh"
-    },
-	"custom/tlp": {
-		"format": "{}",
-		"exec": "~/.config/waybar/scripts/tlp-profile.sh",
-		"return-type": "json",
-		"interval": 5
-	},
-	"battery": {
-		"states": {
-			"warning": 30,
-			"critical": 15
-		},
-		"format": "{capacity}%",
-		"format-charging": "{capacity}%",
-		"format-plugged": "{capacity}%",
-		"format-alt": "{time} {icon}",
-		"format-full": "{capacity}%",
-		"format-icons": ["", "", "", "", ""]
-	},
-	"custom/pixelbuds": {
-		"format": "{}",
-		"return-type": "json",
-		"exec": "~/.config/waybar/scripts/pixelbuds.sh",
-		"interval": 10,
-		"on-click": "bluetoothctl disconnect B4:23:A2:09:D3:53"
-	},
-	"custom/anc": {
-		"format": "{}",
-		"return-type": "json",
-		"exec": "~/.config/waybar/scripts/anc_control.sh",
-		"interval": 10,
-		"on-click": "~/.config/waybar/scripts/anc_control.sh off",
-		"on-click-right": "~/.config/waybar/scripts/anc_control.sh cycle"
-	},
-    "custom/audio-output": {
-        "format": "{}",
-		"return-type": "json",
-        "exec": "/home/narl/.config/waybar/scripts/get_audio_output.sh",
-        "on-click": "/home/narl/.config/waybar/scripts/cycle_audio_output.sh",
-        "interval": 1
-    },
-	"custom/gamemode": {
-		"format": "{}",
-		"return-type": "json",
-        "exec": "~/.config/waybar/scripts/gamemode_status.sh",
-		"on-click": "~/.config/hypr/scripts/gamemode.sh",
-        "interval": 1
-	},
-    "custom/gpu-screen-recorder": {
-        "format": "{}",
-        "return-type": "json",
-        "exec": "~/.config/waybar/scripts/gpu-screen-recorder-status.sh",
-        "on-click-right": "~/.config/hypr/scripts/replay-ctrl.sh save",
-        "on-click": "~/.config/waybar/scripts/toggle-replay.sh",
-        "interval": 1
-    },
-    "custom/gpu-usage": {
-        "format": "{}",
-        "return-type": "json",
-        "exec": "~/.config/waybar/scripts/gpu_usage.sh",
-        "interval": 5
-    }
-}, 
-{
-    "layer": "top",
-    "height": 35,
 	"output": "eDP-1",
+    "height": 40,
     "modules-left": ["hyprland/workspaces"],
     "modules-center": [],
     "modules-right": [
+		"custom/bluetooth-audio",
+		"custom/pixelbuds_pro",
 		"wireplumber", 
 		"custom/audio-output", 
-		"custom/pixelbuds", 
-		"custom/anc", 
 		"network", 
 		"cpu", 
 		"memory",
@@ -165,6 +18,7 @@
         "tray",
 		"clock"
 	],
+
 
     "hyprland/workspaces": {
         "format": "{icon}",
@@ -175,9 +29,10 @@
         "max-length": 35
     },
     "clock": {
-        "format": "{:%H:%M}",
-        "format-alt": "{:%a, %b %d}",
-		"on-click-right": "xdg-open https://calendar.proton.me/u/0/month &> /dev/null & disown"
+        "format": "{:%a %d %b %H:%M}",
+		"format-alt": false,
+		"on-click-right": "xdg-open https://calendar.proton.me/u/0/month &> /dev/null & disown",
+		"tooltip": false,
     },
     "custom/gpu": {
         "format": "GPU: {}%",
@@ -199,7 +54,7 @@
         "tooltip-format": "{ifname} via {gwaddr}"
     },
 	"wireplumber": {
-        "format": "{volume}% {icon}",
+        "format": "{volume}%  {icon}",
         "format-muted": "Muted ",
         "format-icons": {
             "headphone": "",
@@ -208,6 +63,14 @@
         },
         "on-click": "pavucontrol",
         "scroll-step": 1
+    },
+
+    "custom/bluetooth-audio": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "~/.config/waybar/scripts/bluetooth_audio.sh",
+        "interval": 3,
+        "on-click": "~/.config/waybar/scripts/bluetooth_audio.sh disconnect"
     },
 
     "pulseaudio": {
@@ -251,20 +114,13 @@
 		"format-full": "{capacity}%",
 		"format-icons": ["", "", "", "", ""]
 	},
-	"custom/pixelbuds": {
+	"custom/pixelbuds_pro": {
 		"format": "{}",
 		"return-type": "json",
-		"exec": "~/.config/waybar/scripts/pixelbuds.sh",
-		"interval": 10,
-		"on-click": "bluetoothctl disconnect B4:23:A2:09:D3:53"
-	},
-	"custom/anc": {
-		"format": "{}",
-		"return-type": "json",
-		"exec": "~/.config/waybar/scripts/anc_control.sh",
-		"interval": 10,
-		"on-click": "~/.config/waybar/scripts/anc_control.sh off",
-		"on-click-right": "~/.config/waybar/scripts/anc_control.sh cycle"
+		"exec": "~/.config/waybar/scripts/pixelbuds_pro_control.sh",
+		"interval": 5,
+		"on-click-right": "~/.config/waybar/scripts/pixelbuds_pro_control.sh connect",
+		"on-click": "~/.config/waybar/scripts/pixelbuds_pro_control.sh cycle_anc"
 	},
     "custom/audio-output": {
         "format": "{}",
@@ -294,7 +150,155 @@
         "exec": "~/.config/waybar/scripts/gpu_usage.sh",
         "interval": 5
     }
+},{
+    "layer": "top",
+    "position": "top",
+	"output": "!eDP-1",
+    "height": 40,
+    "modules-left": ["hyprland/workspaces"],
+    "modules-center": [],
+    "modules-right": [
+		"custom/bluetooth-audio",
+		// "custom/pixelbuds_pro",
+		"wireplumber", 
+		"custom/audio-output", 
+		"network", 
+		"cpu", 
+		"memory",
+		"custom/tlp",
+        "tray",
+		"clock"
+	],
 
+
+    "hyprland/workspaces": {
+        "format": "{icon}",
+        "on-click": "activate"
+    },
+    "hyprland/window": {
+        "format": "{}",
+        "max-length": 35
+    },
+    "clock": {
+        "format": "{:%a %d %b %H:%M}",
+		"format-alt": false,
+		"on-click-right": "xdg-open https://calendar.proton.me/u/0/month &> /dev/null & disown",
+		"tooltip": false,
+    },
+    "custom/gpu": {
+        "format": "GPU: {}%",
+        "exec": "~/.config/waybar/scripts/gpu_usage.sh",
+        "interval": 1,
+        "tooltip": true
+    },
+    "cpu": {
+        "format": "CPU: {usage}%",
+        "tooltip": true
+    },
+    "memory": {
+        "format": "MEM: {used}/{total}GB"
+    },
+    "network": {
+        "format-wifi": "{essid} ({signalStrength}%): {ipaddr}",
+        "format-ethernet": "{ifname}: {ipaddr}",
+        "format-disconnected": "Disconnected",
+        "tooltip-format": "{ifname} via {gwaddr}"
+    },
+	"wireplumber": {
+        "format": "{volume}%  {icon}",
+        "format-muted": "Muted ",
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "default": ["", ""]
+        },
+        "on-click": "pavucontrol",
+        "scroll-step": 1
+    },
+
+    "custom/bluetooth-audio": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "~/.config/waybar/scripts/bluetooth_audio.sh",
+        "interval": 3,
+        "on-click": "~/.config/waybar/scripts/bluetooth_audio.sh disconnect"
+    },
+
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": " Muted",
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": ["", ""]
+        },
+        "on-click": "pavucontrol"
+    },
+    "tray": {
+        "icon-size": 18,
+        "spacing": 10
+    },
+    "custom/power": {
+        "format": "",
+        "tooltip": false,
+        "on-click": "~/.config/hypr/scripts/powermenu.sh"
+    },
+	"custom/tlp": {
+		"format": "{}",
+		"exec": "~/.config/waybar/scripts/tlp-profile.sh",
+		"return-type": "json",
+		"interval": 5
+	},
+	"battery": {
+		"states": {
+			"warning": 30,
+			"critical": 15
+		},
+		"format": "{capacity}%",
+		"format-charging": "{capacity}%",
+		"format-plugged": "{capacity}%",
+		"format-alt": "{time} {icon}",
+		"format-full": "{capacity}%",
+		"format-icons": ["", "", "", "", ""]
+	},
+	"custom/pixelbuds_pro": {
+		"format": "{}",
+		"return-type": "json",
+		"exec": "~/.config/waybar/scripts/pixelbuds_pro_control.sh",
+		"interval": 5,
+		"on-click-right": "~/.config/waybar/scripts/pixelbuds_pro_control.sh connect",
+		"on-click": "~/.config/waybar/scripts/pixelbuds_pro_control.sh cycle_anc"
+	},
+    "custom/audio-output": {
+        "format": "{}",
+		"return-type": "json",
+        "exec": "/home/narl/.config/waybar/scripts/get_audio_output.sh",
+        "on-click": "/home/narl/.config/waybar/scripts/cycle_audio_output.sh",
+        "interval": 1
+    },
+	"custom/gamemode": {
+		"format": "{}",
+		"return-type": "json",
+        "exec": "~/.config/waybar/scripts/gamemode_status.sh",
+		"on-click": "~/.config/hypr/scripts/gamemode.sh",
+        "interval": 1
+	},
+    "custom/gpu-screen-recorder": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "~/.config/waybar/scripts/gpu-screen-recorder-status.sh",
+        "on-click-right": "~/.config/hypr/scripts/replay-ctrl.sh save",
+        "on-click": "~/.config/waybar/scripts/toggle-replay.sh",
+        "interval": 1
+    },
+    "custom/gpu-usage": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "~/.config/waybar/scripts/gpu_usage.sh",
+        "interval": 5
+    }
 }]
-
-

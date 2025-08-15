@@ -10,7 +10,7 @@
 }
 
 window#waybar {
-  background-color: alpha(@base, 0.6);
+  background-color: alpha(@base, 0.4);
   padding: 10px;
   transition-property: background-color;
   transition-duration: 0.5s;
@@ -33,20 +33,21 @@ window#waybar.hidden {
   /* Use box-shadow instead of border so the text isn't offset */
   padding: 6px 18px;
   margin: 6px 3px;
-  border-radius: 3px;
-  background-color: alpha(@base, 0.9);
-  color: @text;
+  border-radius: 4px;
+  background-color: @base;
+  color: @subtext0;
 }
 
 #workspaces button.active {
-  border-bottom: 3px solid @green;
+  color: @text;
+  border-bottom: 3px solid @teal;
 }
 
 #workspaces button:hover {
   box-shadow: inherit;
   text-shadow: inherit;
-  background-color: @teal;
-  color: @base;
+  background-color: @surface0;
+  color: @text;
 }
 
 #workspaces button.urgent {
@@ -65,39 +66,40 @@ window#waybar.hidden {
 #network,
 #clock,
 #tray,
-#custom-pixelbuds,
-#custom-anc,
+#custom-pixelbuds_pro,
+#custom-bluetooth-audio,
 #custom-audio-output,
 #custom-gpu-screen-recorder {
   border-radius: 4px;
   margin: 6px 3px;
-  padding: 6px 16px 6px 12px;
+  padding: 6px 12px;
   background-color: @base;
   color: @text;
 }
 
-#custom-anc.anc-active {
-    color: @teal; 
-  	border-bottom: 3px solid @teal;
+#custom-pixelbuds_pro.anc-active {
+    color: @sapphire; 
+	border-bottom: 3px solid @sapphire;
 }
 
-#custom-anc.anc-aware {
-    color: @yellow; 
-  	border-bottom: 3px solid @yellow;
+#custom-bluetooth-audio {
+	color: @sapphire;
+	border-bottom: 3px solid @sapphire;
 }
 
-#custom-anc.anc-off {
+#custom-pixelbuds_pro.anc-aware {
+    color: @sapphire; 
+	border-bottom: 3px solid @sapphire;
+}
+
+#custom-pixelbuds_pro.anc-off {
     color: @text; 
-  	border-bottom: 3px solid @text;
-}
-
-#custom-anc.disconnected {
+	border-bottom: 3px solid @text;
 }
 
 #custom-gpu-screen-recorder,
 #custom-gamemode {
 	color: @teal;
-	border-bottom: 3px solid @teal;
 }
 
 #custom-power {
@@ -107,7 +109,6 @@ window#waybar.hidden {
 #custom-gpu-screen-recorder.recording,
 #custom-gamemode.active {
   color: @red;
-  border-bottom: 3px solid @red;
 }
 
 #custom-tlp {
@@ -117,22 +118,22 @@ window#waybar.hidden {
 
 #custom-tlp.charging {
     color: @teal; 
-  	border-bottom: 3px solid @teal;
+	border-bottom: 3px solid @teal;
 }
 
 #custom-tlp.bat {
 	color: @sapphire;
-  	border-bottom: 3px solid @sapphire;
+	border-bottom: 3px solid @sapphire;
 }
 
 #custom-tlp.warning {
     color: @yellow; 
-  	border-bottom: 3px solid @yellow;
+	border-bottom: 3px solid @yellow;
 }
 
 #custom-tlp.critical {
     color: @red; 
-  	border-bottom: 3px solid @red;
+	border-bottom: 3px solid @red;
 	animation-name: blink;
 	animation-duration: 0.8s;
 	animation-timing-function: linear;
@@ -143,26 +144,29 @@ window#waybar.hidden {
 @keyframes blink {
   to {
     color: @yellow;
-  	border-bottom: 3px solid @yellow;
+	border-bottom: 3px solid @yellow;
     opacity: 0.6;
   }
 }
 
 #custom-gpu-usage.max_usage {
   color: @maroon;
+  /* border-bottom: 3px solid @maroon; */
 }
 
 #custom-gpu-usage.high_usage {
   color: @yellow;
+  /* border-bottom: 3px solid @yellow; */
 }
 
 #custom-gpu-usage.normal_usage {
   color: @teal;
+  /* border-bottom: 3px solid @teal; */
 }
 
-#memory,
-#cpu {
-  color: @teal;
+#memory, #cpu, #network {
+  color: @mauve;
+  border-bottom: 3px solid @mauve;
 }
 
 
@@ -171,25 +175,20 @@ window#waybar.hidden {
 }
 
 #wireplumber {
-  color: @mauve;
   padding-right: 15px;
-  border-bottom: 3px solid @mauve;
 }
 
-#custom-audio-output {
-  color: @mauve;
-  border-bottom: 3px solid @mauve;
+#custom-audio-output, #wireplumber {
+  color: @teal;
+  border-bottom: 3px solid @teal;
 }
 
 #network {
-  color: @mauve;
   padding-right: 15px;
 }
 
 #clock {
-  font-family: JetBrainsMono Nerd Font;
-  color: @green;
-  border-bottom: 3px solid @green;
+  color: @teal;
 }
 
 tooltip {
@@ -201,9 +200,4 @@ tooltip {
 tooltip label {
   padding: 5px;
   background-color: @base;
-}
-
-#custom-pixelbuds.connected {
-    color: @teal; /* A pleasant green */
-    border-bottom: 3px solid @teal;
 }

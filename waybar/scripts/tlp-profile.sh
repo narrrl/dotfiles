@@ -51,4 +51,4 @@ else # Fallback for "fully-charged", "pending-charge", etc.
 fi
 
 # Output JSON for Waybar
-printf '{"text": "%s    %s%%", "tooltip": "%s", "class": "%s"}\n' "$icon" "$percentage" "$tooltip" "$class"
+printf '{"text": "%s%%  %s", "tooltip": "%s", "class": "%s"}\n' "$percentage" "$icon" "$tooltip" "$class"
