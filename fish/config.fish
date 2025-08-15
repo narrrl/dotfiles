@@ -21,10 +21,16 @@ if test -e ~/.cache/wal/colors.fish
 end
 zoxide init --cmd cd fish | source
 set -gx PATH ~/.local/bin $PATH
-if not pgrep --full ssh-agent | string collect > /dev/null
-  eval (ssh-agent -c)
-  set -Ux SSH_AGENT_PID $SSH_AGENT_PID
-  set -Ux SSH_AUTH_SOCK $SSH_AUTH_SOCK
+# if not pgrep --full ssh-agent | string collect > /dev/null
+#   eval (ssh-agent -c)
+#   set -Ux SSH_AGENT_PID $SSH_AGENT_PID
+#   set -Ux SSH_AUTH_SOCK $SSH_AUTH_SOCK
+# end
+# Set SSH_AUTH_SOCK for GNOME Keyring / systemd
+# The socket path is predictable
+set -l GCR_SSH_SOCK $XDG_RUNTIME_DIR/gcr/ssh
+if test -S "$GCR_SSH_SOCK"
+    set -gx SSH_AUTH_SOCK "$GCR_SSH_SOCK"
 end
 if uwsm check may-start && uwsm select
 	exec uwsm start default

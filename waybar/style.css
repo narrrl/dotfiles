@@ -55,6 +55,7 @@ window#waybar.hidden {
 
 #memory,
 #cpu,
+#custom-gpu-usage,
 #custom-power,
 #custom-gamemode,
 #custom-tlp,
@@ -66,10 +67,11 @@ window#waybar.hidden {
 #tray,
 #custom-pixelbuds,
 #custom-anc,
-#custom-audio-output {
+#custom-audio-output,
+#custom-gpu-screen-recorder {
   border-radius: 4px;
   margin: 6px 3px;
-  padding: 6px 12px;
+  padding: 6px 16px 6px 12px;
   background-color: @base;
   color: @text;
 }
@@ -92,10 +94,20 @@ window#waybar.hidden {
 #custom-anc.disconnected {
 }
 
-#custom-power,
+#custom-gpu-screen-recorder,
 #custom-gamemode {
+	color: @teal;
+	border-bottom: 3px solid @teal;
+}
+
+#custom-power {
   color: @red;
-  padding: 6px 12px 6px 10px;
+}
+
+#custom-gpu-screen-recorder.recording,
+#custom-gamemode.active {
+  color: @red;
+  border-bottom: 3px solid @red;
 }
 
 #custom-tlp {
@@ -136,10 +148,21 @@ window#waybar.hidden {
   }
 }
 
+#custom-gpu-usage.max_usage {
+  color: @maroon;
+}
+
+#custom-gpu-usage.high_usage {
+  color: @yellow;
+}
+
+#custom-gpu-usage.normal_usage {
+  color: @teal;
+}
+
 #memory,
 #cpu {
-  color: @maroon;
-  border-bottom: 3px solid @maroon;
+  color: @teal;
 }
 
 
@@ -165,7 +188,8 @@ window#waybar.hidden {
 
 #clock {
   font-family: JetBrainsMono Nerd Font;
-  color: @mauve;
+  color: @green;
+  border-bottom: 3px solid @green;
 }
 
 tooltip {
