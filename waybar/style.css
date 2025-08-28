@@ -21,9 +21,6 @@ window#waybar.hidden {
   opacity: 0.5;
 }
 
-#workspaces {
-}
-
 #workspaces button {
   all: initial;
   /* Remove GTK theme values (waybar #1351) */
@@ -32,15 +29,15 @@ window#waybar.hidden {
   box-shadow: inset 0 -3px transparent;
   /* Use box-shadow instead of border so the text isn't offset */
   padding: 6px 18px;
-  margin: 6px 3px;
-  border-radius: 4px;
+  margin: 0px 3px;
+  border-radius: 10px;
   background-color: @base;
   color: @subtext0;
 }
 
 #workspaces button.active {
   color: @text;
-  border-bottom: 3px solid @teal;
+  border-bottom: 3px solid @blue;
 }
 
 #workspaces button:hover {
@@ -68,12 +65,17 @@ window#waybar.hidden {
 #network,
 #clock,
 #tray,
+#custom-disk-root,
+#custom-disk-gdrive,
+#custom-disk-games,
+#custom-disk-data,
 #custom-pixelbuds_pro,
 #custom-bluetooth-audio,
 #custom-audio-output,
+#custom-btrfs,
 #custom-gpu-screen-recorder {
-  border-radius: 4px;
-  margin: 6px 3px;
+  border-radius: 10px;
+  margin: 0px 3px;
   padding: 6px 12px;
   background-color: @base;
   color: @text;
@@ -134,8 +136,8 @@ window#waybar.hidden {
 
 #custom-gpu-screen-recorder.recording,
 #custom-gamemode.active {
-	color: @teal;
-	border-bottom: 3px solid @teal;
+	color: @maroon;
+	border-bottom: 3px solid @maroon;
 }
 
 #custom-tlp {
@@ -144,8 +146,8 @@ window#waybar.hidden {
 }
 
 #custom-tlp.charging {
-    color: @teal; 
-	border-bottom: 3px solid @teal;
+    color: @mauve; 
+	border-bottom: 3px solid @mauve;
 }
 
 #custom-tlp.bat {
@@ -178,25 +180,41 @@ window#waybar.hidden {
 
 #custom-gpu.max, 
 #custom-cpu.max, 
-#custom-mem.max {
+#custom-mem.max,
+#custom-btrfs.max,
+#custom-disk-root.max,
+#custom-disk-gdrive.max,
+#custom-disk-games.max,
+#custom-disk-data.max {
   color: @maroon;
   /* border-bottom: 3px solid @maroon; */
 }
 
 #custom-gpu.high,
 #custom-gpu.high,
-#custom-mem.high {
+#custom-mem.high,
+#custom-btrfs.high,
+#custom-disk-root.high,
+#custom-disk-gdrive.high,
+#custom-disk-games.high,
+#custom-disk-data.high {
   color: @yellow;
   /* border-bottom: 3px solid @yellow; */
 }
 
 #memory, 
-#cpu, 
-#network, 
+#cpu,
+#disk,
+#network,
 #custom-gpu.normal, 
 #custom-cpu.normal, 
-#custom-mem.normal {
-  color: @lavender;
+#custom-mem.normal,
+#custom-btrfs.normal,
+#custom-disk-root.normal,
+#custom-disk-gdrive.normal,
+#custom-disk-games.normal,
+#custom-disk-data.normal {
+  color: @blue;
   /* border-bottom: 3px solid @mauve; */
 }
 
@@ -210,14 +228,12 @@ window#waybar.hidden {
 }
 
 #custom-audio-output.unmuted, #wireplumber {
-  color: @maroon;
-  border-bottom: 3px solid @maroon;
+  color: @mauve;
+  border-bottom: 3px solid @mauve;
 }
 
-
-
 #clock {
-  color: @maroon;
+  color: @mauve;
 }
 
 #network {
@@ -225,7 +241,7 @@ window#waybar.hidden {
 }
 
 tooltip {
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 15px;
   background-color: @base;
 }
