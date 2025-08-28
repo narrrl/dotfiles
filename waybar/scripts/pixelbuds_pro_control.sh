@@ -6,8 +6,8 @@ MAC_ADDRESS="B4:23:A2:09:D3:53"
 # --- END CONFIGURATION ---
 
 not_connected() {
-    printf '{"text": "L: --- | R: ---", "tooltip": "Pixel Buds Pro 2 not connected", "class": "disconnected"}\n'
-	exit 0
+    printf "{\"text\": \"<span size='large'></span>\", \"tooltip\": \"Pixel Buds Pro 2 not connected\", \"class\": \"disconnected\"}\n"
+	exit
 }
 
 # This function gets the current status and formats it for Waybar.
@@ -27,7 +27,7 @@ get_status() {
 	if ([[ "$left_bud" == "unknown" ]] && [[ "$right_bud" == "unknown" ]]) || \
 	   [[ -z "$left_bud" && -z "$right_bud" ]]; then
 		echo "{}"
-		exit 0
+		exit
 	fi
 
 	if [[ "$left_bud" == "unknown" ]]; then
@@ -67,6 +67,7 @@ get_status() {
 	# --- FORMAT OUTPUT ---
 	printf '{"text": "%s | %s | %s", "tooltip": "Pixel Buds Pro 2", "class": "%s"}\n' \
 		"$left_display" "$right_display" "$anc_icon" "$class"
+	exit
 }
 
 status() {
@@ -98,22 +99,28 @@ case "$1" in
 		esac
 		pbpctrl set anc "$next_mode"
 		sleep 0.1
+		exit
 		;;
 	connect)
 		if bluetoothctl info "$MAC_ADDRESS" | grep -q "Connected: yes"; then
 			notify-send "Pixel Buds Pro 2 are already connected"
+			exit
 		else
-			bluetoothctl connect "$MAC_ADDRESS" & disown
+			bluetoothctl connect "$MAC_ADDRESS"
+			exit
 		fi
 		;;
 	disconnect)
 		if bluetoothctl info "$MAC_ADDRESS" | grep -q "Connected: yes"; then
-			bluetoothctl disconnect "$MAC_ADDRESS" & disown
+			bluetoothctl disconnect "$MAC_ADDRESS"
+			exit
 		else
 			notify-send "Pixel Buds Pro 2 aren't connected"
+			exit
 		fi
 		;;
 	*)
 		status
+		exit
 		;;
 esac

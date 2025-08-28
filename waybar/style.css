@@ -51,12 +51,14 @@ window#waybar.hidden {
 }
 
 #workspaces button.urgent {
-  border-bottom: 3px solid @red;
+  border-bottom: 3px solid @maroon;
 }
 
 #memory,
 #cpu,
-#custom-gpu-usage,
+#custom-gpu,
+#custom-cpu,
+#custom-mem,
 #custom-power,
 #custom-gamemode,
 #custom-tlp,
@@ -77,10 +79,26 @@ window#waybar.hidden {
   color: @text;
 }
 
-#wireplumber.muted, #custom-pixelbuds_pro {
+#wireplumber.muted, #custom-pixelbuds_pro, #custom-audio-output.muted {
 	background-color: @base;
 	color: @subtext1;
 	border-bottom: 3px solid @subtext1;
+}
+
+#custom-pixelbuds_pro.disconnected {
+	padding-right: 16px;
+	padding-left: 12px;	
+}
+
+#custom-gpu-screen-recorder, 
+#custom-gpu-screen-recorder.recording {
+	padding-right: 18px;
+	padding-left: 10px;	
+}
+
+#custom-gamemode {
+	padding-right: 15px;
+	padding-left: 11px;	
 }
 
 #custom-pixelbuds_pro.anc-active {
@@ -105,16 +123,19 @@ window#waybar.hidden {
 
 #custom-gpu-screen-recorder,
 #custom-gamemode {
-	color: @teal;
+	background-color: @base;
+	color: @subtext1;
+	border-bottom: 3px solid @subtext1;
 }
 
 #custom-power {
-  color: @red;
+  color: @maroon;
 }
 
 #custom-gpu-screen-recorder.recording,
 #custom-gamemode.active {
-  color: @red;
+	color: @teal;
+	border-bottom: 3px solid @teal;
 }
 
 #custom-tlp {
@@ -155,24 +176,28 @@ window#waybar.hidden {
   }
 }
 
-#custom-gpu-usage.max_usage {
+#custom-gpu.max, 
+#custom-cpu.max, 
+#custom-mem.max {
   color: @maroon;
   /* border-bottom: 3px solid @maroon; */
 }
 
-#custom-gpu-usage.high_usage {
+#custom-gpu.high,
+#custom-gpu.high,
+#custom-mem.high {
   color: @yellow;
   /* border-bottom: 3px solid @yellow; */
 }
 
-#custom-gpu-usage.normal_usage {
-  color: @teal;
-  /* border-bottom: 3px solid @teal; */
-}
-
-#memory, #cpu, #network {
-  color: @mauve;
-  border-bottom: 3px solid @mauve;
+#memory, 
+#cpu, 
+#network, 
+#custom-gpu.normal, 
+#custom-cpu.normal, 
+#custom-mem.normal {
+  color: @lavender;
+  /* border-bottom: 3px solid @mauve; */
 }
 
 
@@ -181,20 +206,22 @@ window#waybar.hidden {
 }
 
 #wireplumber {
-  padding-right: 15px;
+  padding-right: 16px;
 }
 
-#custom-audio-output, #wireplumber {
-  color: @teal;
-  border-bottom: 3px solid @teal;
+#custom-audio-output.unmuted, #wireplumber {
+  color: @maroon;
+  border-bottom: 3px solid @maroon;
+}
+
+
+
+#clock {
+  color: @maroon;
 }
 
 #network {
   padding-right: 15px;
-}
-
-#clock {
-  color: @teal;
 }
 
 tooltip {

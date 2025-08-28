@@ -1,7 +1,10 @@
 #!/usr/bin/env sh
+
+FORMAT_ACTIVATED="<span size='large'>󰊖</span>"
+FORMAT_DEACTIVATED="<span size='large'></span>"
 HYPRGAMEMODE=$(hyprctl getoption animations:enabled | awk 'NR==1{print $2}')
 if [ "$HYPRGAMEMODE" = 1 ] ; then
-    echo '{"text": "Gamemode", "tooltip": "Gamemode deactivated"}'
+    printf "{\"text\": \"$FORMAT_DEACTIVATED\", \"tooltip\": \"Gamemode deactivated\"}"
 else
-    echo '{"text": "Gamemode", "tooltip": "Gamemode activated", "class": "active"}'
+	printf "{\"text\": \"$FORMAT_ACTIVATED\", \"tooltip\": \"Gamemode activated\", \"class\": \"active\"}"
 fi

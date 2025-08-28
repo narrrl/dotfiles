@@ -7,13 +7,13 @@
     "modules-left": ["hyprland/workspaces"],
     "modules-center": [],
     "modules-right": [
-		"custom/bluetooth-audio",
+		// "custom/bluetooth-audio",
 		"custom/pixelbuds_pro",
 		"wireplumber", 
-		// "custom/audio-output", 
+		"custom/audio-output", 
 		"network", 
-		"cpu", 
-		"memory",
+		"custom/cpu", 
+		"custom/mem",
 		"custom/tlp",
         "tray",
 		"clock"
@@ -34,11 +34,17 @@
 		"on-click-right": "xdg-open https://calendar.proton.me/u/0/month &> /dev/null & disown",
 		"tooltip": false,
     },
-    "custom/gpu": {
-        "format": "GPU: {}%",
-        "exec": "~/.config/waybar/scripts/gpu_usage.sh",
-        "interval": 1,
-        "tooltip": true
+    "custom/cpu": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "~/.config/waybar/scripts/cpu_info.sh",
+        "interval": 3
+    },
+    "custom/mem": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "~/.config/waybar/scripts/memory.sh",
+        "interval": 3
     },
     "cpu": {
         "format": "CPU: {usage}%",
@@ -55,7 +61,7 @@
     },
 	"wireplumber": {
         "format": "{volume}%  {icon}",
-        "format-muted": "{node_name}  ",
+        "format-muted": "",
         "format-icons": {
             "headphone": "",
             "hands-free": "",
@@ -126,8 +132,8 @@
     "custom/audio-output": {
         "format": "{}",
 		"return-type": "json",
-        "exec": "/home/narl/.config/waybar/scripts/get_audio_output.sh",
-        "on-click": "/home/narl/.config/waybar/scripts/cycle_audio_output.sh",
+        "exec": "/home/narl/.config/waybar/scripts/audio.sh show",
+        "on-click": "/home/narl/.config/waybar/scripts/audio.sh cycle",
         "interval": 1
     },
 	"custom/gamemode": {
@@ -159,13 +165,13 @@
     "modules-left": ["hyprland/workspaces"],
     "modules-center": [],
     "modules-right": [
-		"custom/bluetooth-audio",
+		// "custom/bluetooth-audio",
 		// "custom/pixelbuds_pro",
 		"wireplumber", 
-		// "custom/audio-output", 
+		"custom/audio-output", 
 		"network", 
-		"cpu", 
-		"memory",
+		"custom/cpu", 
+		"custom/mem",
 		"custom/tlp",
         "tray",
 		"clock"
@@ -192,6 +198,18 @@
         "interval": 1,
         "tooltip": true
     },
+    "custom/cpu": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "~/.config/waybar/scripts/cpu_info.sh",
+        "interval": 3
+    },
+    "custom/mem": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "~/.config/waybar/scripts/memory.sh",
+        "interval": 3
+    },
     "cpu": {
         "format": "CPU: {usage}%",
         "tooltip": true
@@ -206,15 +224,16 @@
         "tooltip-format": "{ifname} via {gwaddr}"
     },
 	"wireplumber": {
-        "format": "{volume}%  {icon}",
-        "format-muted": "{node_name}  ",
+        "format": "{volume}% {icon}",
+        "format-muted": "",
         "format-icons": {
             "headphone": "",
             "hands-free": "",
             "default": ["", "", ""]
         },
         "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
-		"on-click-right": "~/.config/waybar/scripts/cycle_audio_output.sh",
+		"on-click-right": "~/.config/waybar/scripts/audio.sh cycle",
+		"on-click-middle": "pavucontrol",
         "scroll-step": 1
     },
     "custom/bluetooth-audio": {
@@ -277,8 +296,8 @@
     "custom/audio-output": {
         "format": "{}",
 		"return-type": "json",
-        "exec": "/home/narl/.config/waybar/scripts/get_audio_output.sh",
-        "on-click": "/home/narl/.config/waybar/scripts/cycle_audio_output.sh",
+        "exec": "/home/narl/.config/waybar/scripts/audio.sh show",
+        "on-click": "/home/narl/.config/waybar/scripts/audio.sh cycle",
         "interval": 1
     },
 	"custom/gamemode": {

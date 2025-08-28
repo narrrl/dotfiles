@@ -109,7 +109,7 @@ if [ -n "$device_mac" ]; then
     device_name=$(bluetoothctl info "$device_mac" | rg "Alias:" | cut -d ' ' -f 2-)
     # Output in Waybar's JSON format
 	tooltip=$(bt-audio-info $device_mac)
-    echo "{\"text\": \"$device_name  <span size='large'>󰂰</span>\", \"tooltip\": \"$tooltip\"}"
+    echo "{\"text\": \"$device_name <span size='large'>󰂰</span>\", \"tooltip\": \"$tooltip\"}"
 else
     # Output empty string when no device is connected
     echo "{}"
