@@ -3,14 +3,14 @@
     "layer": "top",
     "position": "top",
 	"output": "eDP-1",
-    "height": 40,
+    "height": 30,
     "modules-left": ["hyprland/workspaces"],
     "modules-center": [],
     "modules-right": [
 		"custom/pixelbuds_pro",
 		"wireplumber", 
 		"custom/audio-output", 
-		"network", 
+		"custom/network", 
 		"custom/mem",
 		"custom/cpu", 
 		"custom/disk-root",
@@ -51,7 +51,7 @@
     },
 	"wireplumber": {
         "format": "{volume}% {icon}",
-        "format-muted": "--- ",
+        "format-muted": "",
         "format-icons": {
             "headphone": "",
             "hands-free": "",
@@ -87,7 +87,7 @@
     },
     "tray": {
         "icon-size": 18,
-        "spacing": 10
+        "spacing": 6
     },
     "custom/power": {
         "format": "",
@@ -192,19 +192,25 @@
         "return-type": "json",
         "exec": "~/.config/waybar/scripts/disk_info.sh ~/games",
         "interval": 30
+    },
+    "custom/network": {
+        "exec": "~/.config/waybar/scripts/network.sh",
+        "interval": 2, // in seconds
+        "format": "{}",
+        "return-type": "json"
     }
 },{
     "layer": "top",
     "position": "top",
 	"output": "!eDP-1",
-    "height": 40,
+    "height": 30,
     "modules-left": ["hyprland/workspaces"],
     "modules-center": [],
     "modules-right": [
 		// "custom/pixelbuds_pro",
 		"wireplumber", 
 		"custom/audio-output", 
-		"network", 
+		"custom/network", 
 		"custom/mem",
 		"custom/cpu", 
 		"custom/disk-root",
@@ -245,7 +251,7 @@
     },
 	"wireplumber": {
         "format": "{volume}% {icon}",
-        "format-muted": "--- ",
+        "format-muted": "",
         "format-icons": {
             "headphone": "",
             "hands-free": "",
@@ -281,7 +287,7 @@
     },
     "tray": {
         "icon-size": 18,
-        "spacing": 10
+        "spacing": 6
     },
     "custom/power": {
         "format": "",
@@ -386,5 +392,11 @@
         "return-type": "json",
         "exec": "~/.config/waybar/scripts/disk_info.sh ~/games",
         "interval": 30
+    },
+    "custom/network": {
+        "exec": "~/.config/waybar/scripts/network.sh",
+        "interval": 2, // in seconds
+        "format": "{}",
+        "return-type": "json"
     }
 }]

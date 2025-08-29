@@ -6,6 +6,9 @@ vim.o.smartcase = true
 vim.o.ignorecase = true
 vim.o.hlsearch = false
 vim.o.signcolumn = 'yes'
+vim.o.clipboard = 'unnamedplus'
+vim.o.undofile = true
+vim.o.undodir = '/home/narl/.cache/nvim-undodir'
 
 vim.g.mapleader = ','
 
@@ -13,14 +16,6 @@ vim.g.mapleader = ','
 require('mini.deps').setup()
 
 local add = MiniDeps.add
-
-add({
-	source = 'neovim/nvim-lspconfig'
-})
-
-add({
-	source = 'chomosuke/typst-preview.nvim'
-})
 
 add({
 	source = 'williamboman/mason.nvim'
@@ -32,10 +27,6 @@ add({
 
 add({
 	source = 'williamboman/mason-lspconfig.nvim'
-})
-
-add({
-	source = 'mhartington/formatter.nvim'
 })
 
 add({
@@ -71,10 +62,6 @@ add({
 })
 
 add({
-  source = 'simrat39/rust-tools.nvim'
-})
-
-add({
     -- Completion framework:
   source = 'hrsh7th/nvim-cmp',
 
@@ -99,43 +86,7 @@ require('mini.files').setup({
 require('mini.icons').setup({style = 'ascii'})
 require('mini.pick').setup({})
 require('mini.snippets').setup({})
-require('mini.notify').setup({
-  -- Content management
-  content = {
-    -- Function which formats the notification message
-    -- By default prepends message with notification time
-    format = nil,
-
-    -- Function which orders notification array from most to least important
-    -- By default orders first by level and then by update timestamp
-    sort = nil,
-  },
-
-  -- Notifications about LSP progress
-  lsp_progress = {
-    -- Whether to enable showing
-    enable = true,
-
-    -- Notification level
-    level = 'INFO',
-
-    -- Duration (in ms) of how long last message should be shown
-    duration_last = 1000,
-  },
-
-  -- Window options
-  window = {
-    -- Floating window config
-    config = {
-	},
-
-    -- Maximum window width as share (between 0 and 1) of available columns
-    max_width_share = 0.382,
-
-    -- Value of 'winblend' option
-    winblend = 0,
-  },
-})
+require('mini.notify').setup({})
 require('mini.statusline').setup({})
 require('mini.tabline').setup({})
 require('mini.git').setup({})
@@ -147,8 +98,8 @@ imap_expr('<S-Tab>', [[pumvisible() ? "\<C-p>" : "\<S-Tab>"]])
 _G.cr_action = function()
 -- If there is selected item in popup, accept it with <C-y>
 if vim.fn.complete_info()['selected'] ~= -1 then return '\25' end
--- Fall back to plain `<CR>`. You might want to customize according
--- to other plugins. For example if 'mini.pairs' is set up, replace
+-- Fall back to plain `<CR>`. You might want to customize this
+-- according to other plugins. For example if 'mini.pairs' is set up, replace
 -- next line with `return MiniPairs.cr()`
 return '\r'
 end
@@ -205,48 +156,21 @@ vim.lsp.config('rust_analyzer', {
     ['rust-analyzer'] = {},
   },
 })
-local mason_registry = require("mason-registry")
-local cmd = {}
-vim.list_extend(cmd, {
-	"dotnet",
-	vim.fs.joinpath("/home/narl/.local/share/nvim/mason/packages/roslyn", "libexec", "Microsoft.CodeAnalysis.LanguageServer.dll"),
-	"--stdio",
-	"--logLevel=Information",
-	"--extensionLogDirectory=" .. vim.fs.dirname(vim.lsp.get_log_path()),
-})
 
-local rzls_path = vim.fs.joinpath("/home/narl/.local/share/nvim/mason/packages/rzls", "libexec")
-table.insert(
-	cmd,
-	"--razorSourceGenerator=" .. vim.fs.joinpath(rzls_path, "Microsoft.CodeAnalysis.Razor.Compiler.dll")
-)
-table.insert(
-	cmd,
-	"--razorDesignTimePath="
-		.. vim.fs.joinpath(rzls_path, "Targets", "Microsoft.NET.Sdk.Razor.DesignTime.targets")
-)
-
-vim.lsp.config("roslyn", {
-    cmd = cmd,
+require('roslyn').setup({
     config = {
         -- the rest of your Roslyn configuration
         handlers = require("rzls.roslyn_handlers"),
     },
 })
-vim.lsp.config('nvim-treesitter.configs', {
-  highlight = { enable = true },
-})
 
-vim.cmd("au ColorScheme * highlight MiniNotifyNormal guibg=NONE")
-vim.cmd("au ColorScheme * highlight MiniNotifyTitle guibg=NONE")
-vim.cmd("au ColorScheme * highlight MiniNotifyBorder guibg=NONE")
 require("catppuccin").setup({
     flavour = "auto", -- latte, frappe, macchiato, mocha
     background = { -- :h background
         light = "latte",
         dark = "mocha",
     },
-    transparent_background = true, -- disables setting the background color.
+    transparent_background = false, -- disables setting the background color.
     show_end_of_buffer = false, -- shows the '~' characters after the end of buffers
     term_colors = false, -- sets terminal colors (e.g. `g:terminal_color_0`)
     dim_inactive = {
@@ -335,19 +259,16 @@ vim.diagnostic.config({
     },
 })
 
-vim.cmd([[
-set signcolumn=yes
-autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focusable = false })
-]])
-
 -- setup must be called before loading
 vim.cmd.colorscheme "catppuccin"
 
 vim.keymap.set('n', '<leader>w', '<cmd>write<cr>', {desc = 'Save file'})
 vim.keymap.set('n', '<leader>q', '<cmd>quitall<cr>', {desc = 'Exit vim'})
 
-vim.keymap.set({'n', 'x', 'o'}, 'gy', '"+y', {desc = 'Copy to clipboard'})
-vim.keymap.set({'n', 'x', 'o'}, 'gp', '"+p', {desc = 'Paste clipboard text'})
+-- Simplified clipboard mappings
+-- vim.keymap.set({'n', 'x', 'o'}, '<leader>y', '"+y', {desc = 'Copy to clipboard'})
+-- vim.keymap.set({'n', 'x'}, '<leader>p', '"+p', {desc = 'Paste from clipboard'})
+
 vim.keymap.set('n', '<leader>e', '<cmd>lua MiniFiles.open()<cr>', {desc = 'File explorer'})
 vim.keymap.set('n', '<leader><space>', '<cmd>Pick buffers<cr>', {desc = 'Search open files'})
 vim.keymap.set('n', '<leader>ff', '<cmd>Pick files<cr>', {desc = 'Search all files'})
@@ -359,20 +280,6 @@ vim.keymap.set('n', '<leader>j', '<cmd>wincmd j<cr>')
 vim.keymap.set('n', '<leader>k', '<cmd>wincmd k<cr>')
 
 -- Rust
---
-
-local rt = require("rust-tools")
-
-rt.setup({
-  server = {
-    on_attach = function(_, bufnr)
-      -- Hover actions
-      vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
-      -- Code action groups
-      vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
-    end,
-  },
-})
 
 local cmp = require'cmp'
 cmp.setup({
