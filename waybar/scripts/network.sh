@@ -3,8 +3,10 @@
 # Path for the temporary file to store previous stats
 STATS_FILE="/tmp/waybar_net_stats"
 
-# Find the default network interface
-INTERFACE=$(ip route | grep '^default' | awk '{print $5}' | head -n1)
+# Find the primary default network interface by sorting routing metrics.
+# This correctly prioritizes a VPN connection when it's active.
+INTERFACE_INFO=$(ip route list | grep '^default' | sort -k 9 -n | head -n1)
+INTERFACE=$(echo "$INTERFACE_INFO" | awk '{print $5}')
 
 # Exit if no active interface is found
 if [ -z "$INTERFACE" ]; then
@@ -46,5 +48,15 @@ echo "PREV_TIME=$TIME_NOW" > "$STATS_FILE"
 echo "PREV_RX_BYTES=$RX_BYTES_NOW" >> "$STATS_FILE"
 echo "PREV_TX_BYTES=$TX_BYTES_NOW" >> "$STATS_FILE"
 
+# Format the main output string
+OUTPUT_TEXT="$INTERFACE ($IP_ADDR):  ${RX_MBPS} MB/s   ${TX_MBPS} MB/s"
+
+# Prepend a VPN icon if a common VPN interface is active
+case "$INTERFACE" in
+  tun*|wg*|ppp*|pvpn*)
+    OUTPUT_TEXT="  $OUTPUT_TEXT"
+    ;;
+esac
+
 # Output JSON for Waybar
-echo "{\"text\": \"$INTERFACE ($IP_ADDR):  ${RX_MBPS} MB/s   ${TX_MBPS} MB/s\"}"
+echo "{\"text\": \"$OUTPUT_TEXT\"}"
