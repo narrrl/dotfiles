@@ -7,7 +7,7 @@
     "modules-left": ["hyprland/workspaces"],
     "modules-center": [],
     "modules-right": [
-		"custom/pixelbuds_pro",
+		// "custom/pixelbuds_pro",
 		"wireplumber#sink", 
 		"wireplumber#source",
 		"custom/network", 

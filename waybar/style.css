@@ -226,7 +226,7 @@ window#waybar.hidden {
 }
 
 #wireplumber.muted {
-  padding-right: 15p;
+  padding-right: 15px;
 }
 
 #custom-audio-output.unmuted, #wireplumber {
