@@ -8,13 +8,11 @@
     "modules-center": [],
     "modules-right": [
 		"custom/pixelbuds_pro",
-		"wireplumber", 
-		"custom/audio-output", 
+		"wireplumber#sink", 
+		"wireplumber#source",
 		"custom/network", 
 		"custom/mem",
 		"custom/cpu", 
-		"custom/disk-root",
-		"custom/disk-gdrive",
 		"custom/tlp",
         "tray",
 		"clock"
@@ -49,8 +47,8 @@
         "format-disconnected": "Disconnected",
         "tooltip-format": "{ifname} via {gwaddr}"
     },
-	"wireplumber": {
-        "format": "{volume}% {icon}",
+	"wireplumber#sink": {
+        "format": "{node_name} {volume}% {icon}",
         "format-muted": "",
         "format-icons": {
             "headphone": "",
@@ -60,9 +58,17 @@
         "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
 		"on-click-right": "~/.config/waybar/scripts/audio.sh cycle",
 		"on-click-middle": "pavucontrol",
-        "scroll-step": 1
+        "scroll-step": 5
     },
-
+	"wireplumber#source": {
+		"node-type": "Audio/Source",
+        "format": "{node_name} {volume}% ",
+        "format-muted": "",
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle",
+		"on-click-right": "~/.config/waybar/scripts/cycle_input.sh cycle",
+		"on-click-middle": "pavucontrol",
+        "scroll-step": 5
+    },
     "custom/bluetooth-audio": {
         "format": "{}",
         "return-type": "json",
@@ -208,13 +214,11 @@
     "modules-center": [],
     "modules-right": [
 		// "custom/pixelbuds_pro",
-		"wireplumber", 
-		"custom/audio-output", 
+		"wireplumber#sink", 
+		"wireplumber#source",
 		"custom/network", 
 		"custom/mem",
 		"custom/cpu", 
-		"custom/disk-root",
-		"custom/disk-gdrive",
 		"custom/tlp",
         "tray",
 		"clock"
@@ -249,8 +253,8 @@
         "format-disconnected": "Disconnected",
         "tooltip-format": "{ifname} via {gwaddr}"
     },
-	"wireplumber": {
-        "format": "{volume}% {icon}",
+	"wireplumber#sink": {
+        "format": "{node_name} {volume}% {icon}",
         "format-muted": "",
         "format-icons": {
             "headphone": "",
@@ -260,7 +264,16 @@
         "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
 		"on-click-right": "~/.config/waybar/scripts/audio.sh cycle",
 		"on-click-middle": "pavucontrol",
-        "scroll-step": 1
+        "scroll-step": 5
+    },
+	"wireplumber#source": {
+		"node-type": "Audio/Source",
+        "format": "{node_name} {volume}% ",
+        "format-muted": "",
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle",
+		"on-click-right": "~/.config/waybar/scripts/cycle_input.sh cycle",
+		"on-click-middle": "pavucontrol",
+        "scroll-step": 5
     },
 
     "custom/bluetooth-audio": {
