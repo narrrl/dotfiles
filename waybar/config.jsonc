@@ -49,7 +49,7 @@
     },
 	"wireplumber#sink": {
         "format": "{node_name} {volume}% {icon}",
-        "format-muted": "",
+        "format-muted": "{node_name} ",
         "format-icons": {
             "headphone": "",
             "hands-free": "",
