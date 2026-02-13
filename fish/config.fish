@@ -32,6 +32,8 @@ set -l GCR_SSH_SOCK $XDG_RUNTIME_DIR/gcr/ssh
 if test -S "$GCR_SSH_SOCK"
     set -gx SSH_AUTH_SOCK "$GCR_SSH_SOCK"
 end
-if uwsm check may-start && uwsm select
-	exec uwsm start default
+if status is-login && test -z "$DISPLAY" -a -z "$WAYLAND_DISPLAY"
+    if uwsm check may-start && uwsm select
+        exec uwsm start default
+    end
 end
