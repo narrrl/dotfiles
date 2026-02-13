@@ -1,0 +1,22 @@
+
+# ~/.config/systemd/user/rclone-mount.service
+
+[Unit]
+Description=sshfs mount for narl.io vaulthunters server
+# This ensures your network is ready before it tries to mount
+After=network-online.target
+
+[Service]
+# The command to start the mount.
+# Replace "my-remote:" and "/path/to/local/mount" accordingly.
+# The flags below are highly recommended for a good experience.
+ExecStart=sshfs -f narl@vh3.narl.io:/opt/minecraft_vaulthunters %h/vaulthunters_server/ 
+
+# The command to unmount gracefully.
+ExecStop=fusermount -u %h/vaulthunters_server
+Restart=on-failure
+RestartSec=10
+
+[Install]
+# This tells systemd to start the service at user login.
+WantedBy=default.target
