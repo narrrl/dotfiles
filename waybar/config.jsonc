@@ -12,8 +12,8 @@
 		"custom/mem",
 		"custom/cpu", 
 		"custom/tlp",
-		"wireplumber#sink", 
-		"wireplumber#source",
+		"custom/volume", 
+		"custom/mic",
         "tray",
 		"clock"
 	],
@@ -47,27 +47,27 @@
         "format-disconnected": "Disconnected",
         "tooltip-format": "{ifname} via {gwaddr}"
     },
-	"wireplumber#sink": {
-        "format": "{node_name} {volume}% {icon}",
-        "format-muted": "{node_name} ",
-        "format-icons": {
-            "headphone": "",
-            "hands-free": "",
-            "default": ["", "", ""]
-        },
+    "custom/volume": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "python3 ~/.config/waybar/scripts/volume_combined.py sink",
         "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
-		"on-click-right": "~/.config/waybar/scripts/audio.sh cycle",
-		"on-click-middle": "pavucontrol",
-        "scroll-step": 5
+        "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+",
+        "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-",
+        "on-click-right": "~/.config/waybar/scripts/audio.sh cycle",
+        "on-click-middle": "pavucontrol",
+        "interval": 1
     },
-	"wireplumber#source": {
-		"node-type": "Audio/Source",
-        "format": "{node_name} {volume}% ",
-        "format-muted": "",
+    "custom/mic": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "python3 ~/.config/waybar/scripts/volume_combined.py source",
         "on-click": "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle",
-		"on-click-right": "~/.config/waybar/scripts/cycle_input.sh cycle",
-		"on-click-middle": "pavucontrol",
-        "scroll-step": 5
+        "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%+",
+        "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%-",
+        "on-click-right": "~/.config/waybar/scripts/cycle_input.sh cycle",
+        "on-click-middle": "pavucontrol",
+        "interval": 1
     },
     "custom/bluetooth-audio": {
         "format": "{}",
@@ -75,21 +75,6 @@
         "exec": "~/.config/waybar/scripts/bluetooth_audio.sh",
         "interval": 3,
         "on-click": "~/.config/waybar/scripts/bluetooth_audio.sh disconnect & disown"
-    },
-
-    "pulseaudio": {
-        "format": "{icon} {volume}%",
-        "format-muted": " Muted",
-        "format-icons": {
-            "headphone": "",
-            "hands-free": "",
-            "headset": "",
-            "phone": "",
-            "portable": "",
-            "car": "",
-            "default": ["", ""]
-        },
-        "on-click": "pavucontrol & disown"
     },
     "tray": {
         "icon-size": 18,
@@ -126,13 +111,6 @@
 		"on-click": "~/.config/waybar/scripts/pixelbuds_pro_control.sh connect & disown",
 		"on-click-right": "~/.config/waybar/scripts/pixelbuds_pro_control.sh cycle_anc & disown"
 	},
-    "custom/audio-output": {
-        "format": "{}",
-		"return-type": "json",
-        "exec": "/home/narl/.config/waybar/scripts/audio.sh show",
-        "on-click": "/home/narl/.config/waybar/scripts/audio.sh cycle & disown",
-        "interval": 1
-    },
 	"custom/gamemode": {
 		"format": "{}",
 		"return-type": "json",

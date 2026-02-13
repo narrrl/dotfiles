@@ -5,7 +5,8 @@ DESCRIPTION=$(pactl list sources | grep -A2 "Name: $DEFAULT_SOURCE" | grep "Desc
 
 case $1 in
 	cycle)
-		SOURCES=($(pactl list short sources | awk '{print $2}'))
+		# Filter out monitor sources
+		SOURCES=($(pactl list short sources | awk '{print $2}' | grep -v ".monitor"))
 		NUM_SOURCES=${#SOURCES[@]}
 		CURRENT_SOURCE=$(pactl info | grep 'Default Source' | cut -d ' ' -f3)
 
@@ -16,6 +17,10 @@ case $1 in
 				exit 0
 			fi
 		done
+		# If current source was a monitor or not in list, just pick the first one
+		if [ $NUM_SOURCES -gt 0 ]; then
+			pactl set-default-source "${SOURCES[0]}"
+		fi
 		;;
 	show)
 		TEXT=$(echo "$DESCRIPTION" | cut -c -20)
@@ -35,6 +40,6 @@ case $1 in
 		printf '{"text": "%s", "tooltip": "%s", "class": "%s"}' "$TEXT" "$DESCRIPTION" "$CLASS"
 		;;
 	*)
-		echo "usage audio.sh {cycle|show}"
+		echo "usage cycle_input.sh {cycle|show}"
 		;;
 esac
