@@ -9,7 +9,7 @@ After=network-online.target
 # The command to start the mount.
 # Replace "my-remote:" and "/path/to/local/mount" accordingly.
 # The flags below are highly recommended for a good experience.
-ExecStart=sshfs -f -p 420 narl@narl.io:/home/narl %h/narl_io
+ExecStart=sshfs -f -p 420 narl@narl.io:/opt %h/narl_io
 
 # The command to unmount gracefully.
 ExecStop=fusermount -u %h/narl_io

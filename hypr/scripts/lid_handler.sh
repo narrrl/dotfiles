@@ -11,6 +11,7 @@ if [[ "$1" == "close" ]]; then
         for monitor in $(hyprctl monitors all | grep "Monitor DP-" | awk '{print $2}'); do
             hyprctl keyword monitor "$monitor, enable"
         done
+		systemd-run --user --on-active=5s systemctl --user restart waybar.service hyprpaper.service
     fi
 elif [[ "$1" == "open" ]]; then
     # Lid opened: re-enable laptop screen

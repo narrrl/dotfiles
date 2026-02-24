@@ -1,0 +1,166 @@
+{
+    "log_level": "LOG_LEVEL_INFO",
+    "log_subprocesses_to_journal": false,
+    "dbus": {
+        "enabled": true,
+        "connect_timeout": "20s",
+        "connect_interval": "0.200s",
+        "notifications": {
+            "enabled": true
+        },
+        "systray": {
+            "enabled": true
+        },
+        "shortcuts": {
+            "enabled": true
+        },
+        "brightness": {
+            "enabled": true,
+            "adjust_step_percent": 5,
+            "min_brightness": 1,
+            "enable_logind": true,
+            "hud_notifications": true
+        },
+        "power": {
+            "enabled": true,
+            "low_percent": 10,
+            "critical_percent": 5,
+            "hud_notifications": true
+        }
+    },
+    "audio": {
+        "enabled": true,
+        "volume_step_percent": 5,
+        "volume_exceed_maximum": false,
+        "hud_notifications": true
+    },
+    "panels": [
+        {
+            "id": "panel0",
+            "edge": "EDGE_TOP",
+            "size": 34,
+            "monitor": "",
+            "modules": [
+                {
+                    "pager": {
+                        "icon_size": 14,
+                        "active_monitor_only": false,
+                        "scroll_wrap_workspaces": true,
+                        "scroll_include_inactive": true,
+                        "enable_workspace_names": false,
+                        "pinned": [1, 2, 3, 4, 5, 6],
+                        "preview_width": 256
+                    }
+                },
+                {
+                    "spacer": {
+                        "size": 8,
+                        "expand": false
+                    }
+                },
+                {
+                    "taskbar": {
+                        "icon_size": 24,
+                        "active_workspace_only": true,
+                        "active_monitor_only": true,
+                        "group_tasks": true,
+                        "expand": false
+                    }
+                },
+                {
+                    "spacer": {
+                        "expand": true
+                    }
+                },
+                {
+                    "clock": {
+                        "time_format": "15:04",
+                        "date_format": "%a %d %b",
+                        "tooltip_time_format": "15:04",
+                        "tooltip_date_format": "Monday, 02 January 2006"
+                    }
+                },
+                {
+                    "spacer": {
+                        "expand": true
+                    }
+                },
+                {
+                    "systray": {
+                        "icon_size": 18,
+                        "menu_icon_size": 18,
+                        "pinned": [
+                            "nm-applet"
+                        ],
+                        "modules": [
+                            {
+                                "power": {
+                                    "icon_size": 18,
+                                    "icon_symbolic": true
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "spacer": {
+                        "size": 8,
+                        "expand": false
+                    }
+                },
+                {
+                    "notifications": {
+                        "icon_size": 18,
+                        "notification_icon_size": 48,
+                        "default_timeout": "7s",
+                        "position": "POSITION_TOP_RIGHT",
+                        "margin": 24
+                    }
+                },
+                {
+                    "spacer": {
+                        "size": 8,
+                        "expand": false
+                    }
+                },
+                {
+                    "audio": {
+                        "icon_size": 18,
+                        "icon_symbolic": true,
+                        "command_mixer": "pavucontrol",
+                        "enable_source": true
+                    }
+                },
+                {
+                    "spacer": {
+                        "size": 8,
+                        "expand": false
+                    }
+                },
+                {
+                    "session": {
+                        "icon_size": 18,
+                        "icon_symbolic": true,
+                        "overlay_icon_size": 64,
+                        "overlay_icon_symbolic": true,
+                        "command_logout": "uwsm stop",
+                        "command_reboot": "systemctl reboot",
+                        "command_suspend": "systemctl suspend",
+                        "command_shutdown": "systemctl poweroff"
+                    }
+                },
+                {
+                    "spacer": {
+                        "size": 8,
+                        "expand": false
+                    }
+                }
+            ]
+        }
+    ],
+    "launch_wrapper": [
+        "uwsm",
+        "app",
+        "--"
+    ]
+}

@@ -1,0 +1,127 @@
+/* Catppuccin Mocha Palette */
+@define-color base #1e1e2e;
+@define-color mantle #181825;
+@define-color crust #11111b;
+@define-color surface0 #313244;
+@define-color surface1 #45475a;
+@define-color surface2 #585b70;
+@define-color text #cdd6f4;
+@define-color subtext0 #a6adc8;
+@define-color subtext1 #bac2de;
+@define-color overlay0 #6c7086;
+@define-color overlay1 #7f849c;
+@define-color overlay2 #9399b2;
+@define-color blue #89b4fa;
+@define-color lavender #b4befe;
+@define-color sapphire #74c7ec;
+@define-color sky #89dceb;
+@define-color teal #94e2d5;
+@define-color green #a6e3a1;
+@define-color yellow #f9e2af;
+@define-color peach #fab387;
+@define-color maroon #eba0ac;
+@define-color red #f38ba8;
+@define-color mauve #cba6f7;
+@define-color flamingo #f2cdcd;
+@define-color rosewater #f5e0dc;
+
+* {
+    font-family: "JetBrainsMono Nerd Font";
+    font-size: 13px;
+    border: none;
+    box-shadow: none;
+}
+
+window#panel0 {
+    background-color: alpha(@base, 0.7);
+    color: @text;
+}
+
+#pager {
+    margin: 4px;
+}
+
+#pager button {
+    background-color: @surface0;
+    color: @subtext0;
+    border-radius: 12px;
+    margin: 0 2px;
+    padding: 0 12px;
+    transition: all 0.2s ease-in-out;
+}
+
+#pager button.active {
+    background-color: @mauve;
+    color: @base;
+}
+
+#pager button:hover {
+    background-color: @surface1;
+    color: @text;
+}
+
+#taskbar button {
+    background-color: transparent;
+    color: @subtext1;
+    border-radius: 12px;
+    margin: 0 2px;
+    padding: 0 8px;
+}
+
+#taskbar button.active {
+    background-color: @surface0;
+    border-bottom: 2px solid @mauve;
+}
+
+#clock, #systray, #audio, #session, #notifications {
+    background-color: @surface0;
+    color: @text;
+    border-radius: 15px;
+    margin: 4px 3px;
+    padding: 0 12px;
+}
+
+#notifications {
+    color: @yellow;
+}
+
+#clock {
+    color: @mauve;
+    font-weight: bold;
+}
+
+#audio {
+    color: @sapphire;
+}
+
+#audio.muted {
+    color: @subtext0;
+}
+
+#session {
+    color: @red;
+    padding: 0 8px;
+}
+
+/* Notifications and HUD */
+#notifications {
+    background-color: @base;
+    color: @text;
+    border: 1px solid @surface1;
+    border-radius: 12px;
+}
+
+#hud {
+    background-color: alpha(@base, 0.8);
+    color: @text;
+    border-radius: 20px;
+    padding: 10px;
+}
+
+#hud .progress-bar {
+    background-color: @surface1;
+}
+
+#hud .progress-bar-fill {
+    background-color: @mauve;
+}
