@@ -10,7 +10,7 @@ After=network-online.target
 # The command to start the mount.
 # Replace "my-remote:" and "/path/to/local/mount" accordingly.
 # The flags below are highly recommended for a good experience.
-ExecStart=sshfs -f narl@vh3.narl.io:/opt/minecraft_vaulthunters %h/vaulthunters_server/ 
+ExecStart=sshfs -f -p 420 narl@vh3.narl.io:/opt/minecraft_vaulthunters %h/remote/vh3.narl.io
 
 # The command to unmount gracefully.
 ExecStop=fusermount -u %h/vaulthunters_server

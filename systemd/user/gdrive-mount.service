@@ -9,7 +9,7 @@ After=network-online.target
 # The command to start the mount.
 # Replace "my-remote:" and "/path/to/local/mount" accordingly.
 # The flags below are highly recommended for a good experience.
-ExecStart=rclone mount google_drive: %h/gdrive \
+ExecStart=rclone mount google_drive: %h/remote/gdrive \
   --vfs-cache-mode writes \
   --log-file /tmp/rclone.log \
   --log-level INFO
