@@ -19,6 +19,7 @@
         ],
         "modules-right": [
             "tray",
+            "custom/gamemode",
             "custom/power_status"
         ],
 
@@ -41,9 +42,17 @@
             "spacing": 10
         },
 
+        "custom/gamemode": {
+            "format": "{}",
+            "return-type": "json",
+            "exec": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs game",
+            "on-click": "~/.config/hypr/scripts/gamemode.sh & disown",
+            "interval": 1
+        },
+
         // --- Fluxo-rs Power ---
         "custom/power_status": {
-            "format": "{}",
+            "format": "{} ",
             "return-type": "json",
             "exec": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs power",
             "on-click": "~/.config/hypr/scripts/powermenu.sh & disown",
@@ -64,13 +73,12 @@
             "custom/sys",
             "custom/cpu",
             "custom/mem",
-            "custom/network"
+            "custom/network",
+            "custom/disk-root"
         ],
         "modules-center": [
-            "custom/gamemode"
         ],
         "modules-right": [
-            "custom/disk-root",
             "custom/bluetooth-audio",
             "custom/volume",
             "custom/mic"
@@ -110,13 +118,6 @@
             "exec": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs disk /",
             "interval": 30
         },
-        "custom/gamemode": {
-            "format": "{}",
-            "return-type": "json",
-            "exec": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs game",
-            "on-click": "~/.config/hypr/scripts/gamemode.sh & disown",
-            "interval": 1
-        },
 
         // --- Fluxo-rs Audio & BT ---
         "custom/volume": {
@@ -128,7 +129,7 @@
             "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-",
             "on-click-right": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs vol --cycle",
             "on-click-middle": "pavucontrol",
-            "interval": 2
+            "interval": 1
         },
         "custom/mic": {
             "format": "{}",
@@ -139,7 +140,7 @@
             "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%-",
             "on-click-right": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs mic --cycle",
             "on-click-middle": "pavucontrol",
-            "interval": 2
+            "interval": 1
         },
         "custom/bluetooth-audio": {
             "format": "{}",

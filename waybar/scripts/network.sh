@@ -28,11 +28,16 @@ TX_MBPS="0.00"
 
 # Read previous values if the stats file exists
 if [ -f "$STATS_FILE" ]; then
-    source "$STATS_FILE" # This loads PREV_TIME, PREV_RX_BYTES, PREV_TX_BYTES
+    # shellcheck source=/dev/null
+    # Use a lock to ensure we don't source while another instance is writing
+    {
+        flock -s 200 || exit 1
+        source "$STATS_FILE" 2>/dev/null
+    } 200>"$STATS_FILE.lock"
 fi
 
 # Calculate speed if we have previous data and time has passed
-if [ -n "$PREV_TIME" ] && [ "$TIME_NOW" -gt "$PREV_TIME" ]; then
+if [ -n "$PREV_TIME" ] && [ -n "$PREV_RX_BYTES" ] && [ -n "$PREV_TX_BYTES" ] && [ "$TIME_NOW" -gt "$PREV_TIME" ]; then
     TIME_DIFF=$((TIME_NOW - PREV_TIME))
 
     RX_BPS=$(( (RX_BYTES_NOW - PREV_RX_BYTES) / TIME_DIFF ))
@@ -43,10 +48,14 @@ if [ -n "$PREV_TIME" ] && [ "$TIME_NOW" -gt "$PREV_TIME" ]; then
     TX_MBPS=$(printf "%.2f" "$(echo "$TX_BPS / 1024 / 1024" | bc -l)")
 fi
 
-# Save current values for the next run
-echo "PREV_TIME=$TIME_NOW" > "$STATS_FILE"
-echo "PREV_RX_BYTES=$RX_BYTES_NOW" >> "$STATS_FILE"
-echo "PREV_TX_BYTES=$TX_BYTES_NOW" >> "$STATS_FILE"
+# Save current values for the next run safely using a lock
+# We use a subshell with flock to ensure atomic updates and prevent race conditions
+(
+    flock -x 200 || exit 1
+    echo "PREV_TIME=$TIME_NOW" > "$STATS_FILE"
+    echo "PREV_RX_BYTES=$RX_BYTES_NOW" >> "$STATS_FILE"
+    echo "PREV_TX_BYTES=$TX_BYTES_NOW" >> "$STATS_FILE"
+) 200>"$STATS_FILE.lock"
 
 # Format the main output string
 OUTPUT_TEXT="$INTERFACE ($IP_ADDR):  ${RX_MBPS} MB/s   ${TX_MBPS} MB/s"
