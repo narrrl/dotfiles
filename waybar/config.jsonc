@@ -146,7 +146,8 @@
             "format": "{}",
             "return-type": "json",
             "exec": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs bt",
-            "on-click": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs bt disconnect",
+            "on-click": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs bt menu",
+            "on-click-right": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs bt disconnect",
             "interval": 3
         }
 
