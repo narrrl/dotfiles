@@ -39,7 +39,7 @@ window#waybar {
   background-color: alpha(@surface0, 0.95);
   margin: 4px 2px;
   padding: 0 12px;
-  border-radius: 12px;
+  border-radius: 5px;
   border: 1px solid alpha(@surface1, 0.5);
 }
 
@@ -57,7 +57,7 @@ window#waybar.bottom {
 #workspaces button {
   padding: 0 8px;
   margin: 4px 2px;
-  border-radius: 8px;
+  border-radius: 5px;
   color: @subtext0;
   background-color: transparent;
 }
@@ -124,7 +124,7 @@ window#waybar.bottom {
 tooltip {
   background-color: alpha(@base, 0.95);
   border: 1px solid @surface1;
-  border-radius: 12px;
+  border-radius: 5px;
 }
 
 tooltip label {
