@@ -127,7 +127,7 @@ local function active_lsp()
 	for _, client in ipairs(clients) do
 		table.insert(client_names, client.name)
 	end
-	return "⚙ " .. table.concat(client_names, ", ")
+	return "{ " .. table.concat(client_names, " | ") .. " }"
 end
 
 require("lualine").setup({
@@ -308,10 +308,10 @@ require("roslyn").setup({
 local sign = function(opts)
 	vim.fn.sign_define(opts.name, { texthl = opts.name, text = opts.text, numhl = "" })
 end
-sign({ name = "DiagnosticSignError", text = "" })
-sign({ name = "DiagnosticSignWarn", text = "" })
-sign({ name = "DiagnosticSignHint", text = "" })
-sign({ name = "DiagnosticSignInfo", text = "" })
+sign({ name = "DiagnosticSignError", text = "" })
+sign({ name = "DiagnosticSignWarn", text = "" })
+sign({ name = "DiagnosticSignHint", text = "" })
+sign({ name = "DiagnosticSignInfo", text = "" })
 
 vim.diagnostic.config({
 	virtual_text = false,
