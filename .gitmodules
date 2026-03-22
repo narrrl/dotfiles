@@ -22,3 +22,6 @@
 [submodule "fuzzel/catppuccin-fuzzel"]
 	path = fuzzel/catppuccin-fuzzel
 	url = https://github.com/catppuccin/fuzzel.git
+[submodule "nvim"]
+	path = nvim
+	url = https://git.narl.io/nvrl/nvim-config.git
