@@ -6,7 +6,9 @@
   border: none;
   border-radius: 0;
   min-height: 0;
-  font-family: JetBrainsMono Nerd Font, monospace;
+  font-family:
+    JetBrainsMono Nerd Font,
+    monospace;
   font-size: 13px;
   transition: all 0.2s ease;
 }
@@ -86,39 +88,79 @@ window#waybar.bottom {
 #custom-power_status {
   font-weight: bold;
 }
-#custom-power_status.charging { color: @green; border-color: @green; }
-#custom-power_status.bat { color: @yellow; }
-#custom-power_status.warning { color: @peach; }
-#custom-power_status.critical { 
-  color: @red; 
+#custom-power_status.charging {
+  color: @green;
+  border-color: @green;
+}
+#custom-power_status.bat {
+  color: @yellow;
+}
+#custom-power_status.warning {
+  color: @peach;
+}
+#custom-power_status.critical {
+  color: @red;
   border-color: @red;
   animation: blink 1s infinite alternate;
 }
 
 @keyframes blink {
-  to { background-color: alpha(@red, 0.4); }
+  to {
+    background-color: alpha(@red, 0.4);
+  }
 }
 
 /* --- Hardware Metrics (Left Bottom) --- */
-#custom-sys { color: @teal; }
-#custom-cpu { color: @blue; }
-#custom-mem { color: @lavender; }
-#custom-network { color: @sapphire; }
+#custom-sys {
+  color: @teal;
+}
+#custom-cpu {
+  color: @blue;
+}
+#custom-mem {
+  color: @lavender;
+}
+#custom-network {
+  color: @sapphire;
+}
 
-#custom-cpu.high, #custom-mem.high { color: @yellow; }
-#custom-cpu.max, #custom-mem.max { color: @red; }
+#custom-cpu.high,
+#custom-mem.high {
+  color: @yellow;
+}
+#custom-cpu.max,
+#custom-mem.max {
+  color: @red;
+}
 
 /* --- Center Bottom Utilities --- */
-#custom-gamemode { color: @yellow; }
-#custom-gamemode.active { color: @red; border-color: @red; }
+#custom-gamemode {
+  color: @yellow;
+}
+#custom-gamemode.active {
+  color: @red;
+  border-color: @red;
+  padding-left: 9px;
+}
 
 /* --- Right Bottom Controls --- */
-#custom-disk-root { color: @sky; }
-#custom-volume { color: @mauve; }
-#custom-mic { color: @flamingo; }
-#custom-volume.muted, #custom-mic.muted { color: @overlay0; }
+#custom-disk-root {
+  color: @sky;
+}
+#custom-volume {
+  color: @mauve;
+}
+#custom-mic {
+  color: @flamingo;
+}
+#custom-volume.muted,
+#custom-mic.muted {
+  color: @overlay0;
+}
 
-#custom-bluetooth-audio { color: @blue; }
+#custom-bluetooth-audio {
+  color: @blue;
+}
 
 /* --- Tooltip --- */
 tooltip {
