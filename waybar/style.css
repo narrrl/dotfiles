@@ -80,7 +80,7 @@ window#waybar.bottom {
 
 /* --- Clock (Centered Pill) --- */
 #clock {
-  color: @mauve;
+  color: @red;
   font-weight: bold;
 }
 
@@ -93,10 +93,10 @@ window#waybar.bottom {
   border-color: @green;
 }
 #custom-power_status.bat {
-  color: @yellow;
+  color: @blue;
 }
 #custom-power_status.warning {
-  color: @peach;
+  color: @red;
 }
 #custom-power_status.critical {
   color: @red;
@@ -112,21 +112,21 @@ window#waybar.bottom {
 
 /* --- Hardware Metrics (Left Bottom) --- */
 #custom-sys {
-  color: @teal;
+  color: @red;
 }
 #custom-cpu {
   color: @blue;
 }
 #custom-mem {
-  color: @lavender;
+  color: @red;
 }
 #custom-network {
-  color: @sapphire;
+  color: @blue;
 }
 
 #custom-cpu.high,
 #custom-mem.high {
-  color: @yellow;
+  color: @red;
 }
 #custom-cpu.max,
 #custom-mem.max {
@@ -135,23 +135,23 @@ window#waybar.bottom {
 
 /* --- Center Bottom Utilities --- */
 #custom-gamemode {
-  color: @yellow;
+  color: @red;
 }
 #custom-gamemode.active {
-  color: @red;
-  border-color: @red;
+  color: @blue;
+  border-color: @blue;
   padding-left: 9px;
 }
 
 /* --- Right Bottom Controls --- */
 #custom-disk-root {
-  color: @sky;
+  color: @blue;
 }
 #custom-volume {
-  color: @mauve;
+  color: @red;
 }
 #custom-mic {
-  color: @flamingo;
+  color: @blue;
 }
 #custom-volume.muted,
 #custom-mic.muted {
