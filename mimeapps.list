@@ -17,6 +17,7 @@ x-scheme-handler/unknown=google-chrome.desktop
 application/vnd.openxmlformats-officedocument.wordprocessingml.document=libreoffice-writer.desktop
 x-scheme-handler/ror2mm=r2modman.desktop
 image/webp=feh.desktop
+x-scheme-handler/claude-cli=claude-code-url-handler.desktop
 
 [Added Associations]
 application/pdf=org.pwmt.zathura-pdf-poppler.desktop;

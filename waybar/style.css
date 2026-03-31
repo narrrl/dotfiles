@@ -4,45 +4,17 @@
 /* --- Global Reset --- */
 * {
   border: none;
-  border-radius: 0;
+  border-radius: 12px;
   min-height: 0;
-  font-family:
-    JetBrainsMono Nerd Font,
-    monospace;
-  font-size: 13px;
-  transition: all 0.2s ease;
+  font-family: JetBrainsMono Nerd Font, sans-serif;
+  font-size: 12px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 /* --- Bar Background (Floating Island Style) --- */
 window#waybar {
   background-color: transparent;
   color: @text;
-}
-
-/* --- Shared Island Styling --- */
-#workspaces,
-#window,
-#clock,
-#tray,
-#custom-sys,
-#custom-cpu,
-#custom-gpu,
-#custom-mem,
-#custom-network,
-#custom-btrfs,
-#custom-disk-root,
-#custom-pixelbuds_pro,
-#custom-bluetooth-audio,
-#custom-volume,
-#custom-mic,
-#custom-gamemode,
-#custom-gpu-screen-recorder,
-#custom-power_status {
-  background-color: alpha(@surface0, 0.95);
-  margin: 4px 2px;
-  padding: 0 12px;
-  border-radius: 5px;
-  border: 1px solid alpha(@surface1, 0.5);
 }
 
 /* --- Top Bar Special Handling --- */
@@ -55,33 +27,65 @@ window#waybar.bottom {
   margin-bottom: 6px;
 }
 
+/* --- Shared Island Styling --- */
+#workspaces,
+#window,
+#tray,
+#custom-sys,
+#hardware,
+#custom-disk-root,
+#custom-bluetooth-audio,
+#custom-volume,
+#custom-mic,
+#custom-gamemode,
+#custom-power_status {
+  background-color: alpha(@surface0, 0.8);
+  margin: 4px 6px;
+  padding: 4px 16px;
+  border: 1px solid alpha(@surface1, 0.5);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+  color: @text; /* Unifies all standard text to the soft Catppuccin white */
+}
+
 /* --- Workspaces --- */
+#workspaces {
+  padding: 2px 8px;
+}
+
 #workspaces button {
-  padding: 0 8px;
-  margin: 4px 2px;
-  border-radius: 5px;
-  color: @subtext0;
-  background-color: transparent;
+  padding: 0;
+  margin: 4px;
+  min-width: 12px;
+  min-height: 12px;
+  background-color: @subtext0; /* Subtle dark gray for inactive */
+  color: transparent;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 #workspaces button.active {
-  color: @blue;
-  background-color: @surface1;
-}
-
-#workspaces button.urgent {
-  color: @red;
+  min-width: 30px;
+  background-color: @mauve; /* Signature Catppuccin accent */
 }
 
 #workspaces button:hover {
-  background-color: @surface2;
-  color: @text;
+  background-color: @lavender;
+  min-width: 20px;
+}
+
+#workspaces button.urgent {
+  background-color: @red;
 }
 
 /* --- Clock (Centered Pill) --- */
 #clock {
-  color: @red;
-  font-weight: bold;
+  background: linear-gradient(45deg, @mauve, @lavender); /* Cohesive pastel gradient */
+  color: @base; 
+  font-weight: 900;
+  margin: 4px 6px;
+  padding: 4px 20px;
+  border-radius: 12px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
 }
 
 /* --- Power Status --- */
@@ -90,86 +94,80 @@ window#waybar.bottom {
 }
 #custom-power_status.charging {
   color: @green;
-  border-color: @green;
-}
-#custom-power_status.bat {
-  color: @blue;
 }
 #custom-power_status.warning {
-  color: @red;
+  color: @peach;
 }
 #custom-power_status.critical {
   color: @red;
-  border-color: @red;
   animation: blink 1s infinite alternate;
 }
 
 @keyframes blink {
   to {
-    background-color: alpha(@red, 0.4);
+    color: @base;
+    background-color: @red;
   }
 }
 
-/* --- Hardware Metrics (Left Bottom) --- */
-#custom-sys {
-  color: @red;
-}
-#custom-cpu {
-  color: @blue;
-}
-#custom-mem {
-  color: @red;
-}
-#custom-network {
-  color: @blue;
+/* --- Hardware Group (Left Bottom) --- */
+#hardware {
+  border-radius: 24px;
+  padding: 4px 10px;
 }
 
-#custom-cpu.high,
-#custom-mem.high {
-  color: @red;
+/* Strip backgrounds and borders from the items inside the group */
+#custom-cpu,
+#custom-mem,
+#custom-network {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  margin: 0;
+  padding: 0 8px; 
 }
-#custom-cpu.max,
-#custom-mem.max {
-  color: @red;
+
+/* Subtle vertical separator line between them */
+#custom-cpu, 
+#custom-mem {
+  border-right: 1px solid alpha(@surface1, 0.5);
+  border-radius: 0;
 }
+
+/* Hardware Semantic Alerts */
+#custom-cpu.high, #custom-mem.high { color: @peach; }
+#custom-cpu.max, #custom-mem.max { color: @red; }
 
 /* --- Center Bottom Utilities --- */
-#custom-gamemode {
-  color: @red;
-}
 #custom-gamemode.active {
-  color: @blue;
-  border-color: @blue;
+  color: @mauve; /* Matches the workspace accent */
   padding-left: 9px;
 }
 
-/* --- Right Bottom Controls --- */
-#custom-disk-root {
-  color: @blue;
-}
-#custom-volume {
-  color: @red;
-}
-#custom-mic {
-  color: @blue;
-}
+/* --- Right Bottom Controls Semantic Alerts --- */
 #custom-volume.muted,
 #custom-mic.muted {
-  color: @overlay0;
+  color: @overlay0; /* Dims when muted */
 }
 
-#custom-bluetooth-audio {
-  color: @blue;
+/* --- Hover States --- */
+#custom-volume:hover,
+#custom-mic:hover,
+#custom-bluetooth-audio:hover,
+#custom-power_status:hover {
+  background-color: @surface1;
+  color: @mauve; /* Subtle accent color on hover instead of jarring borders */
 }
 
 /* --- Tooltip --- */
 tooltip {
-  background-color: alpha(@base, 0.95);
+  background-color: alpha(@base, 0.9);
   border: 1px solid @surface1;
-  border-radius: 5px;
+  border-radius: 8px;
 }
 
 tooltip label {
   color: @text;
   padding: 8px;
 }
+

@@ -104,3 +104,8 @@ ipc_socket = true
 
 ## Import additional configuration files.
 import = ["~/.config/alacritty/colors.toml", "~/.config/alacritty/fonts.toml"]
+
+[[keyboard.bindings]]
+key = "Return"
+mods = "Shift"
+chars = "\u001B\r"

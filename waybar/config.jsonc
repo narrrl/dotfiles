@@ -45,7 +45,7 @@
         "custom/gamemode": {
             "format": "{}",
             "return-type": "json",
-            "exec": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs game",
+            "exec": "fluxo-rs game",
             "on-click": "~/.config/hypr/scripts/gamemode.sh & disown",
             "interval": 1
         },
@@ -54,7 +54,7 @@
         "custom/power_status": {
             "format": "{} ",
             "return-type": "json",
-            "exec": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs power",
+            "exec": "fluxo-rs power",
             "on-click": "~/.config/hypr/scripts/powermenu.sh & disown",
             "interval": 5
         }
@@ -71,11 +71,18 @@
 
         "modules-left": [
             "custom/sys",
-            "custom/cpu",
-            "custom/mem",
-            "custom/network",
+            "group/hardware", // Replaced individual modules with a group
             "custom/disk-root"
         ],
+        // Add the group definition anywhere in the bottom bar block:
+        "group/hardware": {
+            "orientation": "horizontal",
+            "modules": [
+                "custom/cpu",
+                "custom/mem",
+                "custom/network"
+            ]
+        },
         "modules-center": [
         ],
         "modules-right": [
@@ -88,26 +95,26 @@
         "custom/sys": {
             "format": "{}",
             "return-type": "json",
-            "exec": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs sys",
+            "exec": "fluxo-rs sys",
             "interval": 5
         },
         "custom/cpu": {
             "format": "{}",
             "return-type": "json",
-            "exec": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs cpu",
+            "exec": "fluxo-rs cpu",
             "on-click": "zenmonitor & disown",
             "interval": 3
         },
         "custom/mem": {
             "format": "{}",
             "return-type": "json",
-            "exec": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs mem",
+            "exec": "fluxo-rs mem",
             "interval": 3
         },
         "custom/network": {
             "format": "{}",
             "return-type": "json",
-            "exec": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs net",
+            "exec": "fluxo-rs net",
             "interval": 2
         },
 
@@ -115,7 +122,7 @@
         "custom/disk-root": {
             "format": "{}",
             "return-type": "json",
-            "exec": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs disk /",
+            "exec": "fluxo-rs disk /",
             "interval": 30
         },
 
@@ -123,31 +130,31 @@
         "custom/volume": {
             "format": "{}",
             "return-type": "json",
-            "exec": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs vol",
+            "exec": "fluxo-rs vol",
             "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
             "on-scroll-up": "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+",
             "on-scroll-down": "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%-",
-            "on-click-right": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs vol --cycle",
+            "on-click-right": "fluxo-rs vol --cycle",
             "on-click-middle": "pavucontrol",
             "interval": 1
         },
         "custom/mic": {
             "format": "{}",
             "return-type": "json",
-            "exec": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs mic",
+            "exec": "fluxo-rs mic",
             "on-click": "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle",
             "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%+",
             "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%-",
-            "on-click-right": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs mic --cycle",
+            "on-click-right": "fluxo-rs mic --cycle",
             "on-click-middle": "pavucontrol",
             "interval": 1
         },
         "custom/bluetooth-audio": {
             "format": "{}",
             "return-type": "json",
-            "exec": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs bt",
-            "on-click": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs bt menu",
-            "on-click-right": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs bt disconnect",
+            "exec": "fluxo-rs bt",
+            "on-click": "fluxo-rs bt menu",
+            "on-click-right": "fluxo-rs bt disconnect",
             "interval": 3
         }
 
@@ -156,22 +163,22 @@
         "custom/gpu": {
             "format": "{}",
             "return-type": "json",
-            "exec": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs gpu",
+            "exec": "fluxo-rs gpu",
             "on-click": "lact gui & disown",
             "interval": 3
         },
         "custom/btrfs": {
             "format": "{}",
             "return-type": "json",
-            "exec": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs pool",
+            "exec": "fluxo-rs pool",
             "interval": 30
         },
         "custom/pixelbuds_pro": {
             "format": "{}",
             "return-type": "json",
-            "exec": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs buds",
-            "on-click": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs buds connect & disown",
-            "on-click-right": "~/.config/waybar/fluxo-rs/target/release/fluxo-rs buds cycle_anc & disown",
+            "exec": "fluxo-rs buds",
+            "on-click": "fluxo-rs buds connect & disown",
+            "on-click-right": "fluxo-rs buds cycle_anc & disown",
             "interval": 5
         },
         "custom/gpu-screen-recorder": {
