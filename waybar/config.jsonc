@@ -154,10 +154,10 @@
             "return-type": "json",
             "exec": "fluxo-rs bt",
             "on-click": "fluxo-rs bt menu",
-            "on-click-right": "fluxo-rs bt disconnect",
-            "interval": 3
+            "on-click-right": "fluxo-rs bt cycle_mode",
+            "interval": 5,
+            "tooltip": true
         }
-
         // --- Commented Out Modules ---
         /*
         "custom/gpu": {
@@ -173,7 +173,7 @@
             "exec": "fluxo-rs pool",
             "interval": 30
         },
-        "custom/pixelbuds_pro": {
+        "custom/buds": {
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs buds",

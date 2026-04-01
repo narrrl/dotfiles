@@ -36,6 +36,7 @@ window#waybar.bottom {
 #custom-disk-root,
 #custom-bluetooth-audio,
 #custom-volume,
+#custom-buds,
 #custom-mic,
 #custom-gamemode,
 #custom-power_status {
@@ -68,6 +69,8 @@ window#waybar.bottom {
   background-color: @mauve; /* Signature Catppuccin accent */
 }
 
+#workspaces button.active:hover { min-width: 30px; background-color: @mauve; }
+
 #workspaces button:hover {
   background-color: @lavender;
   min-width: 20px;
@@ -80,7 +83,7 @@ window#waybar.bottom {
 /* --- Clock (Centered Pill) --- */
 #clock {
   background: linear-gradient(45deg, @mauve, @lavender); /* Cohesive pastel gradient */
-  color: @base; 
+  color: @surface0; 
   font-weight: 900;
   margin: 4px 6px;
   padding: 4px 20px;
@@ -141,23 +144,50 @@ window#waybar.bottom {
 /* --- Center Bottom Utilities --- */
 #custom-gamemode.active {
   color: @mauve; /* Matches the workspace accent */
-  padding-left: 9px;
+  /* padding-left: 9px; */
 }
 
 /* --- Right Bottom Controls Semantic Alerts --- */
 #custom-volume.muted,
 #custom-mic.muted {
-  color: @overlay0; /* Dims when muted */
+  color: @overlay1; /* Dims when muted */
+}
+
+
+#custom-bluetooth-audio.disabled {
+    color: @overlay1; /* Green for active ANC */
+}
+
+#custom-bluetooth-audio.connected {
+    color: @blue; /* Green for active ANC */
+}
+
+#custom-bluetooth-audio.anc-off {
+    color: @blue; /* Green for active ANC */
+}
+
+#custom-bluetooth-audio.anc-active {
+    color: @blue; /* Green for active ANC */
+}
+
+#custom-bluetooth-audio.anc-aware {
+    color: @blue; /* Yellow for transparency mode */
+}
+
+#custom-bluetooth-audio.disconnected {
+    color: @text; /* Gray when off */
 }
 
 /* --- Hover States --- */
 #custom-volume:hover,
+#custom-buds:hover,
 #custom-mic:hover,
 #custom-bluetooth-audio:hover,
 #custom-power_status:hover {
   background-color: @surface1;
   color: @mauve; /* Subtle accent color on hover instead of jarring borders */
 }
+
 
 /* --- Tooltip --- */
 tooltip {
