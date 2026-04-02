@@ -31,9 +31,7 @@ window#waybar.bottom {
 #workspaces,
 #window,
 #tray,
-#custom-sys,
 #hardware,
-#custom-disk-root,
 #custom-bluetooth-audio,
 #custom-volume,
 #custom-buds,
@@ -122,7 +120,10 @@ window#waybar.bottom {
 /* Strip backgrounds and borders from the items inside the group */
 #custom-cpu,
 #custom-mem,
-#custom-network {
+#custom-network
+#custom-sys,
+#custom-gpu,
+#custom-disk-root {
   background-color: transparent;
   border: none;
   box-shadow: none;
@@ -132,14 +133,23 @@ window#waybar.bottom {
 
 /* Subtle vertical separator line between them */
 #custom-cpu, 
-#custom-mem {
+#custom-mem,
+#custom-sys,
+#custom-gpu,
+#custom-disk-root {
   border-right: 1px solid alpha(@surface1, 0.5);
   border-radius: 0;
 }
 
+#custom-network {
+    padding-left: 8px;
+    color: @mauve;
+}
+
 /* Hardware Semantic Alerts */
-#custom-cpu.high, #custom-mem.high { color: @peach; }
-#custom-cpu.max, #custom-mem.max { color: @red; }
+.normal { color: @mauve; }
+.high { color: @peach; }
+.max  { color: @red; }
 
 /* --- Center Bottom Utilities --- */
 #custom-gamemode.active {

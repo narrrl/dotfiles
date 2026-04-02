@@ -4,7 +4,7 @@
         "name": "top",
         "layer": "top",
         "position": "top",
-        "height": 34,
+        "height": 39,
         "spacing": 4,
         "margin-top": 6,
         "margin-left": 10,
@@ -46,8 +46,9 @@
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs game",
-            "on-click": "~/.config/hypr/scripts/gamemode.sh & disown",
-            "interval": 1
+            "on-click": "~/.config/hypr/scripts/gamemode.sh && pkill -RTMIN+1 waybar & disown",
+            "signal": 1,
+            "interval": 5
         },
 
         // --- Fluxo-rs Power ---
@@ -63,23 +64,24 @@
         "name": "bottom",
         "layer": "top",
         "position": "bottom",
-        "height": 34,
+        "height": 35,
         "spacing": 4,
         "margin-bottom": 6,
         "margin-left": 10,
         "margin-right": 10,
 
         "modules-left": [
-            "custom/sys",
-            "group/hardware", // Replaced individual modules with a group
-            "custom/disk-root"
+            "group/hardware" // Replaced individual modules with a group
         ],
         // Add the group definition anywhere in the bottom bar block:
         "group/hardware": {
             "orientation": "horizontal",
             "modules": [
+                "custom/sys",
                 "custom/cpu",
+                "custom/gpu",
                 "custom/mem",
+                "custom/disk-root",
                 "custom/network"
             ]
         },
@@ -111,6 +113,12 @@
             "exec": "fluxo-rs mem",
             "interval": 3
         },
+        "custom/gpu": {
+            "format": "{}",
+            "return-type": "json",
+            "exec": "fluxo-rs gpu",
+            "interval": 3
+        },
         "custom/network": {
             "format": "{}",
             "return-type": "json",
@@ -131,42 +139,38 @@
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs vol",
-            "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
-            "on-scroll-up": "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+",
-            "on-scroll-down": "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%-",
-            "on-click-right": "fluxo-rs vol --cycle",
+            "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+8 waybar",
+            "on-scroll-up": "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && pkill -RTMIN+8 waybar",
+            "on-scroll-down": "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%- && pkill -RTMIN+8 waybar",
+            "on-click-right": "fluxo-rs vol --cycle && pkill -RTMIN+8 waybar",
             "on-click-middle": "pavucontrol",
-            "interval": 1
+            "signal": 8,
+            "interval": 5
         },
         "custom/mic": {
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs mic",
-            "on-click": "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle",
-            "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%+",
-            "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%-",
-            "on-click-right": "fluxo-rs mic --cycle",
+            "on-click": "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle && pkill -RTMIN+9 waybar",
+            "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%+ && pkill -RTMIN+9 waybar",
+            "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%- && pkill -RTMIN+9 waybar",
+            "on-click-right": "fluxo-rs mic --cycle && pkill -RTMIN+9 waybar",
             "on-click-middle": "pavucontrol",
-            "interval": 1
+            "signal": 9,
+            "interval": 5
         },
         "custom/bluetooth-audio": {
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs bt",
-            "on-click": "fluxo-rs bt menu",
-            "on-click-right": "fluxo-rs bt cycle_mode",
+            "on-click": "fluxo-rs bt menu && pkill -RTMIN+10 waybar",
+            "on-click-right": "fluxo-rs bt cycle_mode && pkill -RTMIN+10 waybar",
+            "signal": 10,
             "interval": 5,
             "tooltip": true
         }
         // --- Commented Out Modules ---
         /*
-        "custom/gpu": {
-            "format": "{}",
-            "return-type": "json",
-            "exec": "fluxo-rs gpu",
-            "on-click": "lact gui & disown",
-            "interval": 3
-        },
         "custom/btrfs": {
             "format": "{}",
             "return-type": "json",
