@@ -98,32 +98,32 @@
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs sys",
-            "interval": 5
+            "interval": 1
         },
         "custom/cpu": {
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs cpu",
             "on-click": "zenmonitor & disown",
-            "interval": 3
+            "interval": 1
         },
         "custom/mem": {
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs mem",
-            "interval": 3
+            "interval": 1
         },
         "custom/gpu": {
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs gpu",
-            "interval": 3
+            "interval": 1
         },
         "custom/network": {
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs net",
-            "interval": 2
+            "interval": 1
         },
 
         // --- Fluxo-rs Utilities ---
@@ -145,7 +145,7 @@
             "on-click-right": "fluxo-rs vol --cycle && pkill -RTMIN+8 waybar",
             "on-click-middle": "pavucontrol",
             "signal": 8,
-            "interval": 5
+            "interval": 1
         },
         "custom/mic": {
             "format": "{}",
@@ -157,7 +157,7 @@
             "on-click-right": "fluxo-rs mic --cycle && pkill -RTMIN+9 waybar",
             "on-click-middle": "pavucontrol",
             "signal": 9,
-            "interval": 5
+            "interval": 1
         },
         "custom/bluetooth-audio": {
             "format": "{}",
@@ -166,7 +166,7 @@
             "on-click": "fluxo-rs bt menu && pkill -RTMIN+10 waybar",
             "on-click-right": "fluxo-rs bt cycle_mode && pkill -RTMIN+10 waybar",
             "signal": 10,
-            "interval": 5,
+            "interval": 1,
             "tooltip": true
         }
         // --- Commented Out Modules ---
