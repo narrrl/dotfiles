@@ -72,7 +72,8 @@
             "return-type": "json",
             "exec": "fluxo-rs game",
             "on-click": "~/.config/hypr/scripts/gamemode.sh",
-            "signal": 7
+            "signal": 7,
+            "interval": 5
         },
 
         "custom/power_status": {
@@ -195,7 +196,8 @@
             "return-type": "json",
             "exec": "fluxo-rs dnd",
             "on-click": "fluxo-rs dnd toggle",
-            "signal": 13
+            "signal": 13,
+            "interval": 5
         },
         "custom/backlight": {
             "format": "{}",

@@ -25,3 +25,4 @@
 !systemd/
 fish/fish_variables
 waybar/fluxo-rs
+!fluxo/

@@ -1,0 +1,85 @@
+# fluxo-rs configuration
+# Location: ~/.config/fluxo/config.toml
+
+[general]
+menu_command = "fuzzel --dmenu --prompt \"$FLUXO_PROMPT\""
+
+[signals]
+network = 1
+cpu = 2
+memory = 3
+gpu = 4
+sys = 5
+disk = 6
+game = 7
+audio = 8
+bt = 9
+power = 10
+mpris = 11
+backlight = 12
+dnd = 13
+
+[network]
+format = "{interface} ({ip}):  {rx:^4.1} MB/s   {tx:^4.1} MB/s"
+
+[cpu]
+format = "CPU: {usage:^4.1}% {temp:^4.1}C"
+
+[memory]
+format = "MEM: {used:^4.1}/{total:^4.1}GB"
+
+[sys]
+format = "UP: {uptime} LOAD: {load1:^3.1} "
+
+[disk]
+format = "{mount} {used:^3.0}/{total:^3.0}G"
+
+
+[power]
+format = "{percentage:>3}%  {icon}"
+
+[audio]
+format_sink_unmuted = " {icon} {name} {volume:>3}%"
+format_sink_muted = " {icon} {name}"
+format_source_unmuted = "{icon} {name} {volume:>3}%"
+format_source_muted = "{icon} {name}"
+
+[bt]
+format_plugin = "󰂰 {alias} [{left}|{right}] {anc}"
+format_connected = "󰂰 {alias}"
+format_disconnected = "󰂯 Disconnected"
+format_disabled = "󰂲 Off"
+
+[game]
+format_active = "<span size='large'>󰊖</span>"
+format_inactive = "<span size='large'></span>"
+
+[mpris]
+format = "{artist} - {title}"
+max_length = 20
+scroll = true 
+scroll_speed = 500
+scroll_separator = " /// "
+
+[pool]
+enabled = false
+format = "{used:>4.0}G / {total:>4.0}G"
+
+[gpu]
+enabled = false
+format_amd = "AMD: {usage:>3.0}% {vram_used:>4.1}/{vram_total:>4.1}GB {temp:>4.1}C"
+format_intel = "iGPU: {usage:>3.0}%"
+format_nvidia = "NV: {usage:>3.0}% {vram_used:>4.1}/{vram_total:>4.1}GB {temp:>4.1}C"
+
+[keyboard]
+enabled = false
+format = "{layout}"
+
+[backlight]
+enable = true 
+format = " {icon} {percentage}"
+
+[dnd]
+enabled = true
+format_dnd = "󰂛"
+format_normal = "󰂚"
