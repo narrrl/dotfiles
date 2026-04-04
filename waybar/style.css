@@ -32,6 +32,8 @@ window#waybar.bottom {
 #window,
 #tray,
 #hardware,
+#powertray,
+#spaces,
 #custom-bluetooth-audio,
 #custom-volume,
 #custom-buds,
@@ -90,36 +92,17 @@ window#waybar.bottom {
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
 }
 
-/* --- Power Status --- */
-#custom-power_status {
-  font-weight: bold;
-}
-#custom-power_status.charging {
-  color: @green;
-}
-#custom-power_status.warning {
-  color: @peach;
-}
-#custom-power_status.critical {
-  color: @red;
-  animation: blink 1s infinite alternate;
-}
-
-@keyframes blink {
-  to {
-    color: @base;
-    background-color: @red;
-  }
-}
 
 /* --- Hardware Group (Left Bottom) --- */
-#hardware {
+#hardware, #powertray, #spaces {
   border-radius: 24px;
   padding: 4px 10px;
 }
 
 /* Strip backgrounds and borders from the items inside the group */
 #custom-cpu,
+#workspaces,
+#window,
 #custom-mem,
 #custom-network
 #custom-sys,
@@ -127,7 +110,12 @@ window#waybar.bottom {
 #custom-disk-root,
 #custom-mpris,
 #clock, 
-#custom-dnd {
+#custom-dnd,
+#custom-backlight,
+#tray, 
+#custom-gamemode, 
+#custom-dnd, 
+#custom-power_status {
   background-color: transparent;
   border: none;
   box-shadow: none;
@@ -141,14 +129,18 @@ window#waybar.bottom {
 #custom-sys,
 #custom-gpu,
 #custom-disk-root,
-#custom-mpris
-/* #clock */ {
+#custom-mpris,
+#custom-network,
+#tray, 
+#custom-gamemode, 
+#custom-dnd {
   border-right: 1px solid alpha(@surface1, 0.5);
   border-radius: 0;
 }
 
 #custom-network {
     padding-left: 8px;
+    padding-right: 8px;
     color: @mauve;
 }
 
@@ -223,3 +215,21 @@ tooltip label {
   padding: 8px;
 }
 
+/* --- Power Status --- */
+#custom-power_status.charging {
+  color: @green;
+}
+#custom-power_status.warning {
+  color: @peach;
+}
+#custom-power_status.critical {
+  color: @red;
+  animation: blink 1s infinite alternate;
+}
+
+@keyframes blink {
+  to {
+    color: @base;
+    background-color: @red;
+  }
+}

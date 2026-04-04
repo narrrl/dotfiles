@@ -11,16 +11,13 @@
         "margin-right": 10,
 
         "modules-left": [
-            "hyprland/workspaces",
-            "hyprland/window"
+            "group/spaces"
         ],
         "modules-center": [
             "group/center"
         ],
         "modules-right": [
-            "tray",
-            "custom/gamemode",
-            "custom/power_status"
+            "group/powertray"
         ],
 
         // --- Standard Modules ---
@@ -41,20 +38,33 @@
             "return-type": "json",
             "exec": "fluxo-rs mpris",
             "on-click": "playerctl play-pause",
-            "signal": 11,
-            "interval": 0
+            "signal": 11
         },
         "tray": {
             "icon-size": 18,
             "spacing": 10
         },
-
+        "group/spaces": {
+            "orientation": "horizontal",
+            "modules": [
+                "hyprland/workspaces",
+                "hyprland/window"
+            ]
+        },
+        "group/powertray": {
+            "orientation": "horizontal",
+            "modules": [
+                "tray",
+                "custom/dnd",
+                "custom/gamemode",
+                "custom/power_status"
+            ]
+        },
         "group/center": {
             "orientation": "horizontal",
             "modules": [
                 "custom/mpris",
                 "clock"
-                // "custom/dnd"
             ]
         },
         "custom/gamemode": {
@@ -62,8 +72,7 @@
             "return-type": "json",
             "exec": "fluxo-rs game",
             "on-click": "~/.config/hypr/scripts/gamemode.sh",
-            "signal": 7,
-            "interval": 5
+            "signal": 7
         },
 
         "custom/power_status": {
@@ -95,7 +104,8 @@
                 "custom/cpu",
                 "custom/mem",
                 "custom/disk-root",
-                "custom/network"
+                "custom/network",
+                "custom/backlight"
             ]
         },
         "modules-center": [
@@ -112,44 +122,39 @@
             "return-type": "json",
             "exec": "fluxo-rs sys",
             "signal": 5,
-            "interval": 1
+            "interval": 5
         },
         "custom/cpu": {
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs cpu",
             "on-click": "zenmonitor & disown",
-            "signal": 2,
-            "interval": 1
+            "signal": 2
         },
         "custom/mem": {
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs mem",
-            "signal": 3,
-            "interval": 1
+            "signal": 3
         },
         "custom/gpu": {
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs gpu",
-            "signal": 4,
-            "interval": 1
+            "signal": 4
         },
         "custom/network": {
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs net",
-            "signal": 1,
-            "interval": 1
+            "signal": 1
         },
 
         "custom/disk-root": {
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs disk /",
-            "signal": 6,
-            "interval": 1
+            "signal": 6
         },
 
         // --- Fluxo-rs Audio & BT ---
@@ -162,8 +167,7 @@
             "on-scroll-down": "fluxo-rs vol down 5",
             "on-click-right": "fluxo-rs vol cycle",
             "on-click-middle": "pavucontrol",
-            "signal": 8,
-            "interval": 1
+            "signal": 8
         },
         "custom/mic": {
             "format": "{}",
@@ -174,8 +178,7 @@
             "on-scroll-down": "fluxo-rs mic down 5",
             "on-click-right": "fluxo-rs mic cycle",
             "on-click-middle": "pavucontrol",
-            "signal": 8,
-            "interval": 1
+            "signal": 8
         },
         "custom/bluetooth-audio": {
             "format": "{}",
@@ -184,7 +187,6 @@
             "on-click": "fluxo-rs bt menu",
             "on-click-right": "fluxo-rs bt cycle_mode",
             "signal": 9,
-            "interval": 1,
             "tooltip": true
         },
         "custom/dnd": {
@@ -192,8 +194,15 @@
             "return-type": "json",
             "exec": "fluxo-rs dnd",
             "on-click": "fluxo-rs dnd toggle",
-            "signal": 14,
-            "interval": 0
+            "signal": 13
+        },
+        "custom/backlight": {
+            "format": "{}",
+            "return-type": "json",
+            "exec": "fluxo-rs backlight",
+            "on-scroll-up": "brightnessctl s +10%",
+            "on-scroll-down": "brightnessctl s 10%",
+            "signal": 12
         }
     }
 ]
