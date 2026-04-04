@@ -15,7 +15,7 @@
             "hyprland/window"
         ],
         "modules-center": [
-            "clock"
+            "group/center"
         ],
         "modules-right": [
             "tray",
@@ -34,29 +34,44 @@
         },
         "clock": {
             "format": "{:%a %d %b %H:%M}",
-            "on-click-right": "xdg-open https://calendar.proton.me/u/0/month &> /dev/null & disown",
             "tooltip": false
+        },
+        "custom/mpris": {
+            "format": "{}",
+            "return-type": "json",
+            "exec": "fluxo-rs mpris",
+            "on-click": "playerctl play-pause",
+            "signal": 11,
+            "interval": 0
         },
         "tray": {
             "icon-size": 18,
             "spacing": 10
         },
 
+        "group/center": {
+            "orientation": "horizontal",
+            "modules": [
+                "custom/mpris",
+                "clock"
+                // "custom/dnd"
+            ]
+        },
         "custom/gamemode": {
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs game",
-            "on-click": "~/.config/hypr/scripts/gamemode.sh && pkill -RTMIN+1 waybar & disown",
-            "signal": 1,
+            "on-click": "~/.config/hypr/scripts/gamemode.sh",
+            "signal": 7,
             "interval": 5
         },
 
-        // --- Fluxo-rs Power ---
         "custom/power_status": {
             "format": "{} ",
             "return-type": "json",
             "exec": "fluxo-rs power",
             "on-click": "~/.config/hypr/scripts/powermenu.sh & disown",
+            "signal": 10,
             "interval": 5
         }
     },
@@ -71,15 +86,13 @@
         "margin-right": 10,
 
         "modules-left": [
-            "group/hardware" // Replaced individual modules with a group
+            "group/hardware"
         ],
-        // Add the group definition anywhere in the bottom bar block:
         "group/hardware": {
             "orientation": "horizontal",
             "modules": [
                 "custom/sys",
                 "custom/cpu",
-                "custom/gpu",
                 "custom/mem",
                 "custom/disk-root",
                 "custom/network"
@@ -98,6 +111,7 @@
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs sys",
+            "signal": 5,
             "interval": 1
         },
         "custom/cpu": {
@@ -105,33 +119,37 @@
             "return-type": "json",
             "exec": "fluxo-rs cpu",
             "on-click": "zenmonitor & disown",
+            "signal": 2,
             "interval": 1
         },
         "custom/mem": {
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs mem",
+            "signal": 3,
             "interval": 1
         },
         "custom/gpu": {
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs gpu",
+            "signal": 4,
             "interval": 1
         },
         "custom/network": {
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs net",
+            "signal": 1,
             "interval": 1
         },
 
-        // --- Fluxo-rs Utilities ---
         "custom/disk-root": {
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs disk /",
-            "interval": 30
+            "signal": 6,
+            "interval": 1
         },
 
         // --- Fluxo-rs Audio & BT ---
@@ -139,10 +157,10 @@
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs vol",
-            "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+8 waybar",
-            "on-scroll-up": "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && pkill -RTMIN+8 waybar",
-            "on-scroll-down": "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%- && pkill -RTMIN+8 waybar",
-            "on-click-right": "fluxo-rs vol --cycle && pkill -RTMIN+8 waybar",
+            "on-click": "fluxo-rs vol mute",
+            "on-scroll-up": "fluxo-rs vol up 5",
+            "on-scroll-down": "fluxo-rs vol down 5",
+            "on-click-right": "fluxo-rs vol cycle",
             "on-click-middle": "pavucontrol",
             "signal": 8,
             "interval": 1
@@ -151,49 +169,31 @@
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs mic",
-            "on-click": "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle && pkill -RTMIN+9 waybar",
-            "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%+ && pkill -RTMIN+9 waybar",
-            "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%- && pkill -RTMIN+9 waybar",
-            "on-click-right": "fluxo-rs mic --cycle && pkill -RTMIN+9 waybar",
+            "on-click": "fluxo-rs mic mute",
+            "on-scroll-up": "fluxo-rs mic up 5",
+            "on-scroll-down": "fluxo-rs mic down 5",
+            "on-click-right": "fluxo-rs mic cycle",
             "on-click-middle": "pavucontrol",
-            "signal": 9,
+            "signal": 8,
             "interval": 1
         },
         "custom/bluetooth-audio": {
             "format": "{}",
             "return-type": "json",
             "exec": "fluxo-rs bt",
-            "on-click": "fluxo-rs bt menu && pkill -RTMIN+10 waybar",
-            "on-click-right": "fluxo-rs bt cycle_mode && pkill -RTMIN+10 waybar",
-            "signal": 10,
+            "on-click": "fluxo-rs bt menu",
+            "on-click-right": "fluxo-rs bt cycle_mode",
+            "signal": 9,
             "interval": 1,
             "tooltip": true
-        }
-        // --- Commented Out Modules ---
-        /*
-        "custom/btrfs": {
-            "format": "{}",
-            "return-type": "json",
-            "exec": "fluxo-rs pool",
-            "interval": 30
         },
-        "custom/buds": {
+        "custom/dnd": {
             "format": "{}",
             "return-type": "json",
-            "exec": "fluxo-rs buds",
-            "on-click": "fluxo-rs buds connect & disown",
-            "on-click-right": "fluxo-rs buds cycle_anc & disown",
-            "interval": 5
-        },
-        "custom/gpu-screen-recorder": {
-            "format": "{}",
-            "return-type": "json",
-            "exec": "~/.config/waybar/scripts/gpu-screen-recorder-status.sh",
-            "on-click-right": "~/.config/hypr/scripts/replay-ctrl.sh save & disown",
-            "on-click-middle": "nautilus ~/Videos/replay & disown",
-            "on-click": "~/.config/waybar/scripts/toggle-replay.sh & disown",
-            "interval": 1
+            "exec": "fluxo-rs dnd",
+            "on-click": "fluxo-rs dnd toggle",
+            "signal": 14,
+            "interval": 0
         }
-        */
     }
 ]

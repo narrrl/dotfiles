@@ -36,6 +36,7 @@ window#waybar.bottom {
 #custom-volume,
 #custom-buds,
 #custom-mic,
+#custom-dnd,
 #custom-gamemode,
 #custom-power_status {
   background-color: alpha(@surface0, 0.8);
@@ -79,7 +80,7 @@ window#waybar.bottom {
 }
 
 /* --- Clock (Centered Pill) --- */
-#clock {
+#center {
   background: linear-gradient(45deg, @mauve, @lavender); /* Cohesive pastel gradient */
   color: @surface0; 
   font-weight: 900;
@@ -123,7 +124,10 @@ window#waybar.bottom {
 #custom-network
 #custom-sys,
 #custom-gpu,
-#custom-disk-root {
+#custom-disk-root,
+#custom-mpris,
+#clock, 
+#custom-dnd {
   background-color: transparent;
   border: none;
   box-shadow: none;
@@ -136,7 +140,9 @@ window#waybar.bottom {
 #custom-mem,
 #custom-sys,
 #custom-gpu,
-#custom-disk-root {
+#custom-disk-root,
+#custom-mpris
+/* #clock */ {
   border-right: 1px solid alpha(@surface1, 0.5);
   border-radius: 0;
 }
@@ -150,6 +156,12 @@ window#waybar.bottom {
 .normal { color: @mauve; }
 .high { color: @peach; }
 .max  { color: @red; }
+
+/* Stale Data Warning (Module in backoff/failure state) */
+/* .warning { 
+  color: @peach; 
+  opacity: 0.6;
+} */
 
 /* --- Center Bottom Utilities --- */
 #custom-gamemode.active {
