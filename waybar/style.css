@@ -1,117 +1,74 @@
 /* ~/.config/waybar/style.css */
 @import "./catppuccin-waybar/themes/mocha.css";
 
-/* --- Global Reset --- */
+/* ==========================================================================
+   Global Reset & Bar
+   ========================================================================== */
 * {
   border: none;
   border-radius: 12px;
   min-height: 0;
-  font-family: JetBrainsMono Nerd Font, sans-serif;
+  font-family: "JetBrainsMono Nerd Font", sans-serif;
   font-size: 12px;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* --- Bar Background (Floating Island Style) --- */
 window#waybar {
   background-color: transparent;
   color: @text;
 }
 
-/* --- Top Bar Special Handling --- */
-window#waybar.top {
-  margin-top: 6px;
-}
-
-/* --- Bottom Bar Special Handling --- */
-window#waybar.bottom {
-  margin-bottom: 6px;
-}
-
-/* --- Shared Island Styling --- */
-#workspaces,
-#window,
-#tray,
-#hardware,
-#powertray,
+/* ==========================================================================
+   Base Islands (Containers)
+   ========================================================================== */
+/* Groups and standalone modules receive the floating island styling */
 #spaces,
+#powertray,
+#hardware,
+#center,
 #custom-bluetooth-audio,
 #custom-volume,
 #custom-buds,
-#custom-mic,
-#custom-dnd,
-#custom-gamemode,
-#custom-power_status {
+#custom-mic {
   background-color: alpha(@surface0, 0.8);
   margin: 4px 6px;
   padding: 4px 16px;
   border: 1px solid alpha(@surface1, 0.5);
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
-  color: @text; /* Unifies all standard text to the soft Catppuccin white */
+  color: @text;
 }
 
-/* --- Workspaces --- */
-#workspaces {
-  padding: 2px 8px;
-}
-
-#workspaces button {
-  padding: 0;
-  margin: 4px;
-  min-width: 12px;
-  min-height: 12px;
-  background-color: @subtext0; /* Subtle dark gray for inactive */
-  color: transparent;
-  border-radius: 12px;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-#workspaces button.active {
-  min-width: 30px;
-  background-color: @mauve; /* Signature Catppuccin accent */
-}
-
-#workspaces button.active:hover { min-width: 30px; background-color: @mauve; }
-
-#workspaces button:hover {
-  background-color: @lavender;
-  min-width: 20px;
-}
-
-#workspaces button.urgent {
-  background-color: @red;
-}
-
-/* --- Clock (Centered Pill) --- */
-#center {
-  background: linear-gradient(45deg, @mauve, @lavender); /* Cohesive pastel gradient */
-  color: @surface0; 
-  font-weight: 900;
-  margin: 4px 6px;
-  padding: 4px 20px;
-  border-radius: 12px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
-}
-
-
-/* --- Hardware Group (Left Bottom) --- */
-#hardware, #powertray, #spaces {
+/* Group-specific sizing overrides */
+#hardware,
+#powertray,
+#spaces {
   border-radius: 24px;
   padding: 4px 10px;
 }
 
-/* Strip backgrounds and borders from the items inside the group */
-#custom-cpu,
+/* Center Pill (Clock + MPRIS) Override */
+#center {
+  background: linear-gradient(45deg, @mauve, @lavender);
+  color: @surface0; 
+  font-weight: 900;
+  padding: 4px 20px;
+}
+
+/* ==========================================================================
+   Grouped Modules (Inner Items)
+   ========================================================================== */
+/* Strip backgrounds and borders from items that live inside groups */
 #workspaces,
 #window,
+#custom-cpu,
 #custom-mem,
-#custom-network
 #custom-sys,
 #custom-gpu,
 #custom-disk-root,
 #custom-mpris,
-#clock, 
-#custom-dnd,
+#custom-network,
 #custom-backlight,
+#clock, 
 #tray, 
 #custom-gamemode, 
 #custom-dnd, 
@@ -123,7 +80,7 @@ window#waybar.bottom {
   padding: 0 8px; 
 }
 
-/* Subtle vertical separator line between them */
+/* Subtle vertical separator line between inner items */
 #custom-cpu, 
 #custom-mem,
 #custom-sys,
@@ -138,72 +95,110 @@ window#waybar.bottom {
   border-radius: 0;
 }
 
-#custom-network {
-    padding-left: 8px;
-    padding-right: 8px;
+/* ==========================================================================
+   Specific Module Overrides & Alerts
+   ========================================================================== */
+
+/* --- Workspaces --- */
+#workspaces {
+  padding: 0px 8px; /* Override the inner item padding */
+}
+
+#workspaces button {
+  padding: 0;
+  margin: 4px;
+  min-width: 12px;
+  min-height: 12px;
+  background-color: @subtext0;
+  color: transparent;
+  border-radius: 12px;
+}
+
+#workspaces button.active,
+#workspaces button.active:hover {
+  min-width: 30px;
+  background-color: @mauve;
+}
+
+#workspaces button:hover {
+  background-color: @lavender;
+  min-width: 20px;
+}
+
+#workspaces button.urgent {
+  background-color: @red;
+}
+
+/* --- Hardware Semantic Alerts --- */
+.normal { color: @mauve; }
+.high   { color: @peach; }
+.max    { color: @red; }
+
+#custom-network { color: @mauve; }
+#custom-gamemode.active { color: @mauve; }
+
+/* --- Media / Controls --- */
+#custom-volume.unmuted, 
+#custom-mic.unmuted {
     color: @mauve;
 }
-
-/* Hardware Semantic Alerts */
-.normal { color: @mauve; }
-.high { color: @peach; }
-.max  { color: @red; }
-
-/* Stale Data Warning (Module in backoff/failure state) */
-/* .warning { 
-  color: @peach; 
-  opacity: 0.6;
-} */
-
-/* --- Center Bottom Utilities --- */
-#custom-gamemode.active {
-  color: @mauve; /* Matches the workspace accent */
-  /* padding-left: 9px; */
-}
-
-/* --- Right Bottom Controls Semantic Alerts --- */
 #custom-volume.muted,
 #custom-mic.muted {
-  color: @overlay1; /* Dims when muted */
+  color: @overlay1;
 }
 
-
-#custom-bluetooth-audio.disabled {
-    color: @overlay1; /* Green for active ANC */
+/* --- Bluetooth Audio --- */
+#custom-bluetooth-audio.disabled,
+#custom-bluetooth-audio.disconnected {
+  color: @overlay1;
 }
 
 #custom-bluetooth-audio.connected {
-    color: @blue; /* Green for active ANC */
+  color: @blue;
 }
 
-#custom-bluetooth-audio.anc-off {
-    color: @blue; /* Green for active ANC */
+/* ANC States  */
+#custom-bluetooth-audio.anc-active,
+#custom-bluetooth-audio.connected.anc-active,
+#custom-bluetooth-audio.connected\ anc-active {
+  color: @mauve;
 }
 
-#custom-bluetooth-audio.anc-active {
-    color: @blue; /* Green for active ANC */
+#custom-bluetooth-audio.anc-aware,
+#custom-bluetooth-audio.connected.anc-aware,
+#custom-bluetooth-audio.connected\ anc-aware {
+  color: @green;
 }
 
-#custom-bluetooth-audio.anc-aware {
-    color: @blue; /* Yellow for transparency mode */
+#custom-bluetooth-audio.anc-off,
+#custom-bluetooth-audio.connected.anc-off,
+#custom-bluetooth-audio.connected\ anc-off {
+  color: @blue;
 }
 
-#custom-bluetooth-audio.disconnected {
-    color: @text; /* Gray when off */
+/* --- Power Status --- */
+#custom-power_status.charging { color: @green; }
+#custom-power_status.warning  { color: @peach; }
+#custom-power_status.critical {
+  color: @red;
+  animation: blink 1s infinite alternate;
 }
 
-/* --- Hover States --- */
+
+/* Interactive Hover States for Standalone Modules */
 #custom-volume:hover,
 #custom-buds:hover,
 #custom-mic:hover,
 #custom-bluetooth-audio:hover,
 #custom-power_status:hover {
   background-color: @surface1;
-  color: @mauve; /* Subtle accent color on hover instead of jarring borders */
+  color: @mauve;
 }
 
 
-/* --- Tooltip --- */
+/* ==========================================================================
+   Tooltips & Animations
+   ========================================================================== */
 tooltip {
   background-color: alpha(@base, 0.9);
   border: 1px solid @surface1;
@@ -213,18 +208,6 @@ tooltip {
 tooltip label {
   color: @text;
   padding: 8px;
-}
-
-/* --- Power Status --- */
-#custom-power_status.charging {
-  color: @green;
-}
-#custom-power_status.warning {
-  color: @peach;
-}
-#custom-power_status.critical {
-  color: @red;
-  animation: blink 1s infinite alternate;
 }
 
 @keyframes blink {

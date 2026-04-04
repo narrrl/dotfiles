@@ -185,7 +185,8 @@
             "return-type": "json",
             "exec": "fluxo-rs bt",
             "on-click": "fluxo-rs bt menu",
-            "on-click-right": "fluxo-rs bt cycle_mode",
+            "on-click-right": "fluxo-rs bt cycle",
+            "on-click-middle": "fluxo-rs bt cycle_mode",
             "signal": 9,
             "tooltip": true
         },
