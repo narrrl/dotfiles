@@ -44,6 +44,14 @@
             "icon-size": 18,
             "spacing": 10
         },
+        "custom/dnd": {
+            "format": "{}",
+            "return-type": "json",
+            "exec": "fluxo-rs dnd",
+            "on-click": "dunstctl set-paused toggle",
+            "signal": 13,
+            "interval": 5
+        },
         "group/spaces": {
             "orientation": "horizontal",
             "modules": [
@@ -54,8 +62,8 @@
         "group/powertray": {
             "orientation": "horizontal",
             "modules": [
-                "tray",
                 "custom/dnd",
+                "tray",
                 "custom/gamemode",
                 "custom/power_status"
             ]
@@ -190,14 +198,6 @@
             "on-click-middle": "fluxo-rs bt cycle_mode",
             "signal": 9,
             "tooltip": true
-        },
-        "custom/dnd": {
-            "format": "{}",
-            "return-type": "json",
-            "exec": "fluxo-rs dnd",
-            "on-click": "fluxo-rs dnd toggle",
-            "signal": 13,
-            "interval": 5
         },
         "custom/backlight": {
             "format": "{}",

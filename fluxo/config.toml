@@ -39,16 +39,16 @@ format = "{mount} {used:^3.0}/{total:^3.0}G"
 format = "{percentage:>3}%  {icon}"
 
 [audio]
-format_sink_unmuted = " {icon} {name} {volume:>3}%"
-format_sink_muted = " {icon} {name}"
-format_source_unmuted = "{icon} {name} {volume:>3}%"
-format_source_muted = "{icon} {name}"
+format_sink_unmuted = "{name} {volume:>3}% <span size='large'> {icon}</span>"
+format_sink_muted = "{name} <span size='large'> {icon}</span>"
+format_source_unmuted = "{name} {volume:>3}% <span size='large'> {icon}</span>"
+format_source_muted = "{name} <span size='large'> {icon}</span>"
 
 [bt]
-format_plugin = "󰂰 {alias} [{left}|{right}] {anc}"
-format_connected = "󰂰 {alias}"
-format_disconnected = "󰂯 Disconnected"
-format_disabled = "󰂲 Off"
+format_plugin = "{alias} [{left}|{right}] {anc} <span size='large'> 󰂰</span>"
+format_connected = "{alias} <span size='large'> 󰂰</span>"
+format_disconnected = "Disconnected <span size='large'> 󰂯</span>"
+format_disabled = "<span size='large'>󰂲</span>"
 
 [game]
 format_active = "<span size='large'>󰊖</span>"
@@ -81,5 +81,5 @@ format = " {icon} {percentage}"
 
 [dnd]
 enabled = true
-format_dnd = "󰂛"
-format_normal = "󰂚"
+format_dnd = "<span size='large'>󰂛</span>"
+format_normal = "<span size='large'>󰂚</span>"
