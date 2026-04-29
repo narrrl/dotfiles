@@ -1,0 +1,17 @@
+[Unit]
+Description=Fluxo — high-performance Waybar module daemon
+Documentation=https://github.com/narl/fluxo-rs
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/.cargo/bin/fluxo daemon
+Restart=on-failure
+RestartSec=3
+
+# Ensure the daemon can reach the user's D-Bus session and Wayland/Hyprland sockets.
+Slice=app-graphical.slice
+
+[Install]
+WantedBy=graphical-session.target

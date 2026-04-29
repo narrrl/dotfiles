@@ -36,7 +36,7 @@
         "custom/mpris": {
             "format": "{}",
             "return-type": "json",
-            "exec": "fluxo-rs mpris",
+            "exec": "fluxo mpris",
             "on-click": "playerctl play-pause",
             "signal": 11
         },
@@ -47,7 +47,7 @@
         "custom/dnd": {
             "format": "{}",
             "return-type": "json",
-            "exec": "fluxo-rs dnd",
+            "exec": "fluxo dnd",
             "on-click": "dunstctl set-paused toggle",
             "signal": 13,
             "interval": 5
@@ -78,7 +78,7 @@
         "custom/gamemode": {
             "format": "{}",
             "return-type": "json",
-            "exec": "fluxo-rs game",
+            "exec": "fluxo game",
             "on-click": "~/.config/hypr/scripts/gamemode.sh",
             "signal": 7,
             "interval": 5
@@ -87,7 +87,7 @@
         "custom/power_status": {
             "format": "{} ",
             "return-type": "json",
-            "exec": "fluxo-rs power",
+            "exec": "fluxo power",
             "on-click": "~/.config/hypr/scripts/powermenu.sh & disown",
             "signal": 10,
             "interval": 5
@@ -125,86 +125,86 @@
             "custom/mic"
         ],
 
-        // --- Fluxo-rs System & Hardware ---
+        // --- fluxo System & Hardware ---
         "custom/sys": {
             "format": "{}",
             "return-type": "json",
-            "exec": "fluxo-rs sys",
+            "exec": "fluxo sys",
             "signal": 5,
             "interval": 5
         },
         "custom/cpu": {
             "format": "{}",
             "return-type": "json",
-            "exec": "fluxo-rs cpu",
+            "exec": "fluxo cpu",
             "on-click": "zenmonitor & disown",
             "signal": 2
         },
         "custom/mem": {
             "format": "{}",
             "return-type": "json",
-            "exec": "fluxo-rs mem",
+            "exec": "fluxo mem",
             "signal": 3
         },
         "custom/gpu": {
             "format": "{}",
             "return-type": "json",
-            "exec": "fluxo-rs gpu",
+            "exec": "fluxo gpu",
             "signal": 4
         },
         "custom/network": {
             "format": "{}",
             "return-type": "json",
-            "exec": "fluxo-rs net",
+            "exec": "fluxo net",
             "signal": 1
         },
 
         "custom/disk-root": {
             "format": "{}",
             "return-type": "json",
-            "exec": "fluxo-rs disk /",
+            "exec": "fluxo disk /",
             "signal": 6
         },
 
-        // --- Fluxo-rs Audio & BT ---
+        // --- fluxo Audio & BT ---
         "custom/volume": {
             "format": "{}",
             "return-type": "json",
-            "exec": "fluxo-rs vol",
-            "on-click": "fluxo-rs vol mute",
-            "on-scroll-up": "fluxo-rs vol up 5",
-            "on-scroll-down": "fluxo-rs vol down 5",
-            "on-click-right": "fluxo-rs vol cycle",
+            "exec": "fluxo vol",
+            "on-click": "fluxo vol mute",
+            "on-scroll-up": "fluxo vol up 5",
+            "on-scroll-down": "fluxo vol down 5",
+            "on-click-right": "fluxo vol cycle",
             "on-click-middle": "pavucontrol",
             "signal": 8
         },
         "custom/mic": {
             "format": "{}",
             "return-type": "json",
-            "exec": "fluxo-rs mic",
-            "on-click": "fluxo-rs mic mute",
-            "on-scroll-up": "fluxo-rs mic up 5",
-            "on-scroll-down": "fluxo-rs mic down 5",
-            "on-click-right": "fluxo-rs mic cycle",
+            "exec": "fluxo mic",
+            "on-click": "fluxo mic mute",
+            "on-scroll-up": "fluxo mic up 5",
+            "on-scroll-down": "fluxo mic down 5",
+            "on-click-right": "fluxo mic cycle",
             "on-click-middle": "pavucontrol",
             "signal": 8
         },
         "custom/bluetooth-audio": {
             "format": "{}",
             "return-type": "json",
-            "exec": "fluxo-rs bt",
-            "on-click": "fluxo-rs bt menu",
-            "on-click-right": "fluxo-rs bt cycle",
-            "on-click-middle": "fluxo-rs bt cycle_mode",
+            "exec": "fluxo bt",
+            "on-click": "fluxo bt menu",
+            "on-click-right": "fluxo bt cycle",
+            "on-click-middle": "fluxo bt cycle_mode",
             "signal": 9,
             "tooltip": true
         },
         "custom/backlight": {
             "format": "{}",
             "return-type": "json",
-            "exec": "fluxo-rs backlight",
+            "exec": "fluxo backlight",
             "on-scroll-up": "brightnessctl s +10%",
-            "on-scroll-down": "brightnessctl s 10%",
+            "on-scroll-down": "brightnessctl s 10%-",
             "signal": 12
         }
     }
