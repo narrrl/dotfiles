@@ -18,6 +18,7 @@ application/vnd.openxmlformats-officedocument.wordprocessingml.document=libreoff
 x-scheme-handler/ror2mm=r2modman.desktop
 image/webp=feh.desktop
 x-scheme-handler/claude-cli=claude-code-url-handler.desktop
+x-scheme-handler/msteams=teams-for-linux.desktop
 
 [Added Associations]
 application/pdf=org.pwmt.zathura-pdf-poppler.desktop;
