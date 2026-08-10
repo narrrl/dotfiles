@@ -1,0 +1,148 @@
+import QtQuick
+import Quickshell
+import Quickshell.Wayland
+import Quickshell.Services.Notifications
+import "root:/config"
+import "root:/components"
+import "root:/services"
+
+// Floating notification stack under the bar, top right. Replaces dunst.
+PanelWindow {
+    id: root
+
+    required property var modelData
+    screen: modelData
+
+    // Only the primary bar screen shows toasts, to avoid duplicates.
+    readonly property bool primaryScreen: Quickshell.screens.length === 0
+        || Quickshell.screens[0] === modelData
+
+    WlrLayershell.layer: WlrLayer.Overlay
+    WlrLayershell.namespace: "takemi-toasts"
+    WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+
+    anchors { top: true; right: true }
+    margins {
+        top: Theme.barHeight + Theme.barMargin * 2
+        right: Theme.barMargin
+    }
+
+    implicitWidth: 400
+    implicitHeight: Math.max(1, stack.implicitHeight)
+    color: "transparent"
+    exclusionMode: ExclusionMode.Ignore
+    visible: primaryScreen && stack.children.length > 0
+
+    // Toasts currently on screen, newest first.
+    property list<Notification> live: []
+    property int maxLive: 5
+
+    Connections {
+        target: Notifs
+        enabled: root.primaryScreen
+
+        function onPopupRequested(notif) {
+            root.live = [notif, ...root.live].slice(0, root.maxLive);
+        }
+    }
+
+    function retire(notif) {
+        const idx = root.live.indexOf(notif);
+        if (idx === -1) return;
+        const next = root.live.slice();
+        next.splice(idx, 1);
+        root.live = next;
+    }
+
+    Column {
+        id: stack
+        anchors.right: parent.right
+        anchors.top: parent.top
+        width: parent.width
+        spacing: Theme.padS
+
+        Repeater {
+            model: root.live
+
+            Item {
+                id: toast
+                required property var modelData
+
+                width: stack.width
+                height: card.implicitHeight
+
+                NotifCard {
+                    id: card
+                    width: parent.width
+                    notif: toast.modelData
+                    onDismissed: {
+                        Notifs.dismiss(toast.modelData);
+                        root.retire(toast.modelData);
+                    }
+                }
+
+                // Countdown rule that drains along the bottom edge.
+                Rectangle {
+                    id: fuse
+                    anchors.bottom: parent.bottom
+                    anchors.left: parent.left
+                    height: 2
+                    width: parent.width
+                    color: Theme.alpha(card.tone, 0.7)
+                    visible: life.running
+                }
+
+                NumberAnimation {
+                    id: life
+                    target: fuse
+                    property: "width"
+                    from: toast.width
+                    to: 0
+                    running: false
+                    duration: Notifs.timeoutFor(toast.modelData)
+                    easing.type: Easing.Linear
+                    onFinished: root.retire(toast.modelData)
+                }
+
+                // Slide in from the right, Persona-style.
+                opacity: 0
+                transform: Translate { id: shove; x: 60 }
+
+                Component.onCompleted: {
+                    enter.start();
+                    const ms = Notifs.timeoutFor(toast.modelData);
+                    if (ms > 0) life.start();
+                }
+
+                ParallelAnimation {
+                    id: enter
+                    NumberAnimation {
+                        target: toast; property: "opacity"
+                        to: 1; duration: Theme.durBase
+                    }
+                    NumberAnimation {
+                        target: shove; property: "x"
+                        from: 60; to: 0
+                        duration: Theme.durSlow
+                        easing.type: Easing.OutBack
+                    }
+                }
+
+                // Hovering a toast pauses its fuse.
+                HoverHandler {
+                    id: toastHover
+                    onHoveredChanged: {
+                        if (!life.duration) return;
+                        if (hovered) life.pause();
+                        else if (life.paused) life.resume();
+                    }
+                }
+
+                TapHandler {
+                    acceptedButtons: Qt.LeftButton
+                    onTapped: root.retire(toast.modelData)
+                }
+            }
+        }
+    }
+}

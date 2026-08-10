@@ -1,5 +1,10 @@
 # fluxo-rs configuration
 # Location: ~/.config/fluxo/config.toml
+#
+# The hardware modules below emit raw pipe-delimited values rather than display
+# strings. The Quickshell config (~/.config/quickshell/services/Sys.qml) parses
+# them and does its own formatting. The previous human-readable Waybar formats
+# are preserved in config.toml.waybar-bak.
 
 [general]
 menu_command = "fuzzel --dmenu --prompt \"$FLUXO_PROMPT\""
@@ -20,23 +25,23 @@ backlight = 12
 dnd = 13
 
 [network]
-format = "{interface} ({ip}):  {rx:^4.1} MB/s   {tx:^4.1} MB/s"
+format = "{interface}|{ip}|{rx:.3}|{tx:.3}"
 
 [cpu]
-format = "CPU: {usage:^4.1}% {temp:^4.1}C"
+format = "{usage:.1}|{temp:.1}"
 
 [memory]
-format = "MEM: {used:^4.1}/{total:^4.1}GB"
+format = "{used:.2}|{total:.2}"
 
 [sys]
-format = "UP: {uptime} LOAD: {load1:^3.1} "
+format = "{uptime}|{load1:.2}|{load5:.2}|{load15:.2}"
 
 [disk]
-format = "{mount} {used:^3.0}/{total:^3.0}G"
+format = "{mount}|{used:.1}|{total:.1}"
 
 
 [power]
-format = "{percentage:>3}% {icon}"
+format = "{percentage}"
 
 [audio]
 format_sink_unmuted = "{name} {volume:>3}% <span size='large'>{icon}</span>"
@@ -66,18 +71,18 @@ enabled = false
 format = "{used:>4.0}G / {total:>4.0}G"
 
 [gpu]
-enabled = false
-format_amd = "AMD: {usage:>3.0}% {vram_used:>4.1}/{vram_total:>4.1}GB {temp:>4.1}C"
-format_intel = "iGPU: {usage:>3.0}%"
-format_nvidia = "NV: {usage:>3.0}% {vram_used:>4.1}/{vram_total:>4.1}GB {temp:>4.1}C"
+enabled = true
+format_amd = "{usage:.0}|{vram_used:.2}|{vram_total:.2}|{temp:.1}"
+format_intel = "{usage:.0}|0|0|0"
+format_nvidia = "{usage:.0}|{vram_used:.2}|{vram_total:.2}|{temp:.1}"
 
 [keyboard]
 enabled = false
 format = "{layout}"
 
 [backlight]
-enable = true 
-format = " {icon} {percentage}"
+enable = true
+format = "{percentage}"
 
 [dnd]
 enabled = true

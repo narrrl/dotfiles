@@ -5,8 +5,9 @@
 LID_STATE_FILE="$HOME/.config/hypr/lid_state.conf"
 
 restart_ui() {
-    # Spawn in background and detach
-	systemctl restart --user waybar hyprpaper
+    # The Quickshell bar follows monitor hotplug on its own, so only the
+    # wallpaper daemon needs a kick.
+	systemctl restart --user hyprpaper
 }
 
 if [[ "$1" == "close" ]]; then
