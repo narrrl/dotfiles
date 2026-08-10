@@ -39,7 +39,10 @@ Item {
     property color halftoneColor: Theme.primary
     property real halftoneOpacity: 0.07
 
-    // Inner glow along the top edge, for panels that should feel backlit.
+    // Accepted and ignored. This used to paint a teal-to-transparent gradient
+    // down the top of every panel in the shell — the single biggest source of
+    // the murky blue cast. Fills are flat now. Kept as a no-op property so the
+    // call sites that still set it don't have to be chased down.
     property bool sheen: false
 
     // The screen-print stack. A pure-black copy of the silhouette sits behind
@@ -70,6 +73,28 @@ Item {
     property real padding: Theme.padM
 
     readonly property real contentPad: padding + leanInset
+
+    // The panel outline as a mask texture. Anything that is painted from the
+    // raw polygon rather than from the chamfered one has to be clipped to this,
+    // or it escapes at the chopped corners.
+    Shape {
+        id: silhouette
+        anchors.fill: parent
+        visible: false
+        layer.enabled: true
+        layer.smooth: true
+        preferredRendererType: Shape.CurveRenderer
+
+        ShapePath {
+            fillColor: "white"
+            strokeColor: "transparent"
+            joinStyle: ShapePath.MiterJoin
+
+            PathPolyline {
+                path: Geom.chamfer(root.polygon, root.chop, root.chopCorners)
+            }
+        }
+    }
 
     // Offset black copy of the silhouette, behind everything.
     Loader {
@@ -138,92 +163,76 @@ Item {
         anchors.fill: parent
         active: root.halftone
         asynchronous: true
-        sourceComponent: Item {
-            Shape {
-                id: maskShape
-                anchors.fill: parent
-                visible: false
-                layer.enabled: true
-                layer.smooth: true
-                preferredRendererType: Shape.CurveRenderer
-                ShapePath {
-                    fillColor: "white"
-                    strokeColor: "transparent"
-                    PathPolyline {
-                        path: Geom.chamfer(root.polygon, root.chop, root.chopCorners)
-                    }
-                }
-            }
-
-            Image {
-                anchors.fill: parent
-                source: Theme.texHalftone
-                fillMode: Image.Tile
-                opacity: root.halftoneOpacity
-                smooth: false
-                layer.enabled: true
-                layer.effect: MultiEffect {
-                    colorization: 1.0
-                    colorizationColor: root.halftoneColor
-                    maskEnabled: true
-                    maskSource: maskShape
-                }
-            }
-        }
-    }
-
-    // Backlit top edge.
-    Loader {
-        anchors.fill: parent
-        active: root.sheen
-        sourceComponent: Shape {
-            preferredRendererType: Shape.CurveRenderer
-            ShapePath {
-                strokeColor: "transparent"
-                fillGradient: LinearGradient {
-                    x1: 0; y1: 0; x2: 0; y2: root.height
-                    GradientStop { position: 0.0; color: Theme.alpha(Theme.primary, 0.16) }
-                    GradientStop { position: 0.55; color: "transparent" }
-                }
-                PathPolyline {
-                    path: Geom.chamfer(root.polygon, root.chop, root.chopCorners)
-                }
+        sourceComponent: Image {
+            anchors.fill: parent
+            source: Theme.texHalftone
+            fillMode: Image.Tile
+            opacity: root.halftoneOpacity
+            smooth: false
+            layer.enabled: true
+            layer.effect: MultiEffect {
+                colorization: 1.0
+                colorizationColor: root.halftoneColor
+                maskEnabled: true
+                maskSource: silhouette
             }
         }
     }
 
     // Leading-edge slash.
+    //
+    // Its polygon is built from the panel's raw corners, so on a panel with a
+    // chopped corner the slash used to run straight through the cut and out the
+    // far side — a crimson wedge sitting a few pixels outside the silhouette,
+    // at an angle that matched nothing. It is masked to the outline now, so the
+    // slash ends exactly where the chamfer does.
     Loader {
         anchors.fill: parent
         active: root.slash
-        sourceComponent: Shape {
-            preferredRendererType: Shape.CurveRenderer
-            ShapePath {
-                fillColor: root.slashColor
-                strokeColor: "transparent"
-                PathPolyline {
-                    path: {
-                        const t = root.slashWidth;
+        sourceComponent: Item {
+            Shape {
+                id: slashShape
+                anchors.fill: parent
+                visible: false
+                layer.enabled: true
+                layer.smooth: true
+                preferredRendererType: Shape.CurveRenderer
 
-                        // On a rail slab the slash runs along the slanted top
-                        // edge instead of down a side.
-                        if (root.vertical) {
-                            const voff = root.width * root.lean;
+                ShapePath {
+                    fillColor: root.slashColor
+                    strokeColor: "transparent"
+
+                    PathPolyline {
+                        path: {
+                            const t = root.slashWidth;
+
+                            // On a rail slab the slash runs along the slanted
+                            // top edge instead of down a side.
+                            if (root.vertical) {
+                                const voff = root.width * root.lean;
+                                return root.leanLeft
+                                    ? Geom.closed([Qt.point(0, 0), Qt.point(root.width, voff),
+                                                   Qt.point(root.width, voff + t), Qt.point(0, t)])
+                                    : Geom.closed([Qt.point(0, voff), Qt.point(root.width, 0),
+                                                   Qt.point(root.width, t), Qt.point(0, voff + t)]);
+                            }
+
+                            const off = root.height * root.lean;
                             return root.leanLeft
-                                ? Geom.closed([Qt.point(0, 0), Qt.point(root.width, voff),
-                                               Qt.point(root.width, voff + t), Qt.point(0, t)])
-                                : Geom.closed([Qt.point(0, voff), Qt.point(root.width, 0),
-                                               Qt.point(root.width, t), Qt.point(0, voff + t)]);
+                                ? Geom.closed([Qt.point(0, 0), Qt.point(t, 0),
+                                               Qt.point(off + t, root.height), Qt.point(off, root.height)])
+                                : Geom.closed([Qt.point(off, 0), Qt.point(off + t, 0),
+                                               Qt.point(t, root.height), Qt.point(0, root.height)]);
                         }
-
-                        const off = root.height * root.lean;
-                        return root.leanLeft
-                            ? Geom.closed([Qt.point(0, 0), Qt.point(t, 0),
-                                           Qt.point(off + t, root.height), Qt.point(off, root.height)])
-                            : Geom.closed([Qt.point(off, 0), Qt.point(off + t, 0),
-                                           Qt.point(t, root.height), Qt.point(0, root.height)]);
                     }
                 }
+            }
+
+            MultiEffect {
+                anchors.fill: parent
+                source: slashShape
+                maskEnabled: true
+                maskSource: silhouette
             }
         }
     }

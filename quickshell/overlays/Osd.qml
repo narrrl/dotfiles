@@ -67,7 +67,8 @@ PanelWindow {
     readonly property color tone: {
         switch (root.kind) {
         case "mic": return Audio.micMuted ? Theme.accent : Theme.blue;
-        case "brightness": return Theme.warn;
+        // Turning the screen up is not a warning. White, like volume.
+        case "brightness": return Theme.text;
         default: return Audio.muted ? Theme.accent : Theme.primary;
         }
     }
@@ -143,24 +144,40 @@ PanelWindow {
             anchors.verticalCenter: parent.verticalCenter
             spacing: 4
 
-            Row {
+            // Title left, readout hard right. This used to be a Row with a
+            // `parent.width - 90` spacer, which assumed the two labels never
+            // needed more than 90px between them — "BRIGHTNESS" plus "100%"
+            // does, and the percentage fell off the right edge. Anchoring the
+            // readout to the right and letting the title elide into whatever
+            // is left makes the widest case the safe one.
+            Item {
                 width: parent.width
+                height: Math.max(titleLabel.implicitHeight, readout.implicitHeight)
 
                 Text {
+                    id: titleLabel
+                    anchors.left: parent.left
+                    anchors.right: readout.left
+                    anchors.rightMargin: Theme.padS
+                    anchors.verticalCenter: parent.verticalCenter
                     text: root.title.toUpperCase()
                     color: Theme.subtext
+                    elide: Text.ElideRight
                     font.family: Theme.fontMono
                     font.pixelSize: Theme.fsMicro
                     font.letterSpacing: 2
                     renderType: Text.NativeRendering
                 }
 
-                Item {
-                    width: parent.width - 90
-                    height: 1
-                }
-
                 SplitText {
+                    id: readout
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    // Natural width, not a fixed one — SplitText offsets its
+                    // ghosts with left/right anchor margins, so pinning the
+                    // width and right-aligning the text would flatten the RGB
+                    // split away. The title's left edge is anchored, so a
+                    // widening readout only moves its own left edge.
                     text: Math.round(root.level * 100) + "%"
                     pixelSize: Theme.fsBody
                     split: 1

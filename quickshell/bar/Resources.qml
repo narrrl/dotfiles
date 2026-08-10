@@ -14,13 +14,7 @@ BarPill {
 
     accent: Theme.heat(Math.max(Sys.cpuUsage, Sys.memPercent))
 
-    // Roomier than it was on the bar. In the dock there is nothing to compete
-    // with, so the figures get real padding instead of being pushed up against
-    // the slanted edges.
     padding: Theme.padM
-    lean: Theme.leanFor(2)
-    chop: Theme.chopFor(2)
-    chopCorners: Theme.cornersFor(2)
     implicitWidth: layout.implicitWidth + contentPad * 2
 
     onClicked: Actions.openSystemMonitor()

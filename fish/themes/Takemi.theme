@@ -1,0 +1,52 @@
+# name: 'Takemi'
+# url: 'local — matched to ~/.config/quickshell/config/Theme.qml'
+# preferred_background: 0a0a0c
+
+# Same rules as the shell and the editor: white does the work, crimson is the
+# only saturated colour and it means either "load-bearing" (keyword, prefix,
+# selected) or "wrong" (error, status, root). Everything else is grey, or a hue
+# pulled far enough down that it reads as grey with a temperature.
+#
+# Kept in sync by hand with conf.d/takemi_theme.fish, which is what actually
+# takes effect at startup. This file exists so `fish_config` can preview it.
+
+fish_color_normal ffffff
+fish_color_command ffffff --bold
+fish_color_keyword ff2d40
+fish_color_param c8c8ce
+fish_color_option 8d9bb8
+fish_color_quote 7f9b6a
+fish_color_escape 9db8bd
+fish_color_operator c8c8ce
+fish_color_redirection ff6b78
+fish_color_end 6b6b70
+fish_color_comment 6b6b70 --italics
+fish_color_error ff2d40 --bold
+fish_color_cancel ff2d40
+fish_color_gray 6b6b70
+fish_color_autosuggestion 4a4a52
+fish_color_selection 000000 --background=ff2d40
+fish_color_search_match 000000 --background=c8c8ce
+fish_color_match 000000 --background=ff2d40
+fish_color_history_current --bold
+fish_color_valid_path --underline
+fish_color_cwd ffffff --bold
+fish_color_cwd_root ff2d40 --bold
+fish_color_user c8c8ce
+fish_color_host ffffff --bold
+fish_color_host_remote ff6b78
+fish_color_status ff2d40
+
+fish_pager_color_progress 6b6b70 --background=141418
+fish_pager_color_background
+fish_pager_color_prefix ffffff --bold
+fish_pager_color_completion c8c8ce
+fish_pager_color_description 6b6b70
+fish_pager_color_secondary_background --background=0d0d10
+fish_pager_color_secondary_completion c8c8ce
+fish_pager_color_secondary_description 6b6b70
+fish_pager_color_secondary_prefix ffffff --bold
+fish_pager_color_selected_background --background=ff2d40
+fish_pager_color_selected_completion 000000
+fish_pager_color_selected_description 000000
+fish_pager_color_selected_prefix 000000 --bold

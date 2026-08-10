@@ -27,10 +27,17 @@ Item {
     }
 
     // ------------------------------------------------------- background
+    // Whatever hyprpaper is actually displaying, not a path written down once
+    // and left to rot. `screenName` lets a multi-monitor lock show each screen
+    // its own picture; it falls back to the first wallpaper hyprpaper reports.
+    property string screenName: ""
+
     Image {
         id: wall
         anchors.fill: parent
-        source: Theme.wallpaper
+        source: surface.screenName !== ""
+            ? Wallpaper.forMonitor(surface.screenName)
+            : Wallpaper.source
         fillMode: Image.PreserveAspectCrop
         asynchronous: false
         cache: true
@@ -45,7 +52,9 @@ Item {
         }
     }
 
-    // Teal wash, pulling the photo toward the shell's palette.
+    // Wash pulling the photo down toward the shell's ground. Was described as
+    // a teal wash back when the UI was teal; the colours it actually uses are
+    // the neutral surfaces, which is what it should have been all along.
     Rectangle {
         anchors.fill: parent
         gradient: Gradient {
@@ -55,41 +64,36 @@ Item {
         }
     }
 
-    Image {
+    // The same wedge-and-stripes ground the power menu stands on. The wedge
+    // sits under the clock, which is where the power menu puts it under the
+    // title — so the two screens land the crimson mass in the same place.
+    P5Backdrop {
+        id: backdrop
         anchors.fill: parent
-        source: Theme.texHalftone
-        fillMode: Image.Tile
-        opacity: 0.05
-        smooth: false
-        layer.enabled: true
-        layer.effect: TintEffect { tintColor: Theme.primary }
-    }
-
-    // Crimson stripe band running behind the prompt — the Persona 5 title
-    // treatment. Declared before the auth block so it stays underneath it.
-    Item {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: authBlock.top
-        anchors.topMargin: -6
-        height: 42
-        clip: true
-        opacity: 0.5
-
-        Image {
-            anchors.fill: parent
-            source: Theme.texStripes
-            fillMode: Image.Tile
-            smooth: false
-            layer.enabled: true
-            layer.effect: TintEffect { tintColor: Theme.accent }
-        }
+        reveal: 0
+        wedgeSpan: 0.30
+        wedgeOpacity: 0.30
+        stripeOpacity: 0.07
     }
 
     // ------------------------------------------------------------ clock
     SystemClock {
         id: clock
         precision: SystemClock.Minutes
+    }
+
+    // The house mark, same wordmark the bar carries far left. Small, above the
+    // clock — the lock's hero is the time, not the branding.
+    SplitText {
+        id: mark
+        anchors.left: timeBlock.left
+        anchors.bottom: timeBlock.top
+        anchors.bottomMargin: 6
+        text: "P5"
+        pixelSize: Theme.fsTitle
+        split: 2
+        letterSpacing: 0
+        opacity: timeBlock.opacity
     }
 
     Column {
@@ -403,6 +407,12 @@ Item {
 
     ParallelAnimation {
         id: intro
+        // The stripes sweep in under everything, the same move the power menu
+        // opens with.
+        NumberAnimation {
+            target: backdrop; property: "reveal"
+            from: 0; to: 1; duration: Theme.durLazy; easing.type: Easing.OutExpo
+        }
         NumberAnimation {
             target: timeBlock; property: "opacity"
             from: 0; to: 1; duration: Theme.durLazy; easing.type: Easing.OutExpo

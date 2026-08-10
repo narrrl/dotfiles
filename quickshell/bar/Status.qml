@@ -71,7 +71,9 @@ BarPill {
             icon: Brightness.icon
             label: Math.round(Brightness.percent) + "%"
             labelWidth: 34
-            tint: Theme.warn
+            // Brightness is never an alarm — it stays white and lets the
+            // battery be the only thing in the cluster that can go crimson.
+            tint: Theme.text
             onScrolled: delta => Brightness.change(delta > 0 ? 5 : -5)
         }
 

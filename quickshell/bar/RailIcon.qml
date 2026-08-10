@@ -19,6 +19,10 @@ Item {
 
     readonly property bool hovered: hover.hovered
 
+    // Clearance between the wipe and the rail's left edge, chosen so the bar
+    // stays inside the slab once `scale` has expanded the icon about its centre.
+    readonly property real wipeInset: 5
+
     signal clicked()
     signal rightClicked()
     signal middleClicked()
@@ -68,12 +72,22 @@ Item {
 
     // Leading-edge wipe. On the rail this runs vertically down the left side,
     // mirroring the slash P5Panel puts on horizontal modules.
+    //
+    // Held off the edge by `wipeInset`: the icon spans the rail's full width, so
+    // at x = 0 this landed exactly on the slab's own border, and the 1.08 hover
+    // scale then pushed it out past the silhouette onto the desktop. The inset
+    // has to survive that scale, which is why it is not simply 1 or 2.
+    //
+    // It is crimson rather than `tint` because it only ever appears on hover,
+    // and hover is crimson everywhere else in the shell (Theme.glow). Painting
+    // it white put a white bar on the rail's edge for no stated reason.
     Rectangle {
         anchors.left: parent.left
+        anchors.leftMargin: root.wipeInset
         anchors.verticalCenter: parent.verticalCenter
         width: 2
         height: root.hovered ? layout.implicitHeight : 0
-        color: root.alert ? Theme.accent : root.tint
+        color: Theme.glow
 
         Behavior on height {
             NumberAnimation { duration: Theme.durBase; easing.type: Easing.OutExpo }

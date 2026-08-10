@@ -3,54 +3,77 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// Takemi palette. Two hues, no exceptions: a cold teal that carries every
-// resting state, and Persona 5 crimson that means alarm and nothing else.
-// Anything that used to be blue/green/amber now resolves into one of those two
-// families, so a splash of red in the bar always reads as "something is wrong".
-// Derived from ~/.wallpapers/takemi_2.jpg.
+// Takemi palette: crimson, black, white. Nothing else.
+//
+// White does the work: text, icons, idle indicators. Crimson is the only accent
+// and it always means the same thing — active, or wrong. Black is structure,
+// used as a hard keyline rather than as a shadow. There are no gradients in
+// this shell; every fill is flat.
+//
+// The wallpaper is teal. The UI used to be teal too, and the two fought each
+// other into a murky blue-grey. Letting the UI go monochrome-plus-red is what
+// lets the wallpaper read as the colour in the composition.
 Singleton {
     id: root
 
     // ---------------------------------------------------------------- colors
-    // True black, for keylines and drop shapes. `base` is the near-black the
-    // surfaces sit on; `ink` is never tinted and never blended.
     readonly property color ink: "#000000"
 
-    readonly property color base: "#04070a"
-    readonly property color mantle: "#080e14"
-    readonly property color surface: "#0d1922"
-    readonly property color surfaceAlt: "#14262f"
-    readonly property color overlay: "#1d3a47"
-    readonly property color outline: "#2b5567"
+    readonly property color base: "#0a0a0c"
+    readonly property color mantle: "#0d0d10"
+    readonly property color surface: "#141418"
+    readonly property color surfaceAlt: "#1c1c22"
+    readonly property color overlay: "#26262e"
+    readonly property color outline: "#3a3a44"
 
-    readonly property color text: "#e2f4f8"
-    readonly property color subtext: "#93b8c4"
-    readonly property color muted: "#587c8a"
+    readonly property color text: "#ffffff"
+    readonly property color subtext: "#c8c8ce"
+    readonly property color muted: "#6b6b70"
 
-    readonly property color primary: "#34d3e6"   // electric teal — the house colour
-    readonly property color primaryDim: "#17879b"
-    readonly property color glow: "#8ef2ff"
-    readonly property color deep: "#0d4b5e"
+    // ------------------------------------------------------------ THE KNOB
+    // The one colour in this shell. Change this line and the entire accent
+    // recolours — everything below is derived from it, and nothing else in the
+    // palette carries hue at all.
+    //
+    // Keep it in step with `$accent` at the top of
+    // ~/.config/hypr/modules/takemi.conf, which is what colours the Hyprland
+    // window borders. Those are the only two places the colour is written.
+    readonly property color accent: "#ff2d40"
 
-    readonly property color accent: "#ff2d40"    // P5 crimson — alarm, only ever alarm
-    readonly property color accentDim: "#a8121f"
-    readonly property color accentSoft: "#ff6b78" // the "getting there" step below accent
+    readonly property color accentDim: Qt.darker(root.accent, 1.9)
+    readonly property color accentSoft: Qt.lighter(root.accent, 1.35)
 
-    // Retired hues, kept as aliases so call sites keep working while resolving
-    // into the two-hue system. Do not introduce new uses.
+    // `primary` is the resting voice of the UI, which is now simply white.
+    // Kept under the old name so the existing call sites don't all have to move.
+    readonly property color primary: root.text
+    readonly property color primaryDim: "#9a9aa2"
+    readonly property color deep: root.surfaceAlt
+
+    // `glow` is the hover highlight. It used to be a brighter teal, which now
+    // that everything rests at white would have made hover invisible — so it
+    // resolves to crimson. Pointing at a thing lights it up red.
+    readonly property color glow: root.accent
+
+    // Retired hues. Aliases only — do not introduce new uses.
+    //
+    // `warn` used to be accentSoft, which put a washed-out pink-red on screen
+    // wherever something was merely notable. That reads as a faded accent, not
+    // as a decision. There is no half-crimson in this palette: a thing is wrong
+    // (accent) or it is not (text). `warn` now resolves to the real accent, so
+    // low battery shouts properly and everything merely informational is white.
     readonly property color blue: root.primaryDim
-    readonly property color ok: root.primary
-    readonly property color warn: root.accentSoft
+    readonly property color ok: root.text
+    readonly property color warn: root.accent
 
-    // Chromatic aberration pair, straight off the wallpaper's RGB split.
-    readonly property color splitRed: "#ff2b4d"
-    readonly property color splitCyan: "#25e8ff"
+    // Display text carries a crimson and a black offset rather than an RGB
+    // split. Same trick, correct palette.
+    readonly property color splitRed: root.accent
+    readonly property color splitCyan: root.ink
 
     function alpha(c: color, a: real): color {
         return Qt.rgba(c.r, c.g, c.b, a);
     }
 
-    // Linear blend, t = 0 gives a, t = 1 gives b.
     function mix(a: color, b: color, t: real): color {
         const k = Math.max(0, Math.min(1, t));
         return Qt.rgba(a.r + (b.r - a.r) * k,
@@ -59,12 +82,11 @@ Singleton {
                        a.a + (b.a - a.a) * k);
     }
 
-    // Heat ramp for load/usage readouts. Deliberately *not* a hue cycle: it sits
-    // flat teal until load actually matters, then bleeds continuously into
-    // crimson. A number that has gone red means the same thing everywhere.
+    // Load readouts sit white until the number actually matters, then bleed to
+    // crimson. Not a hue cycle — red always means the same thing.
     function heat(pct: real): color {
-        if (pct <= 55) return root.primary;
-        return root.mix(root.primary, root.accent, (pct - 55) / 45);
+        if (pct <= 55) return root.text;
+        return root.mix(root.text, root.accent, (pct - 55) / 45);
     }
 
     // ----------------------------------------------------------------- fonts
@@ -88,24 +110,22 @@ Singleton {
     readonly property int barMargin: 8
     readonly property int barGap: 8
 
-    // Right-hand status rail and the floating bottom-left dock.
+    // The right-hand rail uses the same lean and chamfer as the bar — a
+    // vertical panel leans its horizontal edges by a fraction of its width,
+    // which works out to the same 14 degrees.
     readonly property int railWidth: 48
-    readonly property int railGap: 10
-    readonly property int dockMargin: 14
-    // Low enough that the cluster stops competing with whatever window is
-    // underneath it — at 0.25 it just muddies text it happens to overlap. The
-    // corner wedge stays fully opaque as the thing you aim at.
-    readonly property real dockIdleOpacity: 0.13
-    readonly property int dockRevealZone: 140   // px of screen bottom that wakes it
 
-    // Horizontal offset per unit of height. tan(14deg) — every panel leans.
+    // ONE angle, everywhere. tan(14deg). Persona geometry is disciplined, not
+    // random: every edge in the shell leans by exactly this much in exactly the
+    // same direction, and every corner is chopped by exactly `cut`. Varying
+    // these per module reads as noise, not as style.
     readonly property real skew: 0.249
-    readonly property int cut: 9          // corner chamfer, in px
+    readonly property int cut: 10
     readonly property int stroke: 2
 
-    // Pure-black keyline copy sitting behind every panel. This is what makes a
-    // shape read as screen-printed rather than as a clipped rectangle.
-    readonly property real dropOffset: 4
+    // Pure-black keyline and offset copy behind panels. This is the one piece of
+    // layering the style needs; it is not a soft shadow and never blurs.
+    readonly property real dropOffset: 3
     readonly property real keylineWidth: 2
 
     readonly property int padS: 6
@@ -115,24 +135,6 @@ Singleton {
 
     readonly property int popoutWidth: 380
     readonly property int popoutGap: 10
-
-    // ------------------------------------------------------- shape variance
-    // Persona geometry is never a repeating pattern, so modules pull their lean
-    // and chamfer from these tables by index rather than sharing one default.
-    // Deterministic, so the bar looks the same every launch.
-    readonly property var leanTable: [0.32, 0.18, 0.26, 0.0, 0.29, 0.14, 0.35, 0.21]
-    readonly property var chopTable: [12, 5, 18, 8, 14, 4, 10, 16]
-    readonly property var cornerTable: [
-        [1, 3], [0, 2], [1], [0, 2, 3], [3], [1, 3], [2], [0, 1, 3]
-    ]
-
-    function leanFor(i: int): real { return root.leanTable[i % root.leanTable.length]; }
-    function chopFor(i: int): real { return root.chopTable[i % root.chopTable.length]; }
-    function cornersFor(i: int): var { return root.cornerTable[i % root.cornerTable.length]; }
-
-    // Every other module leans against its neighbour, so the row reads as
-    // opposing diagonals instead of a comb.
-    function leanLeftFor(i: int): bool { return i % 3 === 1; }
 
     // ------------------------------------------------------------ animation
     // P5 motion is snappy and slightly overshooting — never soft.
@@ -150,5 +152,9 @@ Singleton {
     readonly property url texStripes: "root:/assets/stripes.png"
     readonly property url texScanline: "root:/assets/scanline.png"
 
-    readonly property url wallpaper: "file:///home/narl/.wallpapers/takemi_2.jpg"
+    // Last resort only. The live wallpaper comes from the Wallpaper singleton,
+    // which asks hyprpaper what is actually on screen — a path written down
+    // here goes stale the moment the wallpaper is switched, which is exactly
+    // what happened to the lock screen.
+    readonly property url fallbackWallpaper: "file:///home/narl/.wallpapers/takemi_1.jpg"
 }

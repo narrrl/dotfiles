@@ -46,9 +46,7 @@ Item {
         id: row
         anchors.verticalCenter: parent.verticalCenter
 
-        // Uneven gaps. An evenly spaced row of identical ticks reads as a
-        // progress bar; the whole point here is that it should not.
-        spacing: 5
+        spacing: 6
 
         Repeater {
             model: root.slots
@@ -65,19 +63,10 @@ Item {
                 readonly property bool focused: root.focusedId === wsId
                 readonly property bool hovered: pipHover.hovered
 
-                // Each tick pulls its own shear and its own height off the
-                // variance tables, and sits a little off the baseline, so the
-                // row is a ragged run of marks rather than a repeating comb.
-                readonly property real shear: Theme.leanFor(pip.index)
-                readonly property int baseHeight: [18, 14, 20, 16][pip.index % 4]
-                readonly property int drift: [0, 2, -1, 1][pip.index % 4]
-
-                width: focused ? 36 : (occupied ? 16 : 9)
-
-                // The focused tick grows past its neighbours and past the row's
-                // own height, so it breaks the line instead of sitting in it.
-                height: focused ? 24 : pip.baseHeight
-                y: focused ? -2 : pip.drift
+                // Every tick is the same height and the same shear. Only the
+                // width changes, and only to say which workspace is focused.
+                width: focused ? 32 : (occupied ? 16 : 9)
+                height: 18
 
                 Behavior on width {
                     NumberAnimation {
@@ -86,45 +75,28 @@ Item {
                         easing.overshoot: 1.6
                     }
                 }
-                Behavior on height {
-                    NumberAnimation { duration: Theme.durBase; easing.type: Easing.OutBack }
-                }
-                Behavior on y {
-                    NumberAnimation { duration: Theme.durBase; easing.type: Easing.OutBack }
-                }
-
-                // Black offset copy behind the focused tick — the same
-                // screen-print stack the panels use, at tick scale.
-                Rectangle {
-                    visible: pip.focused
-                    anchors.fill: parent
-                    x: 3
-                    y: 3
-                    color: Theme.ink
-
-                    transform: Matrix4x4 {
-                        matrix: Qt.matrix4x4(
-                            1, -pip.shear, 0, pip.height * pip.shear,
-                            0, 1, 0, 0,
-                            0, 0, 1, 0,
-                            0, 0, 0, 1)
-                    }
-                }
 
                 Rectangle {
                     id: tick
                     anchors.fill: parent
+
+                    // Focused is a solid crimson block. Occupied is a white
+                    // block at half weight. Empty is an outline. Three states,
+                    // two colours, no ambiguity.
                     color: {
-                        if (pip.urgent) return Theme.accent;
-                        if (pip.focused) return Theme.primary;
-                        if (pip.hovered) return Theme.glow;
-                        if (pip.occupied) return Theme.alpha(Theme.primary, 0.55);
-                        return Theme.alpha(Theme.outline, 0.75);
+                        if (pip.focused || pip.urgent) return Theme.accent;
+                        if (pip.hovered) return Theme.text;
+                        if (pip.occupied) return Theme.alpha(Theme.text, 0.5);
+                        return "transparent";
                     }
+                    border.color: pip.occupied || pip.focused
+                        ? "transparent"
+                        : Theme.alpha(Theme.text, 0.35)
+                    border.width: 1
 
                     transform: Matrix4x4 {
                         matrix: Qt.matrix4x4(
-                            1, -pip.shear, 0, pip.height * pip.shear,
+                            1, -Theme.skew, 0, pip.height * Theme.skew,
                             0, 1, 0, 0,
                             0, 0, 1, 0,
                             0, 0, 0, 1)
@@ -141,7 +113,7 @@ Item {
                     opacity: pip.focused ? 1 : 0
                     visible: opacity > 0.01
                     text: pip.wsId
-                    color: Theme.base
+                    color: Theme.ink
                     font.family: Theme.fontDisplay
                     font.pixelSize: Theme.fsBody
                     font.weight: Theme.weightDisplay

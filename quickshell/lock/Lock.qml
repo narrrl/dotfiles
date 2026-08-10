@@ -15,10 +15,14 @@ WlSessionLock {
     locked: Actions.lockRequested
 
     WlSessionLockSurface {
+        id: lockSurface
         color: "black"
 
         LockFace {
             anchors.fill: parent
+            // So each screen blurs its own wallpaper rather than all of them
+            // sharing whichever one hyprpaper happened to list first.
+            screenName: lockSurface.screen ? lockSurface.screen.name : ""
             onUnlocked: Actions.lockRequested = false
         }
     }

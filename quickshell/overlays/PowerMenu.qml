@@ -1,5 +1,4 @@
 import QtQuick
-import QtQuick.Shapes
 import Quickshell
 import Quickshell.Wayland
 import "root:/config"
@@ -48,46 +47,20 @@ PanelWindow {
         }
     }
 
-    // Diagonal stripe field sweeping in from the left.
-    Image {
-        id: stripes
+    // Stripes and wedge, shared with the lock screen. The wedge used to lean at
+    // 0.32 here, which was its own angle and nothing else's; P5Backdrop leans
+    // it at Theme.skew like every other edge in the shell.
+    P5Backdrop {
+        id: ground
         anchors.fill: parent
-        source: Theme.texStripes
-        fillMode: Image.Tile
-        opacity: 0
-        smooth: false
-
-        layer.enabled: true
-        layer.effect: TintEffect {
-            tintColor: Theme.accent
-        }
-
-        transform: Translate {
-            id: stripeShift
-            x: -root.width
-        }
-    }
-
-    // A crimson wedge behind the buttons.
-    Shape {
-        id: wedge
-        anchors.fill: parent
-        opacity: 0
-        preferredRendererType: Shape.CurveRenderer
-
-        ShapePath {
-            fillColor: Theme.alpha(Theme.accentDim, 0.35)
-            strokeColor: "transparent"
-            PathPolyline {
-                path: [
-                    Qt.point(root.width * 0.18, 0),
-                    Qt.point(root.width * 0.52, 0),
-                    Qt.point(root.width * 0.34, root.height),
-                    Qt.point(0, root.height),
-                    Qt.point(root.width * 0.18, 0)
-                ]
-            }
-        }
+        reveal: 0
+        stripeOpacity: 0.10
+        wedgeOpacity: 0.35
+        wedgeSpan: 0.34
+        // The live desktop is still visible behind this, so a dot wash would be
+        // laid over other people's windows rather than over a ground of our
+        // own. The lock owns the halftone; here it just muddies things.
+        halftone: false
     }
 
     // ---------------------------------------------------------------- title
@@ -165,18 +138,10 @@ PanelWindow {
                 required property var modelData
                 required property int index
 
-                // Six identical slabs stacked at a constant width is the most
-                // obviously machine-made thing in the shell. Vary the width and
-                // push each row a different distance off the right margin, so
-                // the stack has a ragged edge on both sides.
-                readonly property int slabWidth: [286, 252, 300, 268, 312, 244][entry.index]
-                readonly property int nudge: [0, 22, 8, 34, 14, 26][entry.index]
+                readonly property int slabWidth: actions.stackWidth
 
-                // Column owns y, so the ragged edge is an explicit x offset
-                // measured against the widest slab in the stack.
                 width: entry.slabWidth
                 height: 52
-                x: actions.stackWidth - entry.slabWidth - entry.nudge
 
                 opacity: 0
                 transform: [
@@ -195,8 +160,8 @@ PanelWindow {
                     icon: entry.modelData.icon
                     destructive: entry.modelData.danger
                     accent: entry.modelData.danger ? Theme.accent : Theme.primary
-                    lean: Theme.leanFor(entry.index)
-                    lunge: -10 - entry.index * 2
+                    lean: Theme.skew
+                    lunge: -10
                     onClicked: root.invoke(entry.modelData.act)
                 }
 
@@ -225,10 +190,12 @@ PanelWindow {
                         }
                         // Slabs land out of true and snap square. Sliding alone
                         // reads like a slide deck; the tilt is what makes it
-                        // land like a card being thrown down.
+                        // land like a card being thrown down. Same direction
+                        // every time — the motion is the flourish, the geometry
+                        // stays disciplined.
                         NumberAnimation {
                             target: tilt; property: "angle"
-                            from: entry.index % 2 === 0 ? -4 : 4; to: 0
+                            from: -3; to: 0
                             duration: Theme.durSlow
                             easing.type: Easing.OutBack
                             easing.overshoot: 2.2
@@ -278,18 +245,10 @@ PanelWindow {
             target: backdrop; property: "opacity"
             to: 1; duration: Theme.durBase; easing.type: Easing.OutQuad
         }
+        // One number now drives the slide, the stripe opacity and the wedge.
         NumberAnimation {
-            target: stripes; property: "opacity"
-            to: 0.1; duration: Theme.durSlow
-        }
-        NumberAnimation {
-            target: stripeShift; property: "x"
-            from: -root.width; to: 0
-            duration: Theme.durLazy; easing.type: Easing.OutExpo
-        }
-        NumberAnimation {
-            target: wedge; property: "opacity"
-            to: 1; duration: Theme.durSlow; easing.type: Easing.OutExpo
+            target: ground; property: "reveal"
+            from: 0; to: 1; duration: Theme.durLazy; easing.type: Easing.OutExpo
         }
         NumberAnimation {
             target: title; property: "opacity"
@@ -304,11 +263,7 @@ PanelWindow {
             to: 0; duration: Theme.durFast
         }
         NumberAnimation {
-            target: stripes; property: "opacity"
-            to: 0; duration: Theme.durFast
-        }
-        NumberAnimation {
-            target: wedge; property: "opacity"
+            target: ground; property: "reveal"
             to: 0; duration: Theme.durFast
         }
         NumberAnimation {

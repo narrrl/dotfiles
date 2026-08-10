@@ -2,12 +2,19 @@ import QtQuick
 import "root:/config"
 import "root:/components"
 
-// Shared chrome for every bar module: a leaning slab that lifts and lights up
-// under the pointer, and forwards clicks and scrolls to the widget.
+// Shared chrome for every bar module.
+//
+// The bar is one continuous slab, so by default a module draws no panel of its
+// own — it is content inside the bar's surface, and marks hover with a crimson
+// underline rather than by lighting up a card. That is what stops the bar from
+// reading as a row of floating islands.
+//
+// `standalone: true` brings back the individual leaning slab, for the few
+// places that genuinely are separate surfaces.
 Item {
     id: root
 
-    property color accent: Theme.primary
+    property color accent: Theme.accent
     property bool active: false
     property bool slash: false
     property real lean: Theme.skew
@@ -15,18 +22,29 @@ Item {
     property real padding: Theme.padM
     property bool interactive: true
     property bool halftone: false
+    property bool standalone: false
 
-    // Chamfer, forwarded so modules can differ from one another instead of all
-    // sharing the panel default.
     property real chop: Theme.cut
     property var chopCorners: [1, 3]
 
     readonly property bool hovered: hover.hovered
-    readonly property real leanInset: panel.leanInset
+    readonly property real leanInset: standalone ? panelLoader.item?.leanInset ?? 0 : 0
 
-    // Total horizontal inset a pill must add on top of its content width.
-    readonly property real contentPad: panel.contentPad
-    readonly property alias panelItem: panel
+    // The hover rule's own strip, reserved at the bottom of the module.
+    //
+    // The rule used to be drawn into the same box as the content, so anything
+    // taller than about 32px — the media pill's art, the metric meters — had a
+    // crimson line struck through its bottom edge on hover. Reserving the band
+    // and centring content in what is left is what keeps the rule under the
+    // module instead of across it.
+    readonly property real ruleHeight: 2
+    readonly property real ruleInset: 5
+    readonly property real ruleBand: root.standalone ? 0 : root.ruleHeight + root.ruleInset
+
+    // Total horizontal inset a module must add on top of its content width.
+    readonly property real contentPad: standalone
+        ? (panelLoader.item?.contentPad ?? root.padding)
+        : root.padding
 
     default property alias content: holder.data
 
@@ -37,49 +55,63 @@ Item {
 
     implicitHeight: Theme.barHeight
 
-    P5Panel {
-        id: panel
+    Loader {
+        id: panelLoader
         anchors.fill: parent
-        lean: root.lean
-        leanLeft: root.leanLeft
-        chop: root.chop
-        chopCorners: root.chopCorners
-        padding: root.padding
-        halftone: root.halftone
-        halftoneColor: root.accent
-        sheen: true
+        active: root.standalone
 
-        fill: root.active ? Theme.surfaceAlt : Theme.surface
-        fillOpacity: root.hovered ? 0.98 : 0.88
-        border: root.hovered || root.active
-            ? Theme.alpha(root.accent, 0.9)
-            : Theme.alpha(Theme.outline, 0.7)
-        borderWidth: root.hovered || root.active ? Theme.stroke : 1
+        sourceComponent: P5Panel {
+            lean: root.lean
+            leanLeft: root.leanLeft
+            chop: root.chop
+            chopCorners: root.chopCorners
+            padding: root.padding
+            halftone: root.halftone
+            halftoneColor: root.accent
 
-        slash: root.slash || root.active
-        slashColor: root.accent
+            fill: root.active ? Theme.surfaceAlt : Theme.surface
+            fillOpacity: 1.0
+            border: root.hovered || root.active
+                ? root.accent
+                : Theme.alpha(Theme.outline, 0.9)
+            borderWidth: root.hovered || root.active ? Theme.stroke : 1
 
-        Behavior on fillOpacity {
-            NumberAnimation { duration: Theme.durFast }
-        }
-        Behavior on border {
-            ColorAnimation { duration: Theme.durBase }
-        }
-
-        Item {
-            id: holder
-            anchors.fill: parent
+            slash: root.slash || root.active
+            slashColor: root.accent
         }
     }
 
-    // Lift toward the pointer. Subtle, but it makes the bar feel alive.
-    transform: Translate {
-        y: root.hovered && root.interactive ? -2 : 0
+    Item {
+        id: holder
+        anchors.fill: parent
+        anchors.leftMargin: root.contentPad
+        anchors.rightMargin: root.contentPad
+        anchors.bottomMargin: root.ruleBand
+    }
 
-        Behavior on y {
-            NumberAnimation {
-                duration: Theme.durBase
-                easing.type: Easing.OutBack
+    // Hover mark for in-bar modules: a crimson rule under the content, wiping
+    // out from the leading edge. Sheared to match the one angle everything uses.
+    Item {
+        visible: !root.standalone && root.interactive
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: root.ruleInset
+        height: root.ruleHeight
+        clip: true
+
+        Rectangle {
+            height: parent.height
+            width: root.hovered || root.active ? parent.width : 0
+            color: root.accent
+
+            transform: Matrix4x4 {
+                matrix: Qt.matrix4x4(1, -Theme.skew, 0, 2 * Theme.skew,
+                                     0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
+            }
+
+            Behavior on width {
+                NumberAnimation { duration: Theme.durBase; easing.type: Easing.OutExpo }
             }
         }
     }

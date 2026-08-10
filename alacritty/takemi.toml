@@ -1,0 +1,86 @@
+## Takemi — matched to ~/.config/quickshell/config/Theme.qml and
+## ~/.config/hypr/modules/takemi.conf.
+##
+## Near-black ground, white text, crimson as the only saturated colour. The
+## sixteen ANSI slots still have to be told apart by syntax highlighters, so the
+## non-crimson hues survive — but every one of them is pulled down and
+## desaturated so nothing competes with the accent. Nothing here is neon.
+
+[colors.primary]
+background       = "#0a0a0c"
+foreground       = "#ffffff"
+dim_foreground   = "#6b6b70"
+bright_foreground = "#ffffff"
+
+## Crimson block cursor, black text punched out of it.
+[colors.cursor]
+text   = "#000000"
+cursor = "#ff2d40"
+
+[colors.vi_mode_cursor]
+text   = "#000000"
+cursor = "#ffffff"
+
+## Selection is a solid crimson block — the same "active" signal the shell uses.
+[colors.selection]
+text       = "#000000"
+background = "#ff2d40"
+
+[colors.search.matches]
+foreground = "#000000"
+background = "#c8c8ce"
+
+[colors.search.focused_match]
+foreground = "#000000"
+background = "#ff2d40"
+
+[colors.footer_bar]
+foreground = "#000000"
+background = "#c8c8ce"
+
+[colors.hints.start]
+foreground = "#000000"
+background = "#ff2d40"
+
+[colors.hints.end]
+foreground = "#000000"
+background = "#c8c8ce"
+
+## Red is the accent, exactly. The rest are muted enough to sit behind it.
+[colors.normal]
+black   = "#14141a"
+red     = "#ff2d40"
+green   = "#7f9b6a"
+yellow  = "#d6a24a"
+blue    = "#6f7d99"
+magenta = "#c0566d"
+cyan    = "#7f9aa0"
+white   = "#c8c8ce"
+
+[colors.bright]
+black   = "#3a3a44"
+red     = "#ff6b78"
+green   = "#9bb886"
+yellow  = "#f0c070"
+blue    = "#8d9bb8"
+magenta = "#e07a8e"
+cyan    = "#9db8bd"
+white   = "#ffffff"
+
+[colors.dim]
+black   = "#0f0f13"
+red     = "#8f1826"
+green   = "#5c704d"
+yellow  = "#9c7635"
+blue    = "#515c70"
+magenta = "#8c3f4f"
+cyan    = "#5c7075"
+white   = "#6b6b70"
+
+[[colors.indexed_colors]]
+index = 16
+color = "#ff6b78"
+
+[[colors.indexed_colors]]
+index = 17
+color = "#ffffff"

@@ -1,5 +1,4 @@
 import QtQuick
-import QtQuick.Shapes
 import Quickshell
 import Quickshell.Wayland
 import "root:/config"
@@ -7,17 +6,15 @@ import "root:/components"
 import "root:/services"
 import "root:/popouts"
 
-// The right-hand status rail.
+// The right-hand status rail — one slab, not a stack of cards.
 //
-// Everything that used to be crammed into the right third of the top bar lives
-// here instead: connectivity, audio, power, tray, notifications. On a 1080p
-// panel this is the cheap edge — 48px of width is 2.5% of the screen, where the
-// same 48px of height would have been 4.4% on top of what the top bar already
-// takes.
+// Connectivity, audio, power, tray and notifications all sit inside a single
+// continuous column, divided by hairline rules the same way the bar divides its
+// modules. Same lean, same chamfer, same keyline as the bar and the dock, so
+// the three surfaces read as one system.
 //
-// Slabs are grouped by what they do rather than spaced evenly, and each pulls a
-// different lean and chamfer from the shape tables, so the column reads as a
-// stack of distinct cards instead of a ladder.
+// On a 1080p panel this is the cheap edge: 48px of width is 2.5% of the screen,
+// where the same 48px of height would be 4.4% on top of what the bar takes.
 PanelWindow {
     id: root
 
@@ -43,131 +40,91 @@ PanelWindow {
     exclusiveZone: Theme.railWidth + Theme.barMargin
     color: "transparent"
 
-    // Corner furniture. The dock pins a crimson wedge to the bottom-left; this
-    // is its opposite number, so the desktop is bracketed on the diagonal
-    // rather than merely edged. Decorative only — it sits under the slabs and
-    // takes no input.
-    Shape {
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        width: 30
-        height: 30
-        z: -1
-        preferredRendererType: Shape.CurveRenderer
-        opacity: 0.9
-
-        ShapePath {
-            fillColor: Theme.accent
-            strokeColor: "transparent"
-            PathPolyline {
-                path: [
-                    Qt.point(30, 30),
-                    Qt.point(30, 4),
-                    Qt.point(2, 30),
-                    Qt.point(30, 30)
-                ]
-            }
-        }
+    // The slab.
+    P5Panel {
+        id: slab
+        anchors.fill: parent
+        vertical: true
+        lean: Theme.skew
+        chop: Theme.cut
+        chopCorners: [1, 3]
+        padding: 0
+        fill: Theme.surface
+        fillOpacity: 1.0
+        border: Theme.alpha(Theme.outline, 0.9)
+        borderWidth: 1
+        slash: true
+        slashColor: Theme.accent
+        slashWidth: 5
     }
+
+    readonly property real edgeInset: Theme.railWidth * Theme.skew + Theme.padM
 
     // ------------------------------------------------------------------- top
     Column {
         id: upper
         anchors.top: parent.top
+        anchors.topMargin: root.edgeInset
         anchors.horizontalCenter: parent.horizontalCenter
-        spacing: Theme.railGap
+        spacing: 0
 
-        // Connectivity.
-        RailGroup {
-            variant: 0
-            accent: Sys.netUp ? Theme.primary : Theme.muted
-            implicitHeight: linkCol.implicitHeight + contentPad * 2
-
-            Column {
-                id: linkCol
-                anchors.centerIn: parent
-                spacing: Theme.padS
-
-                RailIcon {
-                    id: netIcon
-                    icon: Net.icon
-                    tint: Theme.primary
-                    dim: !Sys.netUp
-                    onClicked: netPopout.pinned = !netPopout.pinned
-                    onRightClicked: Net.toggleWifi()
-                    onMiddleClicked: Actions.openNetworkSettings()
-                }
-
-                RailIcon {
-                    id: btIcon
-                    icon: Bt.icon
-                    tint: Theme.primary
-                    dim: !Bt.enabled
-                    onClicked: btPopout.pinned = !btPopout.pinned
-                    onRightClicked: Bt.toggle()
-                }
-            }
+        RailIcon {
+            id: netIcon
+            icon: Net.icon
+            dim: !Sys.netUp
+            onClicked: netPopout.pinned = !netPopout.pinned
+            onRightClicked: Net.toggleWifi()
+            onMiddleClicked: Actions.openNetworkSettings()
         }
 
-        // Audio and backlight.
-        RailGroup {
-            variant: 1
-            accent: Audio.muted || Audio.micMuted ? Theme.accent : Theme.primary
-            implicitHeight: audioCol.implicitHeight + contentPad * 2
-
-            Column {
-                id: audioCol
-                anchors.centerIn: parent
-                spacing: Theme.padS
-
-                RailIcon {
-                    id: volIcon
-                    icon: Audio.icon
-                    readout: Audio.muted ? "" : Audio.volumePercent + "%"
-                    alert: Audio.muted
-                    onClicked: Audio.toggleMute()
-                    onRightClicked: audioPopout.pinned = !audioPopout.pinned
-                    onMiddleClicked: Actions.openAudioSettings()
-                    onScrolled: delta => Audio.changeVolume(delta > 0 ? 0.05 : -0.05)
-                }
-
-                RailIcon {
-                    id: micIcon
-                    icon: Audio.micIcon
-                    alert: Audio.micMuted
-                    onClicked: Audio.toggleMicMute()
-                    onRightClicked: audioPopout.pinned = !audioPopout.pinned
-                    onScrolled: delta => Audio.setMicVolume(Audio.micVolume + (delta > 0 ? 0.05 : -0.05))
-                }
-
-                RailIcon {
-                    id: brightIcon
-                    visible: Brightness.available
-                    icon: Brightness.icon
-                    readout: Math.round(Brightness.percent) + "%"
-                    tint: Theme.primary
-                    onScrolled: delta => Brightness.change(delta > 0 ? 5 : -5)
-                }
-            }
+        RailIcon {
+            id: btIcon
+            icon: Bt.icon
+            dim: !Bt.enabled
+            onClicked: btPopout.pinned = !btPopout.pinned
+            onRightClicked: Bt.toggle()
         }
 
-        // Battery.
-        RailGroup {
-            variant: 2
+        Divider {}
+
+        RailIcon {
+            id: volIcon
+            icon: Audio.icon
+            readout: Audio.muted ? "" : Audio.volumePercent + "%"
+            alert: Audio.muted
+            onClicked: Audio.toggleMute()
+            onRightClicked: audioPopout.pinned = !audioPopout.pinned
+            onMiddleClicked: Actions.openAudioSettings()
+            onScrolled: delta => Audio.changeVolume(delta > 0 ? 0.05 : -0.05)
+        }
+
+        RailIcon {
+            id: micIcon
+            icon: Audio.micIcon
+            alert: Audio.micMuted
+            onClicked: Audio.toggleMicMute()
+            onRightClicked: audioPopout.pinned = !audioPopout.pinned
+            onScrolled: delta => Audio.setMicVolume(Audio.micVolume + (delta > 0 ? 0.05 : -0.05))
+        }
+
+        RailIcon {
+            id: brightIcon
+            visible: Brightness.available
+            icon: Brightness.icon
+            readout: Math.round(Brightness.percent) + "%"
+            onScrolled: delta => Brightness.change(delta > 0 ? 5 : -5)
+        }
+
+        Divider { visible: Battery.available }
+
+        RailIcon {
+            id: battIcon
             visible: Battery.available
-            accent: Battery.critical ? Theme.accent : Theme.primary
-            implicitHeight: battIcon.implicitHeight + contentPad * 2
-
-            RailIcon {
-                id: battIcon
-                anchors.centerIn: parent
-                icon: Battery.icon
-                readout: Math.round(Battery.percent) + "%"
-                tint: Battery.tint
-                alert: Battery.critical
-                pulsing: Battery.critical
-                onClicked: battPopout.pinned = !battPopout.pinned
-            }
+            icon: Battery.icon
+            readout: Math.round(Battery.percent) + "%"
+            alert: Battery.critical
+            pulsing: Battery.critical
+            onClicked: battPopout.pinned = !battPopout.pinned
         }
     }
 
@@ -175,60 +132,56 @@ PanelWindow {
     Column {
         id: lower
         anchors.bottom: parent.bottom
-
-        // Clear of the corner wedge, which would otherwise sit entirely behind
-        // the bottom slab and never be seen.
-        anchors.bottomMargin: 26
+        anchors.bottomMargin: root.edgeInset
         anchors.horizontalCenter: parent.horizontalCenter
-        spacing: Theme.railGap
+        spacing: 0
 
-        // Tray.
-        RailGroup {
-            variant: 3
-            visible: tray.visible
-            accent: Theme.primary
-            implicitHeight: tray.implicitHeight + contentPad * 2
-
-            Tray {
-                id: tray
-                anchors.centerIn: parent
-            }
+        Tray {
+            id: tray
+            anchors.horizontalCenter: parent.horizontalCenter
         }
 
-        // Notifications and power — the two that act on the session rather than
-        // report on it, so they sit apart at the foot of the rail.
-        RailGroup {
-            variant: 4
-            accent: Notifs.dnd ? Theme.muted : Theme.primary
-            implicitHeight: actionCol.implicitHeight + contentPad * 2
+        Divider { visible: tray.visible }
 
-            Column {
-                id: actionCol
-                anchors.centerIn: parent
-                spacing: Theme.padS
+        RailIcon {
+            id: bellIcon
+            icon: Notifs.icon
+            readout: Notifs.unread > 0
+                ? (Notifs.unread > 9 ? "9+" : String(Notifs.unread))
+                : ""
+            dim: Notifs.dnd
+            alert: Notifs.hasUnread && !Notifs.dnd
+            onClicked: {
+                notifPopout.pinned = !notifPopout.pinned;
+                Notifs.markRead();
+            }
+            onRightClicked: Notifs.toggleDnd()
+        }
 
-                RailIcon {
-                    id: bellIcon
-                    icon: Notifs.icon
-                    readout: Notifs.unread > 0
-                        ? (Notifs.unread > 9 ? "9+" : String(Notifs.unread))
-                        : ""
-                    tint: Notifs.hasUnread ? Theme.accent : Theme.primary
-                    dim: Notifs.dnd
-                    alert: Notifs.hasUnread && !Notifs.dnd
-                    onClicked: {
-                        notifPopout.pinned = !notifPopout.pinned;
-                        Notifs.markRead();
-                    }
-                    onRightClicked: Notifs.toggleDnd()
-                }
+        RailIcon {
+            id: powerIcon
+            icon: "󰐥"
+            alert: Actions.powerMenuOpen
+            onClicked: Actions.togglePowerMenu()
+        }
+    }
 
-                RailIcon {
-                    id: powerIcon
-                    icon: "󰐥"
-                    tint: Actions.powerMenuOpen ? Theme.accent : Theme.subtext
-                    onClicked: Actions.togglePowerMenu()
-                }
+    // The rail's counterpart to the bar's divider: a horizontal hairline,
+    // sheared to the same angle the rail's own edges lean at.
+    component Divider: Item {
+        implicitWidth: Theme.railWidth
+        implicitHeight: Theme.padM + 4
+
+        Rectangle {
+            anchors.centerIn: parent
+            width: 22
+            height: 1
+            color: Theme.alpha(Theme.outline, 0.9)
+
+            transform: Matrix4x4 {
+                matrix: Qt.matrix4x4(1, 0, 0, 0,
+                                     -Theme.skew, 1, 0, 22 * Theme.skew / 2,
+                                     0, 0, 1, 0, 0, 0, 0, 1)
             }
         }
     }

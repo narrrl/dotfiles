@@ -20,26 +20,25 @@ BarPill {
     onClicked: Actions.launch("fuzzel")
     onRightClicked: Actions.reloadShell()
 
-    Icon {
+    // The wordmark. Was the Death arcana skull (nf-md-skull, U+F068C) — a
+    // pictogram in a shell that otherwise says everything in heavy italic
+    // type. SplitText puts it in the display face with the crimson-and-black
+    // offset every other heading carries, so the house mark is built out of
+    // the same parts as the rest of the bar.
+    SplitText {
         id: mark
         anchors.centerIn: parent
-        text: "󰋠"
-        font.pixelSize: Theme.fsTitle
+        text: "P5"
+        pixelSize: Theme.fsLarge
+        letterSpacing: 0
         color: root.hovered ? Theme.accent : Theme.primary
     }
 
-    // Spin the mark on click, then settle.
+    // Kick the ghosts out and let them snap back. The skull could spin a full
+    // turn and still read as a skull; a wordmark upside down just reads as
+    // broken, so the click gets the glitch instead.
     Connections {
         target: root
-        function onClicked() { spin.restart(); }
-    }
-
-    SequentialAnimation {
-        id: spin
-        NumberAnimation {
-            target: mark; property: "rotation"
-            from: 0; to: 360; duration: Theme.durSlow
-            easing.type: Easing.OutExpo
-        }
+        function onClicked() { mark.glitch(); }
     }
 }
