@@ -39,6 +39,18 @@ ShellRoot {
     Variants {
         model: Quickshell.screens
 
+        Rail {}
+    }
+
+    Variants {
+        model: Quickshell.screens
+
+        Dock {}
+    }
+
+    Variants {
+        model: Quickshell.screens
+
         PowerMenu {}
     }
 

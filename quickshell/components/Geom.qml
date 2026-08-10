@@ -31,6 +31,29 @@ Singleton {
         ];
     }
 
+    // Vertical counterpart: the *horizontal* edges slant instead, by a fraction
+    // of width. A tall rail slab has to lean this way — leaning its vertical
+    // edges by a fraction of its height would shear it clean off the screen.
+    function parallelogramV(w: real, h: real, lean: real): var {
+        const off = w * lean;
+        return [
+            Qt.point(0, off),
+            Qt.point(w, 0),
+            Qt.point(w, h - off),
+            Qt.point(0, h)
+        ];
+    }
+
+    function parallelogramVL(w: real, h: real, lean: real): var {
+        const off = w * lean;
+        return [
+            Qt.point(0, 0),
+            Qt.point(w, off),
+            Qt.point(w, h),
+            Qt.point(0, h - off)
+        ];
+    }
+
     function rect(w: real, h: real): var {
         return [Qt.point(0, 0), Qt.point(w, 0), Qt.point(w, h), Qt.point(0, h)];
     }

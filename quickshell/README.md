@@ -18,13 +18,38 @@ Hyprland starts it from `~/.config/hypr/modules/autostart.conf`.
 
 ## Layout
 
+The shell is spread across three surfaces rather than crammed into one bar,
+because on a 1080p panel horizontal space is cheap and vertical space is not: a
+48px rail costs 2.5% of the width, where the same 48px along the bottom would
+have cost 4.4% of the height on top of what the top bar already takes.
+
 ```
-shell.qml        entrypoint — one bar, power menu, toasts and OSD per screen
-config/          palette, type scale, geometry, motion curves
+┌────────────────────────────────────────────┐
+│ ◆ TAKEMI  [1][2][3]  window title    00:09 │  bar   — 48px exclusive
+├────────────────────────────────────────────┤
+│                                         ▐█▌│  rail  — 48px exclusive
+│                windows                  ▐ ▌│
+│                                       ◣ ▐█▌│
+│  ╱ ♪ TRACK ╲  ▁▃▅ 42%                      │  dock  — no exclusive zone
+└────────────────────────────────────────────┘
+```
+
+- **bar** — identity, workspaces, focused window, clock.
+- **rail** — network, bluetooth, audio, mic, backlight, battery, tray,
+  notifications, power. Popouts open leftward, into the screen.
+- **dock** — now playing and the CPU/MEM/GPU readout. Reserves nothing: windows
+  tile the full height underneath, and the input mask is clipped to the cluster
+  so clicks elsewhere in the corner fall through. Idles near-invisible and wakes
+  on hover or on playback; the crimson corner wedge is the always-on handle that
+  marks where it lives.
+
+```
+shell.qml        entrypoint — bar, rail, dock, power menu, toasts, OSD per screen
+config/          palette, type scale, geometry, motion curves, shape variance
 components/      the P5 primitives: panels, gauges, sliders, split-ink text
 services/        data sources, all singletons
-bar/             the bar and its modules
-popouts/         hover panels hanging off bar modules
+bar/             the three surfaces and their modules
+popouts/         hover panels hanging off rail and bar modules
 overlays/        power menu, notification toasts, volume/brightness OSD
 lock/            session lock
 assets/          halftone and stripe tiles, generated with ImageMagick
@@ -34,24 +59,24 @@ assets/          halftone and stripe tiles, generated with ImageMagick
 callers set implicit sizes from their own layout (`row.implicitWidth +
 contentPad * 2`), which keeps the shape maths out of binding loops.
 
-## Bar
+## Modules
 
-| Module | Left click | Right click | Middle | Scroll | Hover |
-|---|---|---|---|---|---|
-| Sigil | app menu | reload shell | | | |
-| Workspaces | switch | | | | |
-| CPU/MEM/GPU | btop | | | | resource dashboard |
-| Media | play/pause | next | raise player | next/prev | full player |
-| Clock | pin calendar | | | | calendar |
-| Tray | activate | app menu | secondary | | |
-| Network | pin panel | toggle Wi-Fi | nm-connection-editor | | networks |
-| Bluetooth | pin panel | toggle adapter | | | devices |
-| Volume | mute | pin panel | pavucontrol | volume | audio mixer |
-| Mic | mute | pin panel | | mic volume | audio mixer |
-| Brightness | | | | brightness | |
-| Battery | pin panel | | | | power detail |
-| Bell | history + mark read | do not disturb | | | history |
-| Power | power menu | | | | |
+| Module | Where | Left click | Right click | Middle | Scroll | Hover |
+|---|---|---|---|---|---|---|
+| Sigil | bar | app menu | reload shell | | | |
+| Workspaces | bar | switch | | | | |
+| Clock | bar | pin calendar | | | | calendar |
+| Network | rail | pin panel | toggle Wi-Fi | nm-connection-editor | | networks |
+| Bluetooth | rail | pin panel | toggle adapter | | | devices |
+| Volume | rail | mute | pin panel | pavucontrol | volume | audio mixer |
+| Mic | rail | mute | pin panel | | mic volume | audio mixer |
+| Brightness | rail | | | | brightness | |
+| Battery | rail | pin panel | | | | power detail |
+| Tray | rail | activate | app menu | secondary | | |
+| Bell | rail | history + mark read | do not disturb | | | history |
+| Power | rail | power menu | | | | |
+| Media | dock | play/pause | next | raise player | next/prev | full player |
+| CPU/MEM/GPU | dock | btop | | | | resource dashboard |
 
 Popouts open on a short dwell and stay while the pointer is over the trigger or
 the panel. Clicking pins one open.
@@ -112,7 +137,20 @@ means restarting Hyprland from a TTY.
 `power-profiles-daemon` is not installed (TLP is), so the power-profile
 switching in `services/Battery.qml` stays dormant. Nothing else depends on it.
 
-The display face is Adwaita Sans Black Italic, which is what was already on the
-box. A heavy condensed grotesque — Anton, Archivo Black, Oswald — would land
-closer to the real Persona 5 type. Change `Theme.fontDisplay` and everything
-follows.
+The display face is Archivo Black, set italic almost everywhere. Change
+`Theme.fontDisplay` and everything follows.
+
+## Palette discipline
+
+Two hues, deliberately: teal carries every resting state, crimson means alarm
+and nothing else. The old blue, green and amber remain in `Theme.qml` only as
+aliases onto those two families so existing call sites keep working — don't
+introduce new uses. `Theme.heat()` is a continuous teal→crimson ramp rather than
+a hue cycle, so a number that has gone red means the same thing as a battery
+that has gone red. Tray icons are force-flattened to a single colour for the
+same reason: app brand colours wreck the palette faster than anything else.
+
+Geometry variance lives in the same file. `Theme.leanFor(i)`, `chopFor(i)` and
+`cornersFor(i)` hand each module a different lean and chamfer by index, so
+modules stop being congruent parallelograms in an even rhythm — pass a module's
+index rather than accepting the defaults.

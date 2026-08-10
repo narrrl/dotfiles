@@ -7,10 +7,11 @@ import "root:/services"
 
 // One bar per monitor.
 //
-// Layout is three clusters: identity and system state on the left, the clock
-// and player dead centre, controls on the right. The centre is genuinely
-// centred, so the left cluster's window title is capped at whatever space is
-// actually left over — otherwise the clusters overlap on a 1080p panel.
+// Identity, workspaces and the focused window on the left; the clock on the
+// right. Status moved to the rail and the player and metrics moved to the dock,
+// which is what buys the room for this to breathe — nothing here is fighting
+// for horizontal space any more, so the title gets a generous cap and the type
+// can run large instead of being squeezed to fit between two clusters.
 PanelWindow {
     id: root
 
@@ -36,10 +37,6 @@ PanelWindow {
     exclusiveZone: Theme.barHeight + Theme.barMargin
     color: "transparent"
 
-    // Half the space not taken by the centre cluster, minus breathing room.
-    readonly property real sideBudget:
-        (width - centreCluster.width) / 2 - Theme.barGap * 2
-
     // ------------------------------------------------------------------ left
     Row {
         id: leftCluster
@@ -55,15 +52,18 @@ PanelWindow {
         BarPill {
             id: spacesPill
             accent: Theme.primary
-            padding: Theme.padS
+            padding: Theme.padM
             interactive: false
+            lean: Theme.leanFor(1)
+            chop: Theme.chopFor(1)
+            chopCorners: Theme.cornersFor(1)
             implicitWidth: spacesRow.implicitWidth + contentPad * 2
 
             Row {
                 id: spacesRow
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
-                spacing: Theme.padM
+                spacing: Theme.padL
 
                 Workspaces {
                     id: spaces
@@ -82,63 +82,27 @@ PanelWindow {
                     anchors.verticalCenter: parent.verticalCenter
                     screenRef: root.modelData
 
-                    // Everything else on this side is fixed width, so the title
-                    // gets whatever remains.
-                    maxWidth: Math.max(70, root.sideBudget
+                    // The only thing competing for this row is the clock, so the
+                    // title can have most of the bar.
+                    maxWidth: Math.max(120, root.width
                         - sigil.implicitWidth
-                        - resources.implicitWidth
+                        - clock.implicitWidth
                         - spaces.implicitWidth
-                        - Theme.barGap * 2
-                        - Theme.padM * 3
-                        - spacesPill.leanInset)
+                        - Theme.barGap * 3
+                        - Theme.padL * 2
+                        - Theme.padXL
+                        - spacesPill.contentPad * 2)
                 }
             }
-        }
-
-        Resources {
-            id: resources
-            screenRef: root.modelData
-        }
-    }
-
-    // ---------------------------------------------------------------- centre
-    Row {
-        id: centreCluster
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        spacing: Theme.barGap
-
-        MediaPill {
-            screenRef: root.modelData
-        }
-
-        Clock {
-            screenRef: root.modelData
         }
     }
 
     // ----------------------------------------------------------------- right
-    Row {
-        id: rightCluster
+    Clock {
+        id: clock
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
-        spacing: Theme.barGap
-
-        Tray {
-            screenRef: root.modelData
-        }
-
-        Status {
-            screenRef: root.modelData
-        }
-
-        NotifButton {
-            screenRef: root.modelData
-        }
-
-        PowerButton {
-            screenRef: root.modelData
-        }
+        screenRef: root.modelData
     }
 
     // A hairline of crimson under the whole bar — the Persona 5 underscore.

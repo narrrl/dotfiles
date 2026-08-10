@@ -141,6 +141,11 @@ PanelWindow {
         anchors.verticalCenter: parent.verticalCenter
         spacing: Theme.padM
 
+        // The widest slab in the stack. Fixed rather than derived so the ragged
+        // x offsets below cannot feed back into the Column's own width.
+        readonly property int stackWidth: 312
+        width: stackWidth
+
         Repeater {
             id: buttonRepeater
 
@@ -160,11 +165,29 @@ PanelWindow {
                 required property var modelData
                 required property int index
 
-                width: 280
+                // Six identical slabs stacked at a constant width is the most
+                // obviously machine-made thing in the shell. Vary the width and
+                // push each row a different distance off the right margin, so
+                // the stack has a ragged edge on both sides.
+                readonly property int slabWidth: [286, 252, 300, 268, 312, 244][entry.index]
+                readonly property int nudge: [0, 22, 8, 34, 14, 26][entry.index]
+
+                // Column owns y, so the ragged edge is an explicit x offset
+                // measured against the widest slab in the stack.
+                width: entry.slabWidth
                 height: 52
+                x: actions.stackWidth - entry.slabWidth - entry.nudge
 
                 opacity: 0
-                transform: Translate { id: slide; x: 90 }
+                transform: [
+                    Translate { id: slide; x: 90 },
+                    Rotation {
+                        id: tilt
+                        angle: -3
+                        origin.x: entry.slabWidth / 2
+                        origin.y: 26
+                    }
+                ]
 
                 P5Button {
                     anchors.fill: parent
@@ -172,7 +195,8 @@ PanelWindow {
                     icon: entry.modelData.icon
                     destructive: entry.modelData.danger
                     accent: entry.modelData.danger ? Theme.accent : Theme.primary
-                    lunge: -10
+                    lean: Theme.leanFor(entry.index)
+                    lunge: -10 - entry.index * 2
                     onClicked: root.invoke(entry.modelData.act)
                 }
 
@@ -198,6 +222,16 @@ PanelWindow {
                             from: 90; to: 0
                             duration: Theme.durSlow
                             easing.type: Easing.OutBack
+                        }
+                        // Slabs land out of true and snap square. Sliding alone
+                        // reads like a slide deck; the tilt is what makes it
+                        // land like a card being thrown down.
+                        NumberAnimation {
+                            target: tilt; property: "angle"
+                            from: entry.index % 2 === 0 ? -4 : 4; to: 0
+                            duration: Theme.durSlow
+                            easing.type: Easing.OutBack
+                            easing.overshoot: 2.2
                         }
                     }
                 }

@@ -27,12 +27,25 @@ PopupWindow {
 
     signal dismissedFully()
 
+    // Panels hanging off the vertical rail open sideways, so the entry slide has
+    // to follow whichever axis the popout actually travels along, and start on
+    // the side nearest its trigger.
+    readonly property bool horizontal:
+        fromEdge === Edges.Left || fromEdge === Edges.Right
+    readonly property string slideProperty: horizontal ? "x" : "y"
+    readonly property real slideOrigin: bleed + (fromEdge === Edges.Left
+        || fromEdge === Edges.Top ? 14 : -14)
+
     anchor.item: anchorItem
     anchor.edges: fromEdge
     anchor.gravity: fromEdge
-    anchor.adjustment: PopupAdjustment.SlideX
+    anchor.adjustment: horizontal
+        ? PopupAdjustment.SlideY
+        : PopupAdjustment.SlideX
     anchor.margins.top: Theme.popoutGap
     anchor.margins.bottom: Theme.popoutGap
+    anchor.margins.left: Theme.popoutGap
+    anchor.margins.right: Theme.popoutGap
 
     implicitWidth: contentWidth + bleed * 2
     implicitHeight: contentHeight + bleed * 2
@@ -83,7 +96,14 @@ PopupWindow {
         height: root.contentHeight
 
         opacity: 0
-        transformOrigin: Item.Top
+        transformOrigin: {
+            switch (root.fromEdge) {
+            case Edges.Left: return Item.Right;
+            case Edges.Right: return Item.Left;
+            case Edges.Top: return Item.Bottom;
+            default: return Item.Top;
+            }
+        }
         scale: 0.94
 
         // The handler has to live on the content item, not the window: a
@@ -105,8 +125,8 @@ PopupWindow {
             to: 1.0; duration: Theme.durSlow; easing.type: Easing.OutBack
         }
         NumberAnimation {
-            target: contentHolder; property: "y"
-            from: root.bleed - 14; to: root.bleed
+            target: contentHolder; property: root.slideProperty
+            from: root.slideOrigin; to: root.bleed
             duration: Theme.durSlow; easing.type: Easing.OutBack
         }
     }
@@ -122,12 +142,14 @@ PopupWindow {
             to: 0.96; duration: Theme.durFast; easing.type: Easing.InQuad
         }
         NumberAnimation {
-            target: contentHolder; property: "y"
-            to: root.bleed - 8; duration: Theme.durFast; easing.type: Easing.InQuad
+            target: contentHolder; property: root.slideProperty
+            to: root.bleed + (root.slideOrigin - root.bleed) * 0.6
+            duration: Theme.durFast; easing.type: Easing.InQuad
         }
         onFinished: {
             root.shown = false;
             root.pinned = false;
+            contentHolder.x = root.bleed;
             contentHolder.y = root.bleed;
             root.dismissedFully();
         }

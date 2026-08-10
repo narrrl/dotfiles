@@ -18,6 +18,11 @@ Item {
     property real lean: Theme.skew
     property bool leanLeft: false
 
+    // Tall panels (the right-hand rail) slant their horizontal edges instead,
+    // by a fraction of width, and inset their content top/bottom rather than
+    // left/right.
+    property bool vertical: false
+
     // Corner chop size, and which corners get chopped (indices into the
     // polygon, clockwise from the top-left). Default chops the two corners that
     // read as "cut" against the lean.
@@ -37,10 +42,24 @@ Item {
     // Inner glow along the top edge, for panels that should feel backlit.
     property bool sheen: false
 
-    readonly property real leanInset: height * Math.abs(lean)
-    readonly property var polygon: leanLeft
-        ? Geom.parallelogramL(width, height, lean)
-        : Geom.parallelogram(width, height, lean)
+    // The screen-print stack. A pure-black copy of the silhouette sits behind
+    // the fill, offset down-and-right, and the fill carries a black keyline
+    // outside its coloured border. Together these are what stop the panel from
+    // reading as a flat clip-path.
+    property bool drop: true
+    property real dropOffset: Theme.dropOffset
+    property color dropColor: Theme.ink
+    property bool keyline: true
+    property real keylineWidth: Theme.keylineWidth
+
+    readonly property real leanInset:
+        (vertical ? width : height) * Math.abs(lean)
+
+    readonly property var polygon: vertical
+        ? (leanLeft ? Geom.parallelogramVL(width, height, lean)
+                    : Geom.parallelogramV(width, height, lean))
+        : (leanLeft ? Geom.parallelogramL(width, height, lean)
+                    : Geom.parallelogram(width, height, lean))
 
     // Child content lives inside `contentItem`, inset on both sides far enough
     // to clear the slanted edges. Panels do not auto-size: callers set implicit
@@ -52,14 +71,57 @@ Item {
 
     readonly property real contentPad: padding + leanInset
 
+    // Offset black copy of the silhouette, behind everything.
+    Loader {
+        anchors.fill: parent
+        active: root.drop && root.dropOffset > 0
+        sourceComponent: Shape {
+            preferredRendererType: Shape.CurveRenderer
+            asynchronous: false
+
+            transform: Translate {
+                x: root.dropOffset * (root.leanLeft ? -1 : 1)
+                y: root.dropOffset
+            }
+
+            ShapePath {
+                fillColor: root.dropColor
+                strokeColor: "transparent"
+                joinStyle: ShapePath.MiterJoin
+
+                PathPolyline {
+                    path: Geom.chamfer(root.polygon, root.chop, root.chopCorners)
+                }
+            }
+        }
+    }
+
     Shape {
         id: body
         anchors.fill: parent
         preferredRendererType: Shape.CurveRenderer
         asynchronous: false
 
+        // Fill, carrying the black keyline. The stroke is centred on the path,
+        // so half of it sits outside the silhouette — which is exactly the
+        // heavy outer contour the style wants.
         ShapePath {
             fillColor: Theme.alpha(root.fill, root.fillOpacity)
+            strokeColor: root.keyline ? root.dropColor : "transparent"
+            strokeWidth: root.keyline
+                ? root.borderWidth + root.keylineWidth * 2
+                : 0
+            joinStyle: ShapePath.MiterJoin
+            capStyle: ShapePath.FlatCap
+
+            PathPolyline {
+                path: Geom.chamfer(root.polygon, root.chop, root.chopCorners)
+            }
+        }
+
+        // Coloured border, drawn on top of the keyline so it reads as an inlay.
+        ShapePath {
+            fillColor: "transparent"
             strokeColor: root.borderWidth > 0 ? root.border : "transparent"
             strokeWidth: root.borderWidth
             joinStyle: ShapePath.MiterJoin
@@ -141,13 +203,25 @@ Item {
                 strokeColor: "transparent"
                 PathPolyline {
                     path: {
+                        const t = root.slashWidth;
+
+                        // On a rail slab the slash runs along the slanted top
+                        // edge instead of down a side.
+                        if (root.vertical) {
+                            const voff = root.width * root.lean;
+                            return root.leanLeft
+                                ? Geom.closed([Qt.point(0, 0), Qt.point(root.width, voff),
+                                               Qt.point(root.width, voff + t), Qt.point(0, t)])
+                                : Geom.closed([Qt.point(0, voff), Qt.point(root.width, 0),
+                                               Qt.point(root.width, t), Qt.point(0, voff + t)]);
+                        }
+
                         const off = root.height * root.lean;
-                        const w = root.slashWidth;
                         return root.leanLeft
-                            ? Geom.closed([Qt.point(0, 0), Qt.point(w, 0),
-                                           Qt.point(off + w, root.height), Qt.point(off, root.height)])
-                            : Geom.closed([Qt.point(off, 0), Qt.point(off + w, 0),
-                                           Qt.point(w, root.height), Qt.point(0, root.height)]);
+                            ? Geom.closed([Qt.point(0, 0), Qt.point(t, 0),
+                                           Qt.point(off + t, root.height), Qt.point(off, root.height)])
+                            : Geom.closed([Qt.point(off, 0), Qt.point(off + t, 0),
+                                           Qt.point(t, root.height), Qt.point(0, root.height)]);
                     }
                 }
             }
@@ -157,9 +231,9 @@ Item {
     Item {
         id: contentHolder
         anchors.fill: parent
-        anchors.leftMargin: root.contentPad
-        anchors.rightMargin: root.contentPad
-        anchors.topMargin: root.padding
-        anchors.bottomMargin: root.padding
+        anchors.leftMargin: root.vertical ? root.padding : root.contentPad
+        anchors.rightMargin: root.vertical ? root.padding : root.contentPad
+        anchors.topMargin: root.vertical ? root.contentPad : root.padding
+        anchors.bottomMargin: root.vertical ? root.contentPad : root.padding
     }
 }

@@ -1,0 +1,111 @@
+import QtQuick
+import "root:/config"
+import "root:/components"
+
+// One slot on the right-hand rail: a glyph with an optional micro readout
+// stacked beneath it, and a crimson bar that wipes down the leading edge on
+// hover. The rail is only 48px wide, so unlike StatusIcon the readout sits
+// under the glyph rather than beside it, and anything longer than a percentage
+// belongs in the popout instead.
+Item {
+    id: root
+
+    property string icon: ""
+    property string readout: ""
+    property color tint: Theme.primary
+    property bool alert: false
+    property bool dim: false
+    property bool pulsing: false
+
+    readonly property bool hovered: hover.hovered
+
+    signal clicked()
+    signal rightClicked()
+    signal middleClicked()
+    signal scrolled(real delta)
+
+    implicitWidth: Theme.railWidth
+    implicitHeight: root.readout !== "" ? 42 : 32
+
+    Column {
+        id: layout
+        anchors.centerIn: parent
+        spacing: 1
+
+        Icon {
+            id: glyph
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: root.icon
+            pulsing: root.pulsing
+            font.pixelSize: Theme.fsLarge
+            color: {
+                if (root.alert) return Theme.accent;
+                if (root.dim) return Theme.muted;
+                if (root.hovered) return Theme.glow;
+                return root.tint;
+            }
+
+            Behavior on color {
+                ColorAnimation { duration: Theme.durBase }
+            }
+        }
+
+        Text {
+            anchors.horizontalCenter: parent.horizontalCenter
+            visible: root.readout !== ""
+            text: root.readout
+            color: root.dim ? Theme.muted : Theme.subtext
+            font.family: Theme.fontMono
+            font.pixelSize: Theme.fsMicro
+            font.weight: Font.DemiBold
+            renderType: Text.NativeRendering
+
+            Behavior on color {
+                ColorAnimation { duration: Theme.durBase }
+            }
+        }
+    }
+
+    // Leading-edge wipe. On the rail this runs vertically down the left side,
+    // mirroring the slash P5Panel puts on horizontal modules.
+    Rectangle {
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        width: 2
+        height: root.hovered ? layout.implicitHeight : 0
+        color: root.alert ? Theme.accent : root.tint
+
+        Behavior on height {
+            NumberAnimation { duration: Theme.durBase; easing.type: Easing.OutExpo }
+        }
+    }
+
+    scale: root.hovered ? 1.08 : 1.0
+    Behavior on scale {
+        NumberAnimation { duration: Theme.durBase; easing.type: Easing.OutBack }
+    }
+
+    onAlertChanged: if (alert) glyph.bump()
+
+    HoverHandler {
+        id: hover
+        cursorShape: Qt.PointingHandCursor
+    }
+
+    TapHandler {
+        acceptedButtons: Qt.LeftButton
+        onTapped: root.clicked()
+    }
+    TapHandler {
+        acceptedButtons: Qt.RightButton
+        onTapped: root.rightClicked()
+    }
+    TapHandler {
+        acceptedButtons: Qt.MiddleButton
+        onTapped: root.middleClicked()
+    }
+    WheelHandler {
+        acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+        onWheel: event => root.scrolled(event.angleDelta.y)
+    }
+}

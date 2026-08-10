@@ -11,9 +11,15 @@ Item {
     property bool active: false
     property bool slash: false
     property real lean: Theme.skew
+    property bool leanLeft: false
     property real padding: Theme.padM
     property bool interactive: true
     property bool halftone: false
+
+    // Chamfer, forwarded so modules can differ from one another instead of all
+    // sharing the panel default.
+    property real chop: Theme.cut
+    property var chopCorners: [1, 3]
 
     readonly property bool hovered: hover.hovered
     readonly property real leanInset: panel.leanInset
@@ -35,6 +41,9 @@ Item {
         id: panel
         anchors.fill: parent
         lean: root.lean
+        leanLeft: root.leanLeft
+        chop: root.chop
+        chopCorners: root.chopCorners
         padding: root.padding
         halftone: root.halftone
         halftoneColor: root.accent

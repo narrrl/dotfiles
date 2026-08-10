@@ -13,7 +13,14 @@ BarPill {
     required property var screenRef
 
     accent: Theme.heat(Math.max(Sys.cpuUsage, Sys.memPercent))
-    padding: Theme.padS
+
+    // Roomier than it was on the bar. In the dock there is nothing to compete
+    // with, so the figures get real padding instead of being pushed up against
+    // the slanted edges.
+    padding: Theme.padM
+    lean: Theme.leanFor(2)
+    chop: Theme.chopFor(2)
+    chopCorners: Theme.cornersFor(2)
     implicitWidth: layout.implicitWidth + contentPad * 2
 
     onClicked: Actions.openSystemMonitor()
@@ -59,6 +66,10 @@ BarPill {
         }
     }
 
+    // The CPU/MEM/GPU labels are gone: three characters of chrome per metric,
+    // repeated three times, in the most cramped part of the shell. The number
+    // over its meter is legible on its own, and dropping them buys the room to
+    // set the figure in display italic instead of squeezing it into mono.
     component Metric: Column {
         id: metric
 
@@ -67,33 +78,20 @@ BarPill {
         property string readout: ""
 
         anchors.verticalCenter: parent.verticalCenter
-        spacing: 1
+        spacing: 2
 
-        Row {
-            spacing: 4
+        Text {
+            text: metric.readout
+            color: Theme.heat(metric.value)
+            font.family: Theme.fontDisplay
+            font.pixelSize: Theme.fsBody
+            font.weight: Theme.weightDisplay
+            font.italic: true
+            font.letterSpacing: 0.5
+            renderType: Text.NativeRendering
 
-            Text {
-                anchors.verticalCenter: parent.verticalCenter
-                text: metric.label
-                color: Theme.muted
-                font.family: Theme.fontMono
-                font.pixelSize: Theme.fsMicro
-                font.letterSpacing: 1.5
-                renderType: Text.NativeRendering
-            }
-
-            Text {
-                anchors.verticalCenter: parent.verticalCenter
-                text: metric.readout
-                color: Theme.heat(metric.value)
-                font.family: Theme.fontMono
-                font.pixelSize: Theme.fsSmall
-                font.weight: Font.DemiBold
-                renderType: Text.NativeRendering
-
-                Behavior on color {
-                    ColorAnimation { duration: Theme.durBase }
-                }
+            Behavior on color {
+                ColorAnimation { duration: Theme.durBase }
             }
         }
 
