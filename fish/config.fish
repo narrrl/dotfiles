@@ -37,3 +37,7 @@ if status is-login && test -z "$DISPLAY" -a -z "$WAYLAND_DISPLAY"
         exec uwsm start default
     end
 end
+
+# Claude environments
+alias claude="CLAUDE_CONFIG_DIR=~/.claude command claude"
+alias claude-work="CLAUDE_CONFIG_DIR=~/.claude-work command claude"

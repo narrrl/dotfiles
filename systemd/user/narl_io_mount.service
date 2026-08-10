@@ -12,7 +12,7 @@ After=network-online.target
 ExecStart=sshfs -f -p 420 narl@narl.io:/opt %h/remote/narl.io
 
 # The command to unmount gracefully.
-ExecStop=fusermount -u %h/narl_io
+ExecStop=fusermount -u %h/remote/narl.io
 Restart=on-failure
 RestartSec=10
 

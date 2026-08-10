@@ -22,8 +22,7 @@
 
         // --- Standard Modules ---
         "hyprland/workspaces": {
-            "format": "{icon}",
-            "on-click": "activate"
+            "format": "{icon}"
         },
         "hyprland/window": {
             "format": "{}",

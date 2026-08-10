@@ -36,18 +36,18 @@ format = "{mount} {used:^3.0}/{total:^3.0}G"
 
 
 [power]
-format = "{percentage:>3}%  {icon}"
+format = "{percentage:>3}% {icon}"
 
 [audio]
-format_sink_unmuted = "{name} {volume:>3}% <span size='large'> {icon}</span>"
+format_sink_unmuted = "{name} {volume:>3}% <span size='large'>{icon}</span>"
 format_sink_muted = "{name} <span size='large'> {icon}</span>"
-format_source_unmuted = "{name} {volume:>3}% <span size='large'> {icon}</span>"
-format_source_muted = "{name} <span size='large'> {icon}</span>"
+format_source_unmuted = "{name} {volume:>3}% <span size='large'>{icon}</span>"
+format_source_muted = "{name} <span size='large'>{icon}</span>"
 
 [bt]
-format_plugin = "{alias} [{left}|{right}] {anc} <span size='large'> 󰂰</span>"
-format_connected = "{alias} <span size='large'> 󰂰</span>"
-format_disconnected = "Disconnected <span size='large'> 󰂯</span>"
+format_plugin = "{alias} [{left}|{right}] {anc} <span size='large'>󰂰</span>"
+format_connected = "{alias} <span size='large'>󰂰</span>"
+format_disconnected = "Disconnected <span size='large'>󰂯</span>"
 format_disabled = "<span size='large'>󰂲</span>"
 
 [game]
