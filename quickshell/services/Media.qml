@@ -34,11 +34,14 @@ Singleton {
 
     readonly property bool canGoNext: active?.canGoNext ?? false
     readonly property bool canGoPrevious: active?.canGoPrevious ?? false
-    readonly property bool canSeek: (active?.canSeek ?? false) && (active?.lengthSupported ?? false)
+    readonly property bool positionSupported: active?.positionSupported ?? false
+    readonly property bool lengthSupported: active?.lengthSupported ?? false
+    readonly property bool hasTimeline: positionSupported && lengthSupported && length > 0
+    readonly property bool canSeek: (active?.canSeek ?? false) && hasTimeline
 
-    readonly property real length: active?.lengthSupported ? (active?.length ?? 0) : 0
-    readonly property real position: active?.positionSupported ? (active?.position ?? 0) : 0
-    readonly property real progress: length > 0 ? Math.min(1, position / length) : 0
+    readonly property real length: lengthSupported ? (active?.length ?? 0) : 0
+    readonly property real position: positionSupported ? (active?.position ?? 0) : 0
+    readonly property real progress: hasTimeline ? Math.min(1, position / length) : 0
 
     readonly property string label: {
         if (!hasPlayer) return "Nothing playing";
@@ -53,8 +56,8 @@ Singleton {
 
     // MPRIS position is pull-only; tick it so the seek bar moves.
     Timer {
-        interval: 500
-        running: root.playing && root.canSeek
+        interval: 1000
+        running: root.playing && root.positionSupported
         repeat: true
         onTriggered: if (root.active) root.active.positionChanged()
     }
@@ -85,9 +88,11 @@ Singleton {
         return "󰝚";
     }
 
-    function timeString(micros: real): string {
-        if (!(micros > 0)) return "0:00";
-        const total = Math.floor(micros / 1000000);
+    // Quickshell exposes MPRIS position/length in seconds (with millisecond
+    // precision), not the protocol's raw microseconds.
+    function timeString(seconds: real): string {
+        if (!(seconds > 0)) return "0:00";
+        const total = Math.floor(seconds);
         const m = Math.floor(total / 60);
         const s = total % 60;
         if (m >= 60) {

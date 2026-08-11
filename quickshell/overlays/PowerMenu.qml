@@ -28,6 +28,18 @@ PanelWindow {
     readonly property bool open: Actions.powerMenuOpen
     property int selectedAction: 0
 
+    function focusSelectedAction(): void {
+        const entry = buttonRepeater.itemAt(root.selectedAction);
+        if (entry && entry.children.length > 0)
+            entry.children[0].forceActiveFocus(Qt.TabFocusReason);
+    }
+
+    function moveSelection(delta: int): void {
+        root.selectedAction = (root.selectedAction + delta + root.actionModel.length)
+            % root.actionModel.length;
+        root.focusSelectedAction();
+    }
+
     readonly property var actionModel: [
         { label: "Lock",      icon: "󰌾", danger: false, act: "lock" },
         { label: "Suspend",   icon: "󰤄", danger: false, act: "suspend" },
@@ -160,6 +172,7 @@ PanelWindow {
                 ]
 
                 P5Button {
+                    id: actionButton
                     anchors.fill: parent
                     text: entry.modelData.label
                     icon: entry.modelData.icon
@@ -170,6 +183,8 @@ PanelWindow {
                     lunge: -10
                     onClicked: root.invoke(entry.modelData.act)
                     onHoveredChanged: if (hovered) root.selectedAction = entry.index
+                    onActiveFocusChanged: if (actionButton.activeFocus) root.selectedAction = entry.index
+                    Keys.forwardTo: [keyController]
                 }
 
                 // Staggered entry, one button after another.
@@ -241,20 +256,22 @@ PanelWindow {
 
     // Escape closes. The layer takes exclusive focus while open.
     Item {
+        id: keyController
         anchors.fill: parent
         focus: root.open
         Keys.onEscapePressed: Actions.closePowerMenu()
         Keys.onPressed: event => {
             if (!root.open) return;
             if (event.key === Qt.Key_Up || event.key === Qt.Key_K) {
-                root.selectedAction = (root.selectedAction + root.actionModel.length - 1)
-                    % root.actionModel.length;
+                root.moveSelection(-1);
                 event.accepted = true;
             } else if (event.key === Qt.Key_Down || event.key === Qt.Key_J) {
-                root.selectedAction = (root.selectedAction + 1) % root.actionModel.length;
+                root.moveSelection(1);
                 event.accepted = true;
-            } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter
-                       || event.key === Qt.Key_Space) {
+            } else if (keyController.activeFocus
+                       && !event.isAutoRepeat
+                       && (event.key === Qt.Key_Return || event.key === Qt.Key_Enter
+                           || event.key === Qt.Key_Space)) {
                 root.invoke(root.actionModel[root.selectedAction].act);
                 event.accepted = true;
             }

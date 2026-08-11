@@ -54,6 +54,46 @@ Singleton {
     // resolves to crimson. Pointing at a thing lights it up red.
     readonly property color glow: root.accent
 
+    // ------------------------------------------------ semantic treatments
+    // These tokens describe interaction meaning, not new palette entries. Each
+    // state is composed only from Takemi's black, white, crimson, and neutral
+    // surfaces so callers do not invent one-off state colors.
+    readonly property color treatmentRestFill: root.surface
+    readonly property color treatmentRestMark: root.outline
+    readonly property color treatmentRestText: root.text
+
+    readonly property color treatmentHoverFill: root.surface
+    readonly property color treatmentHoverMark: root.accent
+    readonly property color treatmentHoverText: root.text
+
+    readonly property color treatmentFocusFill: root.text
+    readonly property color treatmentFocusMark: root.ink
+    readonly property color treatmentFocusText: root.ink
+    readonly property color treatmentSelectedFill: root.treatmentFocusFill
+    readonly property color treatmentSelectedMark: root.treatmentFocusMark
+    readonly property color treatmentSelectedText: root.treatmentFocusText
+
+    readonly property color treatmentActiveFill: root.surface
+    readonly property color treatmentActiveMark: root.accent
+    readonly property color treatmentActiveText: root.text
+
+    // Crimson carries destructive/error meaning. Text and keylines stay black:
+    // black-on-crimson is 5.70:1, while small white-on-crimson is only 3.68:1.
+    readonly property color treatmentDestructiveFill: root.accent
+    readonly property color treatmentDestructiveMark: root.ink
+    readonly property color treatmentDestructiveText: root.ink
+    readonly property color treatmentErrorFill: root.treatmentDestructiveFill
+    readonly property color treatmentErrorMark: root.treatmentDestructiveMark
+    readonly property color treatmentErrorText: root.treatmentDestructiveText
+
+    readonly property color treatmentUrgentFill: root.surface
+    readonly property color treatmentUrgentMark: root.accent
+    readonly property color treatmentUrgentText: root.text
+
+    readonly property color treatmentDisabledFill: root.surface
+    readonly property color treatmentDisabledMark: root.outline
+    readonly property color treatmentDisabledText: root.muted
+
     // Retired hues. Aliases only — do not introduce new uses.
     //
     // `warn` used to be accentSoft, which put a washed-out pink-red on screen

@@ -5,12 +5,15 @@ import "root:/config"
 import "root:/components"
 import "root:/services"
 
-// Output and input levels, the sink picker, and a per-app mixer.
+// Audio is the expressive vertical slice for rail popouts: output owns the
+// composition, input is a clear secondary band, and application streams recede
+// into a compact mixer below both device controls.
 Popout {
     id: root
 
-    contentWidth: 360
+    contentWidth: 400
     contentHeight: surface.implicitContentHeight + Theme.padM * 2
+    initialFocusItem: outputMuteButton
 
     PopoutSurface {
         id: surface
@@ -39,29 +42,38 @@ Popout {
             spacing: Theme.padM
 
             // ------------------------------------------------------- output
-            LevelRow {
+            AudioOutputHero {
                 width: parent.width
-                icon: Audio.icon
-                label: "Output"
-                readout: Audio.muted ? "MUTED" : Audio.volumePercent + "%"
-                value: Audio.volume
-                muted: Audio.muted
-                accent: Theme.primary
-                onMoved: v => Audio.setVolume(v)
-                onToggled: Audio.toggleMute()
+            }
+
+            Column {
+                width: parent.width
+                spacing: Theme.padS
+
+                P5Button {
+                    id: outputMuteButton
+                    width: parent.width
+                    text: Audio.muted ? "Unmute output" : "Mute output"
+                    icon: Audio.icon
+                    onClicked: Audio.toggleMute()
+                }
+
+                P5Button {
+                    width: parent.width
+                    text: "Open audio mixer"
+                    icon: "󰕾"
+                    onClicked: Actions.openAudioSettings()
+                }
             }
 
             // -------------------------------------------------------- input
-            LevelRow {
+            SectionRule {
                 width: parent.width
-                icon: Audio.micIcon
-                label: "Input"
-                readout: Audio.micMuted ? "MUTED" : Audio.micPercent + "%"
-                value: Audio.micVolume
-                muted: Audio.micMuted
-                accent: Theme.blue
-                onMoved: v => Audio.setMicVolume(v)
-                onToggled: Audio.toggleMicMute()
+                text: "Input"
+            }
+
+            AudioInputBand {
+                width: parent.width
             }
 
             SectionRule {
@@ -98,19 +110,14 @@ Popout {
                     icon: "󰝚"
                     label: Audio.streamName(modelData)
                     readout: modelData.audio ? Math.round(modelData.audio.volume * 100) + "%" : ""
-                    value: modelData.audio?.volume ?? 0
-                    muted: modelData.audio?.muted ?? false
+                    value: modelData.audio ? modelData.audio.volume : 0
+                    muted: modelData.audio ? modelData.audio.muted : false
                     accent: Theme.glow
                     onMoved: v => { if (modelData.audio) modelData.audio.volume = v; }
                     onToggled: { if (modelData.audio) modelData.audio.muted = !modelData.audio.muted; }
                 }
             }
 
-            P5Button {
-                text: "Mixer"
-                icon: "󰕾"
-                onClicked: Actions.openAudioSettings()
-            }
         }
     }
 
@@ -178,7 +185,7 @@ Popout {
             anchors.right: parent.right
             value: levelRow.value
             accent: levelRow.accent
-            enabledControl: !levelRow.muted
+            enabled: !levelRow.muted
             onMoved: v => levelRow.moved(v)
         }
     }

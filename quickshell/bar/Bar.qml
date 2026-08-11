@@ -37,29 +37,16 @@ PanelWindow {
     exclusiveZone: Theme.barHeight + Theme.barMargin
     color: "transparent"
 
-    // The slab. One panel, full width, flat fill, black keyline.
-    P5Panel {
+    // Calm permanent chrome: one opaque slab with no texture or offset copy.
+    ChromeSurface {
         id: slab
         anchors.fill: parent
         lean: Theme.skew
         chop: Theme.cut
         chopCorners: [1, 3]
         padding: 0
-        fill: Theme.surface
-        fillOpacity: 1.0
-        border: Theme.alpha(Theme.outline, 0.9)
-        borderWidth: 1
-        slash: true
-        slashColor: Theme.accent
+        active: true
         slashWidth: 5
-
-        // No offset copy on the big slabs. The 3px black silhouette behind the
-        // fill is a print-misregistration trick, and at this scale it stops
-        // reading as one: on a 1900px bar you only ever see it at the chopped
-        // corners, where it turns the single clean cut into a staggered double
-        // edge that looks like a rendering fault. The black keyline still
-        // carries the heavy outer contour, which is what the corner needs.
-        drop: false
     }
 
     readonly property real edgeInset: Theme.barHeight * Theme.skew + Theme.padM

@@ -56,10 +56,8 @@ BarPill {
         color: Theme.alpha(Theme.outline, 0.8)
     }
 
-    // The CPU/MEM/GPU labels are gone: three characters of chrome per metric,
-    // repeated three times, in the most cramped part of the shell. The number
-    // over its meter is legible on its own, and dropping them buys the room to
-    // set the figure in display italic instead of squeezing it into mono.
+    // A tiny fixed label makes every number self-describing without turning the
+    // compact meter cluster back into three separate cards.
     component Metric: Column {
         id: metric
 
@@ -70,18 +68,34 @@ BarPill {
         anchors.verticalCenter: parent.verticalCenter
         spacing: 2
 
-        Text {
-            text: metric.readout
-            color: Theme.heat(metric.value)
-            font.family: Theme.fontDisplay
-            font.pixelSize: Theme.fsBody
-            font.weight: Theme.weightDisplay
-            font.italic: true
-            font.letterSpacing: 0.5
-            renderType: Text.NativeRendering
+        Row {
+            spacing: 4
 
-            Behavior on color {
-                ColorAnimation { duration: Theme.durBase }
+            Text {
+                anchors.baseline: readoutText.baseline
+                text: metric.label
+                color: Theme.muted
+                font.family: Theme.fontMono
+                font.pixelSize: Theme.fsMicro
+                font.weight: Font.Bold
+                font.letterSpacing: 0.5
+                renderType: Text.NativeRendering
+            }
+
+            Text {
+                id: readoutText
+                text: metric.readout
+                color: Theme.heat(metric.value)
+                font.family: Theme.fontDisplay
+                font.pixelSize: Theme.fsBody
+                font.weight: Theme.weightDisplay
+                font.italic: true
+                font.letterSpacing: 0.5
+                renderType: Text.NativeRendering
+
+                Behavior on color {
+                    ColorAnimation { duration: Theme.durBase }
+                }
             }
         }
 

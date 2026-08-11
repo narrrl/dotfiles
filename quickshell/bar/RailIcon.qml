@@ -12,6 +12,10 @@ Item {
 
     property string icon: ""
     property string readout: ""
+    property string label: ""
+    property string statusText: ""
+    property string hint: ""
+    property bool suppressTooltip: false
     property color tint: Theme.primary
     property bool alert: false
     property bool dim: false
@@ -24,8 +28,6 @@ Item {
     readonly property real wipeInset: 5
 
     signal clicked()
-    signal rightClicked()
-    signal middleClicked()
     signal scrolled(real delta)
 
     implicitWidth: Theme.railWidth
@@ -110,16 +112,17 @@ Item {
         acceptedButtons: Qt.LeftButton
         onTapped: root.clicked()
     }
-    TapHandler {
-        acceptedButtons: Qt.RightButton
-        onTapped: root.rightClicked()
-    }
-    TapHandler {
-        acceptedButtons: Qt.MiddleButton
-        onTapped: root.middleClicked()
-    }
     WheelHandler {
         acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
         onWheel: event => root.scrolled(event.angleDelta.y)
+    }
+
+    P5Tooltip {
+        anchorItem: root
+        triggerHovered: root.hovered
+        title: root.label
+        status: root.statusText
+        hint: root.hint
+        suppressed: root.suppressTooltip
     }
 }

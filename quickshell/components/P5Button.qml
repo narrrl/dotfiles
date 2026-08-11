@@ -1,15 +1,13 @@
 import QtQuick
 import "root:/config"
 
-// Chopped, leaning button. On hover it lunges toward the pointer and flips to
-// crimson-on-white; on press it snaps flat.
-Item {
+// Chopped, leaning button with one activation path for pointer and keyboard.
+FocusScope {
     id: root
 
     property string text: ""
     property string icon: ""
     property color accent: Theme.primary
-    property color hoverFill: Theme.accent
     property bool destructive: false
     property bool selected: false
     property real lean: Theme.skew
@@ -18,8 +16,25 @@ Item {
 
     signal clicked()
 
-    readonly property bool hovered: hover.hovered || root.selected
+    readonly property bool hovered: root.enabled && hover.hovered
     readonly property bool pressed: tap.pressed
+    readonly property bool focusedOrSelected: root.activeFocus || root.selected
+    readonly property bool highlighted: root.hovered || root.focusedOrSelected
+
+    // Pointer activation must not turn a transient action into the black/white
+    // keyboard-focus treatment. Tab still reaches it, and programmatic focus
+    // (power-menu roving selection / pinned popouts) still works.
+    focusPolicy: root.enabled ? Qt.TabFocus : Qt.NoFocus
+
+    function activate(): void {
+        if (root.enabled)
+            root.clicked();
+    }
+
+    function activateFromKey(event): void {
+        if (!event.isAutoRepeat)
+            root.activate();
+    }
 
     implicitWidth: wide ? 260 : (row.implicitWidth + panel.contentPad * 2)
     implicitHeight: 44
@@ -29,13 +44,24 @@ Item {
         anchors.fill: parent
         lean: root.lean
         padding: Theme.padS
-        fill: root.hovered ? (root.destructive ? root.hoverFill : Theme.text) : Theme.surface
-        fillOpacity: root.hovered ? 1.0 : 0.9
-        border: root.hovered ? "transparent" : Theme.alpha(root.accent, 0.55)
-        slash: !root.hovered
-        slashColor: root.destructive ? Theme.accent : root.accent
-        halftone: root.hovered
-        halftoneColor: root.destructive ? Theme.text : Theme.base
+        fill: {
+            if (!root.enabled) return Theme.treatmentDisabledFill;
+            if (root.destructive) return Theme.treatmentDestructiveFill;
+            if (root.highlighted) return Theme.treatmentHoverFill;
+            return Theme.treatmentRestFill;
+        }
+        fillOpacity: root.enabled ? 1.0 : 0.72
+        border: {
+            if (!root.enabled) return Theme.treatmentDisabledMark;
+            if (root.destructive) return Theme.treatmentFocusMark;
+            if (root.highlighted) return Theme.treatmentHoverMark;
+            return Theme.alpha(root.accent, 0.55);
+        }
+        borderWidth: Theme.stroke
+        slash: !root.highlighted
+        slashColor: root.destructive ? Theme.treatmentDestructiveMark : root.accent
+        halftone: root.enabled && root.highlighted
+        halftoneColor: Theme.ink
         halftoneOpacity: 0.14
 
         Behavior on fillOpacity {
@@ -53,17 +79,23 @@ Item {
                 visible: root.icon !== ""
                 text: root.icon
                 font.pixelSize: Theme.fsTitle
-                color: root.hovered
-                    ? (root.destructive ? Theme.text : Theme.base)
-                    : root.accent
+                color: {
+                    if (!root.enabled) return Theme.treatmentDisabledText;
+                    if (root.destructive) return Theme.treatmentDestructiveText;
+                    if (root.highlighted) return Theme.treatmentHoverText;
+                    return root.accent;
+                }
             }
 
             Text {
                 anchors.verticalCenter: parent.verticalCenter
                 text: root.text
-                color: root.hovered
-                    ? (root.destructive ? Theme.text : Theme.base)
-                    : Theme.text
+                color: {
+                    if (!root.enabled) return Theme.treatmentDisabledText;
+                    if (root.destructive) return Theme.treatmentDestructiveText;
+                    if (root.highlighted) return Theme.treatmentHoverText;
+                    return Theme.treatmentRestText;
+                }
                 font.family: Theme.fontDisplay
                 font.pixelSize: Theme.fsBody
                 font.weight: Theme.weightDisplay
@@ -80,7 +112,7 @@ Item {
     }
 
     transform: Translate {
-        x: root.pressed ? 0 : (root.hovered ? root.lunge : 0)
+        x: root.pressed ? 0 : (root.highlighted ? root.lunge : 0)
 
         Behavior on x {
             NumberAnimation {
@@ -97,11 +129,17 @@ Item {
 
     HoverHandler {
         id: hover
+        enabled: root.enabled
         cursorShape: Qt.PointingHandCursor
     }
 
     TapHandler {
         id: tap
-        onTapped: root.clicked()
+        enabled: root.enabled
+        onTapped: root.activate()
     }
+
+    Keys.onReturnPressed: event => root.activateFromKey(event)
+    Keys.onEnterPressed: event => root.activateFromKey(event)
+    Keys.onSpacePressed: event => root.activateFromKey(event)
 }

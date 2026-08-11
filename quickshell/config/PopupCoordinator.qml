@@ -10,8 +10,11 @@ Singleton {
     property var active: null
 
     function claim(surface: var) {
-        if (active && active !== surface)
-            active.dismiss();
+        if (active && active !== surface) {
+            const previous = active;
+            active = null;
+            previous.dismissImmediately();
+        }
         active = surface;
     }
 

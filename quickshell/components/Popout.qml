@@ -1,6 +1,5 @@
 import QtQuick
 import Quickshell
-import Quickshell.Hyprland
 import "root:/config"
 
 // Hover-driven panel that hangs off a bar item. Opens on a short dwell, stays
@@ -17,6 +16,8 @@ PopupWindow {
     property int fromEdge: Edges.Bottom
     property real contentWidth: Theme.popoutWidth
     property real contentHeight: 200
+    property Item initialFocusItem: null
+    property bool remappingPinned: false
 
     // Extra surface around the content so the entry overshoot and glow are not
     // clipped by the window edge.
@@ -25,6 +26,8 @@ PopupWindow {
     default property alias body: contentHolder.data
 
     readonly property bool wantsOpen: triggerHovered || panelHover.hovered || pinned
+    readonly property bool pending: showTimer.running || remapTimer.running || remappingPinned
+    readonly property bool detailActive: shown || pending
 
     signal dismissedFully()
 
@@ -52,13 +55,15 @@ PopupWindow {
     implicitHeight: contentHeight + bleed * 2
     color: "transparent"
     visible: shown
+    grabFocus: pinned && shown
 
     property bool shown: false
 
     onWantsOpenChanged: {
         if (wantsOpen) {
             hideTimer.stop();
-            showTimer.restart();
+            if (!pinned && !remappingPinned)
+                showTimer.restart();
         } else {
             showTimer.stop();
             hideTimer.restart();
@@ -71,29 +76,17 @@ PopupWindow {
         onTriggered: root.open()
     }
 
-    // A pinned popout ignores hover by design, which left it with exactly one
-    // way out: another click on the same bar item that opened it. Moving the
-    // pointer away did nothing, so a panel opened by a click — the notification
-    // history, most often — simply stayed on screen. Click anywhere else and
-    // the compositor drops the grab, which unpins it and hands it back to the
-    // hover rules.
-    //
-    // The grab can only take hold once the surface is mapped; asked for in the
-    // same tick as `shown`, Hyprland clears it immediately.
-    Timer {
-        id: grabDelay
-        interval: 60
-        running: root.pinned && root.shown
+    onVisibleChanged: {
+        if (!visible && shown)
+            dismissImmediately();
     }
-
-    HyprlandFocusGrab {
-        active: root.pinned && root.shown && !grabDelay.running
-        windows: [root]
-
-        // A click on the trigger itself also clears the grab, but that click is
-        // the pill's own toggle — unpinning here as well would cancel it out and
-        // the panel would never close from its own button.
-        onCleared: if (!root.triggerHovered) root.pinned = false
+    onClosed: {
+        if (remappingPinned) {
+            remappingPinned = false;
+            remapTimer.restart();
+        } else if (shown || pinned) {
+            dismissImmediately();
+        }
     }
 
     Timer {
@@ -109,14 +102,85 @@ PopupWindow {
         enterAnim.restart();
     }
 
+    // Focus policy is fixed at map time. A hover-visible passive surface must
+    // therefore unmap before returning as a click-owned keyboard popup.
+    function openPinned() {
+        showTimer.stop();
+        hideTimer.stop();
+        PopupCoordinator.claim(root);
+        if (shown) {
+            remappingPinned = true;
+            shown = false;
+            enterAnim.stop();
+            exitAnim.stop();
+            pinned = true;
+        } else {
+            pinned = true;
+            open();
+            focusTimer.restart();
+        }
+    }
+
+    function togglePinned() {
+        if (pinned) {
+            pinned = false;
+            dismiss();
+        } else {
+            openPinned();
+        }
+    }
+
     function dismiss() {
-        if (!shown) return;
+        if (!shown) {
+            if (pinned || pending)
+                dismissImmediately();
+            return;
+        }
+        pinned = false;
+        PopupCoordinator.release(root);
         enterAnim.stop();
         exitAnim.restart();
     }
 
+    function dismissImmediately() {
+        showTimer.stop();
+        hideTimer.stop();
+        remapTimer.stop();
+        focusTimer.stop();
+        enterAnim.stop();
+        exitAnim.stop();
+        remappingPinned = false;
+        pinned = false;
+        shown = false;
+        contentHolder.opacity = 0;
+        contentHolder.scale = 0.94;
+        contentHolder.x = root.bleed;
+        contentHolder.y = root.bleed;
+        PopupCoordinator.release(root);
+        root.dismissedFully();
+    }
+
+    Timer {
+        id: remapTimer
+        interval: 0
+        onTriggered: {
+            root.open();
+            focusTimer.restart();
+        }
+    }
+
+    Timer {
+        id: focusTimer
+        interval: 0
+        onTriggered: {
+            const target = root.initialFocusItem || contentHolder;
+            target.forceActiveFocus(Qt.TabFocusReason);
+        }
+    }
+
     Item {
         id: contentHolder
+        focus: root.pinned
         x: root.bleed
         y: root.bleed
         width: root.contentWidth
@@ -144,6 +208,13 @@ PopupWindow {
         HoverHandler {
             id: panelHover
             enabled: root.shown
+        }
+
+        Keys.onEscapePressed: event => {
+            if (root.pinned) {
+                event.accepted = true;
+                root.dismissImmediately();
+            }
         }
     }
 

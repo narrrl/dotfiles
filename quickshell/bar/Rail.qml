@@ -40,8 +40,8 @@ PanelWindow {
     exclusiveZone: Theme.railWidth + Theme.barMargin
     color: "transparent"
 
-    // The slab.
-    P5Panel {
+    // The same calm permanent-chrome preset used by the top bar.
+    ChromeSurface {
         id: slab
         anchors.fill: parent
         vertical: true
@@ -49,18 +49,8 @@ PanelWindow {
         chop: Theme.cut
         chopCorners: [1, 3]
         padding: 0
-        fill: Theme.surface
-        fillOpacity: 1.0
-        border: Theme.alpha(Theme.outline, 0.9)
-        borderWidth: 1
-        slash: true
-        slashColor: Theme.accent
+        active: true
         slashWidth: 5
-
-        // Same as the bar — see the note there. The doubled corner is worse on
-        // the rail, because its chopped corners sit against the wallpaper's
-        // high-contrast stripes rather than against other chrome.
-        drop: false
     }
 
     readonly property real edgeInset: Theme.railWidth * Theme.skew + Theme.padM
@@ -76,18 +66,21 @@ PanelWindow {
         RailIcon {
             id: netIcon
             icon: Net.icon
+            label: "Network"
+            statusText: Net.label
+            suppressTooltip: netPopout.detailActive
             dim: !Sys.netUp
-            onClicked: netPopout.pinned = !netPopout.pinned
-            onRightClicked: Net.toggleWifi()
-            onMiddleClicked: Actions.openNetworkSettings()
+            onClicked: netPopout.togglePinned()
         }
 
         RailIcon {
             id: btIcon
             icon: Bt.icon
+            label: "Bluetooth"
+            statusText: Bt.label
+            suppressTooltip: btPopout.detailActive
             dim: !Bt.enabled
-            onClicked: btPopout.pinned = !btPopout.pinned
-            onRightClicked: Bt.toggle()
+            onClicked: btPopout.togglePinned()
         }
 
         Divider {}
@@ -96,19 +89,24 @@ PanelWindow {
             id: volIcon
             icon: Audio.icon
             readout: Audio.muted ? "" : Audio.volumePercent + "%"
+            label: "Volume"
+            statusText: Audio.muted ? "Muted" : Audio.volumePercent + "% · " + Audio.sinkName
+            hint: "Scroll to adjust"
+            suppressTooltip: audioPopout.detailActive
             alert: Audio.muted
-            onClicked: Audio.toggleMute()
-            onRightClicked: audioPopout.pinned = !audioPopout.pinned
-            onMiddleClicked: Actions.openAudioSettings()
+            onClicked: audioPopout.togglePinned()
             onScrolled: delta => Audio.changeVolume(delta > 0 ? 0.05 : -0.05)
         }
 
         RailIcon {
             id: micIcon
             icon: Audio.micIcon
+            label: "Microphone"
+            statusText: Audio.micMuted ? "Muted" : Audio.micPercent + "% · " + Audio.sourceName
+            hint: "Scroll to adjust"
+            suppressTooltip: audioPopout.detailActive
             alert: Audio.micMuted
-            onClicked: Audio.toggleMicMute()
-            onRightClicked: audioPopout.pinned = !audioPopout.pinned
+            onClicked: audioPopout.togglePinned()
             onScrolled: delta => Audio.setMicVolume(Audio.micVolume + (delta > 0 ? 0.05 : -0.05))
         }
 
@@ -117,6 +115,9 @@ PanelWindow {
             visible: Brightness.available
             icon: Brightness.icon
             readout: Math.round(Brightness.percent) + "%"
+            label: "Brightness"
+            statusText: Math.round(Brightness.percent) + "%"
+            hint: "Scroll to adjust"
             onScrolled: delta => Brightness.change(delta > 0 ? 5 : -5)
         }
 
@@ -127,9 +128,12 @@ PanelWindow {
             visible: Battery.available
             icon: Battery.icon
             readout: Math.round(Battery.percent) + "%"
+            label: "Battery"
+            statusText: Math.round(Battery.percent) + "% · " + Battery.timeLabel
+            suppressTooltip: battPopout.detailActive
             alert: Battery.critical
             pulsing: Battery.critical
-            onClicked: battPopout.pinned = !battPopout.pinned
+            onClicked: battPopout.togglePinned()
         }
     }
 
@@ -151,21 +155,27 @@ PanelWindow {
         RailIcon {
             id: bellIcon
             icon: Notifs.icon
+            label: "Notifications"
+            statusText: Notifs.dnd
+                ? "Do not disturb"
+                : (Notifs.unread > 0 ? Notifs.unread + " unread" : "All caught up")
             readout: Notifs.unread > 0
                 ? (Notifs.unread > 9 ? "9+" : String(Notifs.unread))
                 : ""
             dim: Notifs.dnd
             alert: Notifs.hasUnread && !Notifs.dnd
+            suppressTooltip: notifPopout.detailActive
             onClicked: {
-                notifPopout.pinned = !notifPopout.pinned;
+                notifPopout.togglePinned();
                 Notifs.markRead();
             }
-            onRightClicked: Notifs.toggleDnd()
         }
 
         RailIcon {
             id: powerIcon
             icon: "󰐥"
+            label: "Power"
+            statusText: "Session actions"
             alert: Actions.powerMenuOpen
             onClicked: Actions.togglePowerMenu()
         }

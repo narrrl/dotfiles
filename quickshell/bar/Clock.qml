@@ -17,7 +17,7 @@ BarPill {
 
     SystemClock {
         id: clock
-        precision: SystemClock.Seconds
+        precision: SystemClock.Minutes
     }
 
     onClicked: calendar.pinned = !calendar.pinned
@@ -65,16 +65,6 @@ BarPill {
             split: 1.4
         }
 
-        // Seconds, kept quiet so they read as a ticking detail rather than noise.
-        Text {
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: 4
-            text: Qt.formatDateTime(clock.date, "ss")
-            color: Theme.alpha(Theme.primary, 0.8)
-            font.family: Theme.fontMono
-            font.pixelSize: Theme.fsMicro
-            renderType: Text.NativeRendering
-        }
     }
 
     // Glitch the time on the hour, because it should feel like something happened.

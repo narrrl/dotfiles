@@ -12,6 +12,45 @@ Preserve the crimson/black/white palette, services, keybinds, one-slab bar/rail,
 `P5Panel`, session-lock security, and current functional coverage. This plan changes
 visual hierarchy and interaction clarity, not the desktop stack.
 
+## Phase 1 execution override — 2026-08-11
+
+For the current Phase 1 implementation, the user explicitly removed reduced-motion
+work and screen-reader metadata from scope. This override supersedes Phase 1.1, the
+`Accessible.*` parts of Phase 1.4, and their related definition-of-done and
+verification requirements for this execution only.
+
+- Do not create durable motion preferences or change animation policy.
+- Do not add or alter `Accessible.*` metadata or accessible action handlers.
+- Keep keyboard focus, visible focus treatment, keyboard navigation, root-disabled
+  input behavior, semantic color/treatment tokens, and the surface hierarchy in
+  scope.
+- Defer the remaining overridden requirements to a separately approved milestone.
+
+## Implementation progress — 2026-08-11
+
+- **Phase 1 foundation: complete for the approved scope.** Added explicit surface
+  presets and semantic treatment tokens; made `P5Button` and `P5Slider`
+  keyboard-capable with visible focus and root-gated disabled behavior. The user
+  explicitly excluded durable reduced-motion work and `Accessible.*` metadata, so
+  those items remain deferred rather than incomplete regressions.
+- **Phase 2 calm chrome: complete.** Bar and rail use the quiet `ChromeSurface`
+  tier without permanent texture; the clock omits seconds; CPU/MEM/GPU are visibly
+  labelled; MediaPill uses elided static text and a static play/pause mark; rail
+  clicks consistently pin detail panels and undisclosed secondary state actions
+  were removed; delayed Persona tooltips show state and scroll hints without
+  taking focus or overlapping an opening detail panel.
+- **Audio vertical slice: complete.** Output percentage is dominant, output/input
+  are distinct bands, application streams are subordinate, and mute plus mixer
+  actions are explicit. Pinned popouts use `PopupWindow.grabFocus` as their sole
+  focus/dismiss owner, remap when promoted from hover, focus the first Audio
+  control, support Tab and Escape, and synchronously release coordinator ownership.
+- **Verification status.** Changed QML passes individual Qt 6 `qmllint` and the
+  repository diff passes whitespace validation. Tooltip placement/suppression and
+  hover open/close were exercised in a live Quickshell session and passed. Pinned
+  click/remap, outside-click dismissal, Escape, and compositor-close synchronization
+  remain untested and require interaction QA before the milestone is considered
+  runtime-verified.
+
 ## Non-goals
 
 - Do not replace Quickshell, Hyprland, Fluxo, PAM, or the service layer.

@@ -155,26 +155,26 @@ Popout {
 
                 TransportButton {
                     glyph: "󰒮"
-                    enabledControl: Media.canGoPrevious
+                    enabled: Media.canGoPrevious
                     onClicked: Media.previous()
                 }
 
                 TransportButton {
                     glyph: Media.playing ? "󰏤" : "󰐊"
                     primary: true
-                    enabledControl: Media.hasPlayer
+                    enabled: Media.hasPlayer
                     onClicked: Media.playPause()
                 }
 
                 TransportButton {
                     glyph: "󰒭"
-                    enabledControl: Media.canGoNext
+                    enabled: Media.canGoNext
                     onClicked: Media.next()
                 }
 
                 TransportButton {
                     glyph: "󰐒"
-                    enabledControl: Media.hasPlayer
+                    enabled: Media.hasPlayer
                     onClicked: Media.raise()
                 }
             }
@@ -196,7 +196,7 @@ Popout {
                 id: elapsed
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
-                text: Media.timeString(Media.position)
+                text: Media.positionSupported ? Media.timeString(Media.position) : "--:--"
                 color: Theme.subtext
                 font.family: Theme.fontMono
                 font.pixelSize: Theme.fsMicro
@@ -207,7 +207,7 @@ Popout {
                 id: total
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                text: Media.timeString(Media.length)
+                text: Media.lengthSupported ? Media.timeString(Media.length) : "LIVE"
                 color: Theme.subtext
                 font.family: Theme.fontMono
                 font.pixelSize: Theme.fsMicro
@@ -222,7 +222,7 @@ Popout {
                 anchors.verticalCenter: parent.verticalCenter
                 value: Media.progress
                 accent: Theme.accent
-                enabledControl: Media.canSeek
+                enabled: Media.canSeek
                 onMoved: v => Media.seekTo(v)
             }
         }
@@ -238,7 +238,7 @@ Popout {
             Repeater {
                 model: Media.players
 
-                Item {
+                FocusScope {
                     id: chip
                     required property var modelData
 
@@ -246,21 +246,44 @@ Popout {
 
                     implicitWidth: chipLabel.implicitWidth + Theme.padM
                     implicitHeight: 22
+                    focusPolicy: chip.enabled ? Qt.TabFocus : Qt.NoFocus
+
+                    function activate(): void {
+                        if (chip.enabled)
+                            Media.select(chip.modelData);
+                    }
+
+                    function activateFromKey(event): void {
+                        if (!event.isAutoRepeat)
+                            chip.activate();
+                    }
 
                     Skew {
                         anchors.fill: parent
-                        color: chip.current
-                            ? Theme.alpha(Theme.primary, 0.22)
-                            : (chipHover.hovered ? Theme.alpha(Theme.primary, 0.1) : "transparent")
-                        borderWidth: 1
-                        borderColor: chip.current ? Theme.primary : Theme.alpha(Theme.outline, 0.7)
+                        color: !chip.enabled
+                            ? Theme.treatmentDisabledFill
+                            : (chip.activeFocus
+                            ? Theme.treatmentFocusFill
+                            : (chip.current
+                                ? Theme.alpha(Theme.primary, 0.22)
+                                : (chipHover.hovered ? Theme.alpha(Theme.primary, 0.1) : "transparent")))
+                        borderWidth: chip.activeFocus ? Theme.stroke : 1
+                        borderColor: !chip.enabled
+                            ? Theme.treatmentDisabledMark
+                            : (chip.activeFocus
+                            ? Theme.treatmentFocusMark
+                            : (chip.current ? Theme.primary : Theme.alpha(Theme.outline, 0.7)))
                     }
 
                     Text {
                         id: chipLabel
                         anchors.centerIn: parent
                         text: chip.modelData.identity
-                        color: chip.current ? Theme.text : Theme.muted
+                        color: !chip.enabled
+                            ? Theme.treatmentDisabledText
+                            : (chip.activeFocus
+                            ? Theme.treatmentFocusText
+                            : (chip.current ? Theme.text : Theme.muted))
                         font.family: Theme.fontMono
                         font.pixelSize: Theme.fsMicro
                         renderType: Text.NativeRendering
@@ -268,39 +291,57 @@ Popout {
 
                     HoverHandler {
                         id: chipHover
+                        enabled: chip.enabled
                         cursorShape: Qt.PointingHandCursor
                     }
 
                     TapHandler {
-                        onTapped: Media.select(chip.modelData)
+                        enabled: chip.enabled
+                        onTapped: chip.activate()
                     }
+
+                    Keys.onReturnPressed: event => chip.activateFromKey(event)
+                    Keys.onEnterPressed: event => chip.activateFromKey(event)
+                    Keys.onSpacePressed: event => chip.activateFromKey(event)
                 }
             }
         }
     }
 
-    component TransportButton: Item {
+    component TransportButton: FocusScope {
         id: tb
 
         property string glyph: ""
         property bool primary: false
-        property bool enabledControl: true
-
         signal clicked()
 
         implicitWidth: primary ? 38 : 30
         implicitHeight: primary ? 38 : 30
+        focusPolicy: tb.enabled ? Qt.TabFocus : Qt.NoFocus
+
+        function activate(): void {
+            if (tb.enabled)
+                tb.clicked();
+        }
+
+        function activateFromKey(event): void {
+            if (!event.isAutoRepeat)
+                tb.activate();
+        }
 
         Skew {
             anchors.fill: parent
             color: {
-                if (!tb.enabledControl) return "transparent";
+                if (!tb.enabled) return "transparent";
+                if (tb.activeFocus) return Theme.treatmentFocusFill;
                 if (tbHover.hovered) return tb.primary ? Theme.accent : Theme.alpha(Theme.primary, 0.22);
                 return tb.primary ? Theme.alpha(Theme.primary, 0.18) : "transparent";
             }
-            borderWidth: tb.primary ? 2 : 1
-            borderColor: tb.enabledControl
-                ? (tbHover.hovered ? Theme.text : Theme.alpha(Theme.primary, 0.6))
+            borderWidth: tb.activeFocus ? Theme.stroke * 2 : (tb.primary ? 2 : 1)
+            borderColor: tb.enabled
+                ? (tb.activeFocus
+                    ? Theme.treatmentFocusMark
+                    : (tbHover.hovered ? Theme.text : Theme.alpha(Theme.primary, 0.6)))
                 : Theme.alpha(Theme.outline, 0.4)
 
             Behavior on color {
@@ -313,26 +354,31 @@ Popout {
             text: tb.glyph
             font.pixelSize: tb.primary ? Theme.fsTitle : Theme.fsLarge
             color: {
-                if (!tb.enabledControl) return Theme.alpha(Theme.muted, 0.5);
+                if (!tb.enabled) return Theme.alpha(Theme.muted, 0.5);
+                if (tb.activeFocus) return Theme.treatmentFocusText;
                 if (tbHover.hovered && tb.primary) return Theme.text;
                 return Theme.primary;
             }
         }
 
-        scale: tbHover.hovered && tb.enabledControl ? 1.12 : 1.0
+        scale: tbHover.hovered && tb.enabled ? 1.12 : 1.0
         Behavior on scale {
             NumberAnimation { duration: Theme.durBase; easing.type: Easing.OutBack }
         }
 
         HoverHandler {
             id: tbHover
-            enabled: tb.enabledControl
+            enabled: tb.enabled
             cursorShape: Qt.PointingHandCursor
         }
 
         TapHandler {
-            enabled: tb.enabledControl
-            onTapped: tb.clicked()
+            enabled: tb.enabled
+            onTapped: tb.activate()
         }
+
+        Keys.onReturnPressed: event => tb.activateFromKey(event)
+        Keys.onEnterPressed: event => tb.activateFromKey(event)
+        Keys.onSpacePressed: event => tb.activateFromKey(event)
     }
 }

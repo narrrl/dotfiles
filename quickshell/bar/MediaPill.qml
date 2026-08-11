@@ -17,7 +17,7 @@ BarPill {
     visible: Media.hasPlayer || width > 1
 
     // Track position, drawn by the pill in its own rule band.
-    progress: Media.canSeek ? Media.progress : -1
+    progress: Media.hasTimeline ? Media.progress : -1
 
     implicitWidth: Media.hasPlayer
         ? layout.implicitWidth + contentPad * 2
@@ -83,8 +83,6 @@ BarPill {
                 text: Media.sourceIcon
                 font.pixelSize: Theme.fsLarge
                 color: Theme.primary
-                pulsing: Media.playing
-                pulseScale: 1.12
             }
         }
 
@@ -101,28 +99,33 @@ BarPill {
 
             readonly property real cap: 150
 
-            Marquee {
+            Text {
                 width: Math.min(meta.cap, implicitWidth)
                 height: 14
                 text: Media.title || Media.identity
                 color: Theme.text
-                pixelSize: Theme.fsSmall
-                family: Theme.fontDisplay
-                weight: Font.DemiBold
-                italic: true
+                elide: Text.ElideRight
+                font.pixelSize: Theme.fsSmall
+                font.family: Theme.fontDisplay
+                font.weight: Font.DemiBold
+                font.italic: true
+                renderType: Text.NativeRendering
             }
 
-            Marquee {
+            Text {
                 width: Math.min(meta.cap, implicitWidth)
                 height: 12
                 text: Media.artist || Media.album || Media.identity
                 color: Theme.muted
-                pixelSize: Theme.fsMicro
-                family: Theme.fontMono
+                elide: Text.ElideRight
+                font.pixelSize: Theme.fsMicro
+                font.family: Theme.fontMono
+                renderType: Text.NativeRendering
             }
         }
 
-        // Play state, as a two-bar equaliser that freezes when paused.
+        // Compact play-state equaliser. It moves only while audio is playing
+        // and freezes into three quiet bars when paused.
         Row {
             anchors.verticalCenter: parent.verticalCenter
             spacing: 2

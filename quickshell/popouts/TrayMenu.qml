@@ -74,6 +74,16 @@ PopupWindow {
         close();
     }
 
+    function dismissImmediately() {
+        openAnim.stop();
+        closeAnim.stop();
+        shown = false;
+        holder.opacity = 0;
+        holder.scale = 0.94;
+        holder.x = root.bleed;
+        PopupCoordinator.release(root);
+    }
+
     // The grab can only take hold once the popup is actually mapped. Asked for
     // in the same tick as `shown`, Hyprland has no surface to hand it and
     // clears it immediately — which closed the menu the instant it opened.

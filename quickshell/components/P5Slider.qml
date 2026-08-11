@@ -8,14 +8,21 @@ Item {
 
     property real value: 0        // 0..1
     property color accent: Theme.primary
-    property bool enabledControl: true
+    property real stepSize: 0.05
 
     signal moved(real value)
 
     implicitHeight: 18
     implicitWidth: 200
+    focusPolicy: root.enabled ? Qt.StrongFocus : Qt.NoFocus
 
     readonly property real _lean: Theme.skew * height
+
+    function commit(nextValue: real): void {
+        if (!root.enabled)
+            return;
+        root.moved(Math.max(0, Math.min(1, nextValue)));
+    }
 
     // Rail
     Skew {
@@ -23,8 +30,16 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 6
-        color: Theme.alpha(Theme.outline, 0.7)
+        height: root.activeFocus ? 10 : 6
+        color: root.activeFocus
+            ? Theme.treatmentFocusFill
+            : Theme.alpha(root.enabled ? Theme.outline : Theme.treatmentDisabledMark, 0.7)
+        borderColor: root.activeFocus ? Theme.treatmentFocusMark : "transparent"
+        borderWidth: root.activeFocus ? Theme.stroke : 0
+
+        Behavior on height {
+            NumberAnimation { duration: Theme.durFast }
+        }
     }
 
     // Fill
@@ -33,7 +48,7 @@ Item {
         anchors.left: parent.left
         width: Math.max(0, Math.min(1, root.value)) * root.width
         height: 6
-        color: root.enabledControl ? root.accent : Theme.muted
+        color: root.enabled ? root.accent : Theme.treatmentDisabledText
 
         Behavior on width {
             enabled: !drag.active
@@ -49,8 +64,8 @@ Item {
     Skew {
         id: handle
         width: 6
-        height: hover.hovered || drag.active ? 18 : 14
-        color: root.enabledControl ? Theme.text : Theme.muted
+        height: root.activeFocus || hover.hovered || drag.active ? 18 : 14
+        color: root.enabled ? Theme.text : Theme.treatmentDisabledText
         anchors.verticalCenter: parent.verticalCenter
         x: Math.max(0, Math.min(1, root.value)) * root.width - width / 2
 
@@ -65,21 +80,46 @@ Item {
 
     HoverHandler {
         id: hover
+        enabled: root.enabled
         cursorShape: Qt.PointingHandCursor
     }
 
     TapHandler {
-        onTapped: event => root.moved(Math.max(0, Math.min(1, event.position.x / root.width)))
+        enabled: root.enabled
+        onPressedChanged: if (pressed) root.forceActiveFocus(Qt.MouseFocusReason)
+        onTapped: event => root.commit(event.position.x / root.width)
     }
 
     DragHandler {
         id: drag
+        enabled: root.enabled
         target: null
         xAxis.enabled: true
         yAxis.enabled: false
         onCentroidChanged: {
             if (!active) return;
-            root.moved(Math.max(0, Math.min(1, centroid.position.x / root.width)));
+            root.forceActiveFocus(Qt.MouseFocusReason);
+            root.commit(centroid.position.x / root.width);
         }
+    }
+
+    Keys.onPressed: event => {
+        switch (event.key) {
+        case Qt.Key_Left:
+            root.commit(root.value - root.stepSize);
+            break;
+        case Qt.Key_Right:
+            root.commit(root.value + root.stepSize);
+            break;
+        case Qt.Key_Home:
+            root.commit(0);
+            break;
+        case Qt.Key_End:
+            root.commit(1);
+            break;
+        default:
+            return;
+        }
+        event.accepted = true;
     }
 }

@@ -39,10 +39,18 @@ cost 4.4% of the height on top of what the bar already takes.
 - **rail** — one slab: network, bluetooth, audio, mic, backlight, battery, tray,
   notifications, power. Popouts open leftward, into the screen.
 
-Each surface is a single continuous `P5Panel` with modules divided by sheared
-hairlines. `BarPill` is chromeless by default — a module is *content inside* a
-surface, not a surface of its own — and marks hover with a crimson underline.
-Pass `standalone: true` for the rare thing that really is its own panel.
+Each permanent surface is a single continuous `ChromeSurface` with modules
+divided by sheared hairlines. `BarPill` is chromeless by default — a module is
+*content inside* a surface, not a surface of its own — and marks hover with a
+crimson underline. Pass `standalone: true` for the rare thing that really is its
+own panel.
+
+The shell uses three deliberate surface tiers. **Chrome** (`ChromeSurface`) is
+the calm, texture-free bar, rail, and tooltip layer. **Transient**
+(`PopoutSurface`) is reserved for expressive menus and detail panels, with one
+clear composition and stronger separation from the desktop. **Cinematic**
+(`P5Backdrop`) belongs only to scene-scale experiences such as power and lock;
+it is never used as decoration inside ordinary chrome or popouts.
 
 ```
 shell.qml        entrypoint — bar, rail, power menu, toasts, OSD per screen
@@ -67,22 +75,30 @@ contentPad * 2`), which keeps the shape maths out of binding loops.
 | Sigil | bar | app menu | reload shell | | | |
 | Workspaces | bar | switch | | | | |
 | Clock | bar | pin calendar | | | | calendar |
-| Network | rail | pin panel | toggle Wi-Fi | nm-connection-editor | | networks |
-| Bluetooth | rail | pin panel | toggle adapter | | | devices |
-| Volume | rail | mute | pin panel | pavucontrol | volume | audio mixer |
-| Mic | rail | mute | pin panel | | mic volume | audio mixer |
-| Brightness | rail | | | | brightness | |
+| Network | rail | pin details | | | | state + networks |
+| Bluetooth | rail | pin details | | | | state + devices |
+| Volume | rail | pin audio | | | volume | state + scroll hint + audio |
+| Mic | rail | pin audio | | | mic volume | state + scroll hint + audio |
+| Brightness | rail | | | | brightness | state + scroll hint |
 | Battery | rail | pin panel | | | | power detail |
 | Tray | rail | activate | app menu | secondary | | |
-| Bell | rail | history + mark read | do not disturb | | | history |
+| Bell | rail | pin history + mark read | | | | state + history |
 | Power | rail | power menu | | | | |
 | Media | bar | play/pause | next | raise player | next/prev | full player |
 | CPU/MEM/GPU | bar | btop | | | | resource dashboard |
 
 Popouts open on a short dwell and stay while the pointer is over the trigger or
-the panel. Clicking pins one open. A shell-wide coordinator keeps only one
+the panel. Hover openings remain passive. Clicking remaps a detail panel as a
+keyboard-focused popup: Tab moves through its controls, Escape dismisses it,
+and an outside click closes it. A shell-wide coordinator keeps only one
 transient surface mapped at a time, including tray context menus, so sweeping
 across the rail cannot stack several animated panels over one another.
+
+Audio is the reference vertical-slice popout: current output percentage leads,
+output and input have distinct bands, and application streams form a subordinate
+mixer list. Output/input mute actions and **Open audio mixer** are explicit
+buttons inside the panel; scrolling the rail icons remains the fast level
+adjustment.
 
 The power menu is fully keyboard-driven as well as clickable: `Up`/`Down` or
 `J`/`K` moves the active slab, `Enter`/`Space` confirms it, and `Escape`
