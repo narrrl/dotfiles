@@ -9,7 +9,12 @@ Popout {
     id: root
 
     contentWidth: 420
-    contentHeight: 268
+    // Derived rather than a fixed number: the meters are taller than the dials
+    // they replaced, and the GPU block disappears entirely on machines without
+    // one. A hardcoded height would either clip or leave a hole.
+    contentHeight: header.height + Theme.padM
+        + gauges.implicitHeight + Theme.padL
+        + details.implicitHeight + Theme.padM * 2
 
     PopoutSurface {
         anchors.fill: parent
@@ -26,37 +31,38 @@ Popout {
             subtitle: "UP " + Sys.uptime + "  ·  " + Sys.procs + " PROCS"
         }
 
-        Row {
+        Column {
             id: gauges
             anchors.top: header.bottom
             anchors.topMargin: Theme.padM
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.left: parent.left
+            anchors.right: parent.right
             spacing: Theme.padM
 
-            Gauge {
-                width: 88; height: 88
+            MetricRow {
+                width: parent.width
                 value: Sys.cpuUsage
                 label: "CPU"
                 sub: Math.round(Sys.cpuTemp) + "°C"
             }
 
-            Gauge {
-                width: 88; height: 88
+            MetricRow {
+                width: parent.width
                 value: Sys.memPercent
                 label: "MEM"
-                sub: Sys.gb(Sys.memUsed) + "/" + Sys.gb(Sys.memTotal)
+                sub: Sys.gb(Sys.memUsed) + " / " + Sys.gb(Sys.memTotal)
             }
 
-            Gauge {
-                width: 88; height: 88
+            MetricRow {
+                width: parent.width
                 visible: Sys.gpuAvailable
                 value: Sys.gpuUsage
                 label: "GPU"
                 sub: Math.round(Sys.gpuTemp) + "°C"
             }
 
-            Gauge {
-                width: 88; height: 88
+            MetricRow {
+                width: parent.width
                 value: Sys.diskPercent
                 label: "DISK"
                 sub: Sys.diskFree + " free"
@@ -64,8 +70,9 @@ Popout {
         }
 
         Column {
+            id: details
             anchors.top: gauges.bottom
-            anchors.topMargin: Theme.padM
+            anchors.topMargin: Theme.padL
             anchors.left: parent.left
             anchors.right: parent.right
             spacing: 3

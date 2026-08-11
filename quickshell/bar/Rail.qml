@@ -56,6 +56,11 @@ PanelWindow {
         slash: true
         slashColor: Theme.accent
         slashWidth: 5
+
+        // Same as the bar — see the note there. The doubled corner is worse on
+        // the rail, because its chopped corners sit against the wallpaper's
+        // high-contrast stripes rather than against other chrome.
+        drop: false
     }
 
     readonly property real edgeInset: Theme.railWidth * Theme.skew + Theme.padM
