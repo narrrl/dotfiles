@@ -46,6 +46,10 @@ Popout {
                 anchors.fill: parent
                 visible: false
                 layer.enabled: true
+                // Without this the mask texture is point-sampled, so the
+                // antialiased pixels along the cuts get snapped back to hard
+                // steps before MultiEffect ever sees them — see MaskedArt.
+                layer.smooth: true
                 preferredRendererType: Shape.CurveRenderer
                 ShapePath {
                     fillColor: "white"
@@ -65,6 +69,7 @@ Popout {
                 cache: true
                 visible: status === Image.Ready
                 layer.enabled: true
+                layer.smooth: true
                 layer.effect: MaskedArt { maskItem: artMask }
             }
 

@@ -52,6 +52,7 @@ BarPill {
                 anchors.fill: parent
                 visible: false
                 layer.enabled: true
+                layer.smooth: true
                 preferredRendererType: Shape.CurveRenderer
                 ShapePath {
                     fillColor: "white"
@@ -71,6 +72,7 @@ BarPill {
                 asynchronous: true
                 visible: status === Image.Ready
                 layer.enabled: true
+                layer.smooth: true
                 layer.effect: MaskedArt { maskItem: artMask }
             }
 

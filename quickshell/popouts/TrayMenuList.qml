@@ -226,6 +226,24 @@ Column {
                     NumberAnimation { duration: Theme.durFast; easing.type: Easing.OutExpo }
                 }
 
+                // The guide rule down the side of an expanded submenu.
+                //
+                // Same trap the separators hit, from the other direction: the
+                // house lean is a fraction of *height*, and this rule is as tall
+                // as the submenu. A Wi-Fi list of thirty networks made it 600px
+                // tall, which sheared a 1px hairline into a 150px crimson wedge
+                // lying across every entry in the list. The rise is pinned in
+                // pixels, and it is declared before the entries so it can never
+                // paint over them again.
+                Skew {
+                    x: Theme.padS
+                    width: 1
+                    height: parent.height
+                    lean: height > 0 ? 5 / height : 0
+                    visible: row.expanded
+                    color: Theme.alpha(Theme.accent, 0.8)
+                }
+
                 // Loaded by URL rather than as an inline component: QML rejects
                 // a type that instantiates itself, even lazily, and a menu tree
                 // is the one place recursion is the natural shape.
@@ -249,13 +267,6 @@ Column {
                     }
                 }
 
-                Skew {
-                    x: Theme.padS
-                    width: 1
-                    height: parent.height
-                    visible: row.expanded
-                    color: Theme.alpha(Theme.accent, 0.8)
-                }
             }
         }
     }

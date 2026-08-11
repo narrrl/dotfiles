@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell
+import Quickshell.Hyprland
 import "root:/config"
 
 // Hover-driven panel that hangs off a bar item. Opens on a short dwell, stays
@@ -70,6 +71,31 @@ PopupWindow {
         onTriggered: root.open()
     }
 
+    // A pinned popout ignores hover by design, which left it with exactly one
+    // way out: another click on the same bar item that opened it. Moving the
+    // pointer away did nothing, so a panel opened by a click — the notification
+    // history, most often — simply stayed on screen. Click anywhere else and
+    // the compositor drops the grab, which unpins it and hands it back to the
+    // hover rules.
+    //
+    // The grab can only take hold once the surface is mapped; asked for in the
+    // same tick as `shown`, Hyprland clears it immediately.
+    Timer {
+        id: grabDelay
+        interval: 60
+        running: root.pinned && root.shown
+    }
+
+    HyprlandFocusGrab {
+        active: root.pinned && root.shown && !grabDelay.running
+        windows: [root]
+
+        // A click on the trigger itself also clears the grab, but that click is
+        // the pill's own toggle — unpinning here as well would cancel it out and
+        // the panel would never close from its own button.
+        onCleared: if (!root.triggerHovered) root.pinned = false
+    }
+
     Timer {
         id: hideTimer
         interval: root.hideDelay
@@ -109,8 +135,14 @@ PopupWindow {
         // The handler has to live on the content item, not the window: a
         // HoverHandler parented to the PopupWindow itself latches on and the
         // panel never learns the pointer left.
+        //
+        // Disabled while the popout is down, which clears `hovered`. An unmapped
+        // surface gets no leave event, so a handler that was hovered when the
+        // window went away stayed hovered — `wantsOpen` never went false again
+        // and the panel came back up and refused to close.
         HoverHandler {
             id: panelHover
+            enabled: root.shown
         }
     }
 
