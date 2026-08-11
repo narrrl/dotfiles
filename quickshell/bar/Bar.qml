@@ -128,16 +128,11 @@ PanelWindow {
         implicitWidth: Theme.padM * 2
         implicitHeight: Theme.barHeight
 
-        Rectangle {
+        Skew {
             anchors.centerIn: parent
             width: 1
             height: 20
             color: Theme.alpha(Theme.outline, 0.9)
-
-            transform: Matrix4x4 {
-                matrix: Qt.matrix4x4(1, -Theme.skew, 0, 20 * Theme.skew,
-                                     0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
-            }
         }
     }
 }

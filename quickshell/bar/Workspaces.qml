@@ -76,7 +76,7 @@ Item {
                     }
                 }
 
-                Rectangle {
+                Skew {
                     id: tick
                     anchors.fill: parent
 
@@ -89,18 +89,10 @@ Item {
                         if (pip.occupied) return Theme.alpha(Theme.text, 0.5);
                         return "transparent";
                     }
-                    border.color: pip.occupied || pip.focused
+                    borderColor: pip.occupied || pip.focused
                         ? "transparent"
                         : Theme.alpha(Theme.text, 0.35)
-                    border.width: 1
-
-                    transform: Matrix4x4 {
-                        matrix: Qt.matrix4x4(
-                            1, -Theme.skew, 0, pip.height * Theme.skew,
-                            0, 1, 0, 0,
-                            0, 0, 1, 0,
-                            0, 0, 0, 1)
-                    }
+                    borderWidth: 1
 
                     Behavior on color {
                         ColorAnimation { duration: Theme.durBase }

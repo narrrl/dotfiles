@@ -50,15 +50,11 @@ BarPill {
             }
         }
 
-        Rectangle {
+        Skew {
             anchors.verticalCenter: parent.verticalCenter
             width: 2
             height: 22
             color: Theme.alpha(Theme.accent, 0.6)
-            transform: Matrix4x4 {
-                matrix: Qt.matrix4x4(1, -Theme.skew, 0, 22 * Theme.skew,
-                                     0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
-            }
         }
 
         SplitText {

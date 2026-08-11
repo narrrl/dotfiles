@@ -177,17 +177,12 @@ PanelWindow {
         implicitWidth: Theme.railWidth
         implicitHeight: Theme.padM + 4
 
-        Rectangle {
+        Skew {
             anchors.centerIn: parent
             width: 22
             height: 1
+            vertical: true
             color: Theme.alpha(Theme.outline, 0.9)
-
-            transform: Matrix4x4 {
-                matrix: Qt.matrix4x4(1, 0, 0, 0,
-                                     -Theme.skew, 1, 0, 22 * Theme.skew / 2,
-                                     0, 0, 1, 0, 0, 0, 0, 1)
-            }
         }
     }
 

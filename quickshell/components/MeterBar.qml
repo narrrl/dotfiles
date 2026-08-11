@@ -1,5 +1,6 @@
 import QtQuick
 import "root:/config"
+import "root:/components"
 
 // A segmented load meter — slanted ticks that light up left to right. Reads as
 // a gauge at a glance and keeps the panel language consistent.
@@ -31,23 +32,16 @@ Item {
                 width: root.segmentWidth
                 height: root.height
 
-                Rectangle {
+                Skew {
                     width: root.segmentWidth
                     height: root.height
+                    lean: root.lean
                     color: parent.index < root.litCount ? root.activeColor : root.idleColor
 
                     // Peak segments glow, so a pegged CPU is visible peripherally.
                     opacity: parent.index < root.litCount
                         ? (parent.index >= root.segments - 2 ? 1.0 : 0.9)
                         : 1.0
-
-                    transform: Matrix4x4 {
-                        matrix: Qt.matrix4x4(
-                            1, -root.lean, 0, root.height * root.lean,
-                            0, 1, 0, 0,
-                            0, 0, 1, 0,
-                            0, 0, 0, 1)
-                    }
 
                     Behavior on color {
                         ColorAnimation { duration: Theme.durBase }

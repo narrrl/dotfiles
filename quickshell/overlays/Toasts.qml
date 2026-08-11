@@ -82,12 +82,24 @@ PanelWindow {
                 }
 
                 // Countdown rule that drains along the bottom edge.
-                Rectangle {
+                //
+                // It used to be a full-bleed rectangle across the whole toast,
+                // which meant it ran straight through the card's chopped
+                // bottom-left corner and out the other side — a stray bar
+                // hanging off the card at the one place the silhouette is
+                // supposed to be cut. It lives inside the cut now, and ends
+                // where the leaning right edge does.
+                readonly property real fuseSpan: Math.max(0,
+                    width - card.chop - card.implicitHeight * card.lean)
+
+                Skew {
                     id: fuse
                     anchors.bottom: parent.bottom
-                    anchors.left: parent.left
+                    anchors.bottomMargin: 1
+                    x: card.chop
                     height: 2
-                    width: parent.width
+                    width: toast.fuseSpan
+                    lean: card.lean
                     color: Theme.alpha(card.tone, 0.7)
                     visible: life.running
                 }
@@ -96,7 +108,7 @@ PanelWindow {
                     id: life
                     target: fuse
                     property: "width"
-                    from: toast.width
+                    from: toast.fuseSpan
                     to: 0
                     running: false
                     duration: Notifs.timeoutFor(toast.modelData)

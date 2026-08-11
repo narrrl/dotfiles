@@ -5,6 +5,7 @@ import Quickshell.Services.SystemTray
 import Quickshell.Widgets
 import "root:/config"
 import "root:/components"
+import "root:/popouts"
 
 // StatusNotifier tray, as a vertical column for the right-hand rail. Left click
 // activates, right click opens the app's own menu, middle click is the
@@ -72,7 +73,7 @@ Column {
                 acceptedButtons: Qt.LeftButton
                 onTapped: {
                     if (entry.modelData.onlyMenu) {
-                        menuAnchor.open();
+                        menu.toggle();
                     } else {
                         entry.modelData.activate();
                     }
@@ -81,7 +82,9 @@ Column {
 
             TapHandler {
                 acceptedButtons: Qt.RightButton
-                onTapped: menuAnchor.open()
+                onTapped: {
+                    if (entry.modelData.hasMenu) menu.toggle();
+                }
             }
 
             TapHandler {
@@ -90,13 +93,10 @@ Column {
             }
 
             // Menus open to the left, into the screen rather than off its edge.
-            QsMenuAnchor {
-                id: menuAnchor
-                menu: entry.modelData.menu
-                anchor.item: entry
-                anchor.edges: Edges.Left
-                anchor.gravity: Edges.Left
-                anchor.margins.right: Theme.popoutGap
+            TrayMenu {
+                id: menu
+                anchorItem: entry
+                menuHandle: entry.modelData.menu
             }
         }
     }

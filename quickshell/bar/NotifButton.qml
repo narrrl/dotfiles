@@ -35,7 +35,7 @@ BarPill {
     }
 
     // Unread badge, chopped like everything else.
-    Rectangle {
+    Skew {
         visible: Notifs.unread > 0 && !Notifs.dnd
         anchors.right: parent.right
         anchors.rightMargin: 2
@@ -45,6 +45,8 @@ BarPill {
         height: 12
         color: Theme.accent
 
+        // The badge count stays upright. It used to inherit the shear from the
+        // transform on the block below, which at 8px left the digits smeared.
         Text {
             id: badge
             anchors.centerIn: parent
@@ -54,11 +56,6 @@ BarPill {
             font.pixelSize: 8
             font.weight: Font.Bold
             renderType: Text.NativeRendering
-        }
-
-        transform: Matrix4x4 {
-            matrix: Qt.matrix4x4(1, -Theme.skew, 0, 12 * Theme.skew,
-                                 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
         }
     }
 

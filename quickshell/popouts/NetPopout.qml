@@ -202,16 +202,11 @@ Popout {
 
         implicitHeight: 40
 
-        Rectangle {
+        Skew {
             anchors.fill: parent
             color: Theme.alpha(rateBlock.tone, 0.08)
-            border.width: 1
-            border.color: Theme.alpha(rateBlock.tone, 0.35)
-
-            transform: Matrix4x4 {
-                matrix: Qt.matrix4x4(1, -Theme.skew, 0, rateBlock.height * Theme.skew,
-                                     0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
-            }
+            borderWidth: 1
+            borderColor: Theme.alpha(rateBlock.tone, 0.35)
         }
 
         Row {

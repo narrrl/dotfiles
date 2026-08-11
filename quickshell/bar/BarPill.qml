@@ -41,6 +41,13 @@ Item {
     readonly property real ruleInset: 5
     readonly property real ruleBand: root.standalone ? 0 : root.ruleHeight + root.ruleInset
 
+    // Modules with a notion of progress (the player's track position) draw it in
+    // the same band, so it can never be struck through the content. A module
+    // cannot do this for itself: anything it declares becomes a child of the
+    // content holder, whose bottom edge is above the band, and the rule lands
+    // across the text instead of under it. Negative means "no progress".
+    property real progress: -1
+
     // Total horizontal inset a module must add on top of its content width.
     readonly property real contentPad: standalone
         ? (panelLoader.item?.contentPad ?? root.padding)
@@ -100,15 +107,23 @@ Item {
         height: root.ruleHeight
         clip: true
 
-        Rectangle {
+        // Track progress, shown until the pointer arrives and the hover rule
+        // takes the band over.
+        Skew {
+            height: parent.height
+            width: parent.width * Math.max(0, Math.min(1, root.progress))
+            color: Theme.accent
+            visible: root.progress >= 0 && !root.hovered && !root.active
+
+            Behavior on width {
+                NumberAnimation { duration: 480; easing.type: Easing.OutQuad }
+            }
+        }
+
+        Skew {
             height: parent.height
             width: root.hovered || root.active ? parent.width : 0
             color: root.accent
-
-            transform: Matrix4x4 {
-                matrix: Qt.matrix4x4(1, -Theme.skew, 0, 2 * Theme.skew,
-                                     0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
-            }
 
             Behavior on width {
                 NumberAnimation { duration: Theme.durBase; easing.type: Easing.OutExpo }

@@ -127,17 +127,12 @@ Popout {
                     height: 30
 
                     // Today gets a leaning crimson slab.
-                    Rectangle {
+                    Skew {
                         anchors.centerIn: parent
                         width: 26
                         height: 24
                         visible: cell.modelData.today
                         color: Theme.accent
-
-                        transform: Matrix4x4 {
-                            matrix: Qt.matrix4x4(1, -Theme.skew, 0, 24 * Theme.skew,
-                                                 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
-                        }
                     }
 
                     Text {
@@ -229,16 +224,11 @@ Popout {
         implicitWidth: 22
         implicitHeight: 22
 
-        Rectangle {
+        Skew {
             anchors.fill: parent
             color: stepHover.hovered ? Theme.alpha(Theme.accent, 0.25) : "transparent"
-            border.width: 1
-            border.color: Theme.alpha(Theme.outline, 0.7)
-
-            transform: Matrix4x4 {
-                matrix: Qt.matrix4x4(1, -Theme.skew, 0, 22 * Theme.skew,
-                                     0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
-            }
+            borderWidth: 1
+            borderColor: Theme.alpha(Theme.outline, 0.7)
         }
 
         Icon {

@@ -231,16 +231,11 @@ Item {
                 Repeater {
                     model: Math.min(surface.entry.length, 22)
 
-                    Rectangle {
+                    Skew {
                         required property int index
                         width: 10
                         height: 20
                         color: surface.failed ? Theme.accent : Theme.primary
-
-                        transform: Matrix4x4 {
-                            matrix: Qt.matrix4x4(1, -Theme.skew, 0, 20 * Theme.skew,
-                                                 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
-                        }
 
                         // Each new block snaps in.
                         Component.onCompleted: pop.start()

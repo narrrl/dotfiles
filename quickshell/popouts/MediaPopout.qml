@@ -11,7 +11,11 @@ Popout {
     id: root
 
     contentWidth: 400
-    contentHeight: 200 + (Media.players.length > 1 ? 34 : 0)
+
+    // The seek row used to sit flush against the bottom edge, where the slab's
+    // chamfer cuts the corner away — the elapsed time was half outside the
+    // panel. The extra height is the room that row needs to clear the cut.
+    contentHeight: 224 + (Media.players.length > 1 ? 34 : 0)
 
     PopoutSurface {
         id: surface
@@ -176,8 +180,10 @@ Popout {
             id: seekArea
             anchors.left: parent.left
             anchors.right: parent.right
+            anchors.leftMargin: Theme.padS
+            anchors.rightMargin: Theme.padS
             anchors.bottom: picker.visible ? picker.top : parent.bottom
-            anchors.bottomMargin: Theme.padS
+            anchors.bottomMargin: picker.visible ? Theme.padS : Theme.padM
             height: 26
             visible: Media.hasPlayer
 
@@ -236,18 +242,13 @@ Popout {
                     implicitWidth: chipLabel.implicitWidth + Theme.padM
                     implicitHeight: 22
 
-                    Rectangle {
+                    Skew {
                         anchors.fill: parent
                         color: chip.current
                             ? Theme.alpha(Theme.primary, 0.22)
                             : (chipHover.hovered ? Theme.alpha(Theme.primary, 0.1) : "transparent")
-                        border.width: 1
-                        border.color: chip.current ? Theme.primary : Theme.alpha(Theme.outline, 0.7)
-
-                        transform: Matrix4x4 {
-                            matrix: Qt.matrix4x4(1, -Theme.skew, 0, 22 * Theme.skew,
-                                                 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
-                        }
+                        borderWidth: 1
+                        borderColor: chip.current ? Theme.primary : Theme.alpha(Theme.outline, 0.7)
                     }
 
                     Text {
@@ -285,22 +286,17 @@ Popout {
         implicitWidth: primary ? 38 : 30
         implicitHeight: primary ? 38 : 30
 
-        Rectangle {
+        Skew {
             anchors.fill: parent
             color: {
                 if (!tb.enabledControl) return "transparent";
                 if (tbHover.hovered) return tb.primary ? Theme.accent : Theme.alpha(Theme.primary, 0.22);
                 return tb.primary ? Theme.alpha(Theme.primary, 0.18) : "transparent";
             }
-            border.width: tb.primary ? 2 : 1
-            border.color: tb.enabledControl
+            borderWidth: tb.primary ? 2 : 1
+            borderColor: tb.enabledControl
                 ? (tbHover.hovered ? Theme.text : Theme.alpha(Theme.primary, 0.6))
                 : Theme.alpha(Theme.outline, 0.4)
-
-            transform: Matrix4x4 {
-                matrix: Qt.matrix4x4(1, -Theme.skew, 0, tb.height * Theme.skew,
-                                     0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
-            }
 
             Behavior on color {
                 ColorAnimation { duration: Theme.durFast }

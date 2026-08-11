@@ -16,6 +16,9 @@ BarPill {
     padding: Theme.padS
     visible: Media.hasPlayer || width > 1
 
+    // Track position, drawn by the pill in its own rule band.
+    progress: Media.canSeek ? Media.progress : -1
+
     implicitWidth: Media.hasPlayer
         ? layout.implicitWidth + contentPad * 2
         : 0
@@ -83,12 +86,21 @@ BarPill {
             }
         }
 
+        // Title and artist size to the text, up to a cap.
+        //
+        // These used to be a flat 130px wide each, which meant a short title
+        // still reserved 130px and left a hand-sized hole between the artist and
+        // the equaliser — the pill looked broken rather than compact. They take
+        // what they need now and only start scrolling past the cap.
         Column {
+            id: meta
             anchors.verticalCenter: parent.verticalCenter
             spacing: 0
 
+            readonly property real cap: 150
+
             Marquee {
-                width: 130
+                width: Math.min(meta.cap, implicitWidth)
                 height: 14
                 text: Media.title || Media.identity
                 color: Theme.text
@@ -99,7 +111,7 @@ BarPill {
             }
 
             Marquee {
-                width: 130
+                width: Math.min(meta.cap, implicitWidth)
                 height: 12
                 text: Media.artist || Media.album || Media.identity
                 color: Theme.muted
@@ -143,22 +155,6 @@ BarPill {
                     }
                 }
             }
-        }
-    }
-
-    // Track progress, hairline along the bottom of the pill.
-    Rectangle {
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 3
-        anchors.left: parent.left
-        anchors.leftMargin: root.leanInset
-        width: Math.max(0, (root.width - root.leanInset * 2) * Media.progress)
-        height: 2
-        color: Theme.accent
-        visible: Media.canSeek
-
-        Behavior on width {
-            NumberAnimation { duration: 480; easing.type: Easing.OutQuad }
         }
     }
 

@@ -59,15 +59,12 @@ Item {
         color: Theme.alpha(root.accent, 0.8)
     }
 
-    Rectangle {
+    Skew {
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         width: 16
         height: 2
         color: Theme.accent
-        transform: Matrix4x4 {
-            matrix: Qt.matrix4x4(1, -1.4, 0, 2.8,
-                                 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
-        }
+        lean: 1.4
     }
 }

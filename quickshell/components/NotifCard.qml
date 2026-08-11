@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Services.Notifications
 import "root:/config"
+import "root:/components"
 import "root:/services"
 
 // One notification, used both in the history list and as a floating toast.
@@ -17,14 +18,20 @@ Item {
 
     signal dismissed()
 
+    // The card's own geometry, published so anything drawn along its edges —
+    // the toast countdown rule — can stay inside the chopped corners instead of
+    // running out past them.
+    readonly property real lean: 0.05
+    readonly property real chop: 12
+
     implicitHeight: panel.height
 
     P5Panel {
         id: panel
         width: parent.width
         height: layout.implicitHeight + Theme.padM * 2
-        lean: 0.05
-        chop: 12
+        lean: root.lean
+        chop: root.chop
         fill: Theme.surface
         fillOpacity: 0.97
         border: Theme.alpha(root.tone, hover.hovered ? 0.95 : 0.5)
@@ -117,18 +124,13 @@ Item {
                         implicitWidth: actionLabel.implicitWidth + Theme.padM
                         implicitHeight: 22
 
-                        Rectangle {
+                        Skew {
                             anchors.fill: parent
                             color: actionHover.hovered
                                 ? Theme.alpha(root.tone, 0.3)
                                 : Theme.alpha(root.tone, 0.1)
-                            border.width: 1
-                            border.color: Theme.alpha(root.tone, 0.6)
-
-                            transform: Matrix4x4 {
-                                matrix: Qt.matrix4x4(1, -Theme.skew, 0, 22 * Theme.skew,
-                                                     0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
-                            }
+                            borderWidth: 1
+                            borderColor: Theme.alpha(root.tone, 0.6)
                         }
 
                         Text {
