@@ -188,7 +188,7 @@ Column {
                     anchors.verticalCenter: parent.verticalCenter
                     width: row.entry.hasChildren ? 18 : 0
                     visible: row.entry.hasChildren
-                    text: row.expanded ? "" : ""
+                    text: row.expanded ? "󰅀" : "󰅂"
                     color: row.hovered ? Theme.ink : Theme.subtext
                     font.family: Theme.fontIcon
                     font.pixelSize: Theme.fsMicro

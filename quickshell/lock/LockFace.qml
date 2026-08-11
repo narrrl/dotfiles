@@ -20,6 +20,8 @@ Item {
     property string status: ""
     property bool failed: false
     property bool busy: pam.active
+    readonly property real uiScale: Math.max(0.72, Math.min(1.15,
+        Math.min(width / 1920, height / 1080)))
 
     Rectangle {
         anchors.fill: parent
@@ -137,7 +139,9 @@ Item {
         anchors.top: parent.top
         anchors.topMargin: parent.height * 0.2
         spacing: Theme.padM
-        width: 300
+        width: Math.min(300, parent.width * 0.28)
+        scale: surface.uiScale
+        transformOrigin: Item.TopRight
 
         RailRow {
             width: parent.width
@@ -181,8 +185,10 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: parent.height * 0.14
-        width: 460
+        width: Math.min(460, parent.width - Theme.padXL * 2)
         height: 150
+        scale: surface.uiScale
+        transformOrigin: Item.Bottom
 
         transform: Translate { id: shakeShift }
 
@@ -206,7 +212,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: prompt.bottom
             anchors.topMargin: Theme.padL
-            width: 380
+            width: Math.min(380, authBlock.width - Theme.padL * 2)
             height: 56
             lean: 0.12
             chop: 16
@@ -320,7 +326,7 @@ Item {
 
             Text {
                 anchors.verticalCenter: parent.verticalCenter
-                text: Quickshell.env("USER") || "narl"
+                text: Quickshell.env("USER") || "USER"
                 color: Theme.muted
                 font.family: Theme.fontMono
                 font.pixelSize: Theme.fsSmall
@@ -349,7 +355,7 @@ Item {
         id: pam
 
         config: "hyprlock"
-        user: Quickshell.env("USER") || "narl"
+        user: Quickshell.env("USER") || "USER"
 
         onPamMessage: {
             if (pam.responseRequired) pam.respond(surface.entry);

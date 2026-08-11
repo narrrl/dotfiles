@@ -80,7 +80,13 @@ contentPad * 2`), which keeps the shape maths out of binding loops.
 | CPU/MEM/GPU | bar | btop | | | | resource dashboard |
 
 Popouts open on a short dwell and stay while the pointer is over the trigger or
-the panel. Clicking pins one open.
+the panel. Clicking pins one open. A shell-wide coordinator keeps only one
+transient surface mapped at a time, including tray context menus, so sweeping
+across the rail cannot stack several animated panels over one another.
+
+The power menu is fully keyboard-driven as well as clickable: `Up`/`Down` or
+`J`/`K` moves the active slab, `Enter`/`Space` confirms it, and `Escape`
+dismisses the screen.
 
 ## Keybinds
 

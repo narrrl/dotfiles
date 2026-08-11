@@ -18,6 +18,8 @@
 !brave-flags.conf
 !chromium-flags.conf
 !README.md
+!plans/
+!DESIGN-IS-2026-08-11/
 !rice.png
 !rice-2.png
 !rice-3.png

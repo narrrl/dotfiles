@@ -26,9 +26,21 @@ PanelWindow {
     exclusionMode: ExclusionMode.Ignore
 
     readonly property bool open: Actions.powerMenuOpen
+    property int selectedAction: 0
+
+    readonly property var actionModel: [
+        { label: "Lock",      icon: "󰌾", danger: false, act: "lock" },
+        { label: "Suspend",   icon: "󰤄", danger: false, act: "suspend" },
+        { label: "Hibernate", icon: "󰒲", danger: false, act: "hibernate" },
+        { label: "Log Out",   icon: "󰗽", danger: true,  act: "logout" },
+        { label: "Reboot",    icon: "󰜉", danger: true,  act: "reboot" },
+        { label: "Shut Down", icon: "󰐥", danger: true,  act: "shutdown" }
+    ]
 
     onOpenChanged: {
         if (open) {
+            PopupCoordinator.dismissAll();
+            selectedAction = 0;
             openAnim.restart();
         } else {
             closeAnim.restart();
@@ -122,14 +134,7 @@ PanelWindow {
         Repeater {
             id: buttonRepeater
 
-            model: [
-                { label: "Lock",      icon: "󰌾", danger: false, act: "lock" },
-                { label: "Suspend",   icon: "󰤄", danger: false, act: "suspend" },
-                { label: "Hibernate", icon: "󰒲", danger: false, act: "hibernate" },
-                { label: "Log Out",   icon: "󰗽", danger: true,  act: "logout" },
-                { label: "Reboot",    icon: "󰜉", danger: true,  act: "reboot" },
-                { label: "Shut Down", icon: "󰐥", danger: true,  act: "shutdown" }
-            ]
+            model: root.actionModel
 
             // A carrier item owns the staggered slide so the button keeps its
             // own hover transform.
@@ -159,10 +164,12 @@ PanelWindow {
                     text: entry.modelData.label
                     icon: entry.modelData.icon
                     destructive: entry.modelData.danger
+                    selected: root.selectedAction === entry.index
                     accent: entry.modelData.danger ? Theme.accent : Theme.primary
                     lean: Theme.skew
                     lunge: -10
                     onClicked: root.invoke(entry.modelData.act)
+                    onHoveredChanged: if (hovered) root.selectedAction = entry.index
                 }
 
                 // Staggered entry, one button after another.
@@ -211,7 +218,7 @@ PanelWindow {
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 40
         anchors.horizontalCenter: parent.horizontalCenter
-        text: "ESC TO CANCEL"
+        text: "↑ ↓  SELECT     ENTER  CONFIRM     ESC  CANCEL"
         color: Theme.muted
         font.family: Theme.fontMono
         font.pixelSize: Theme.fsMicro
@@ -237,6 +244,21 @@ PanelWindow {
         anchors.fill: parent
         focus: root.open
         Keys.onEscapePressed: Actions.closePowerMenu()
+        Keys.onPressed: event => {
+            if (!root.open) return;
+            if (event.key === Qt.Key_Up || event.key === Qt.Key_K) {
+                root.selectedAction = (root.selectedAction + root.actionModel.length - 1)
+                    % root.actionModel.length;
+                event.accepted = true;
+            } else if (event.key === Qt.Key_Down || event.key === Qt.Key_J) {
+                root.selectedAction = (root.selectedAction + 1) % root.actionModel.length;
+                event.accepted = true;
+            } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter
+                       || event.key === Qt.Key_Space) {
+                root.invoke(root.actionModel[root.selectedAction].act);
+                event.accepted = true;
+            }
+        }
     }
 
     ParallelAnimation {

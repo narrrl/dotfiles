@@ -53,6 +53,7 @@ PopupWindow {
 
     function open() {
         if (!menuHandle) return;
+        PopupCoordinator.claim(root);
         closeAnim.stop();
         shown = true;
         openAnim.restart();
@@ -66,6 +67,11 @@ PopupWindow {
 
     function toggle() {
         if (shown) close(); else open();
+    }
+
+    // Shared name used by PopupCoordinator for every transient surface.
+    function dismiss() {
+        close();
     }
 
     // The grab can only take hold once the popup is actually mapped. Asked for
@@ -145,6 +151,7 @@ PopupWindow {
         onFinished: {
             root.shown = false;
             holder.x = root.bleed;
+            PopupCoordinator.release(root);
         }
     }
 }

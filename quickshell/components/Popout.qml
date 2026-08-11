@@ -103,6 +103,7 @@ PopupWindow {
     }
 
     function open() {
+        PopupCoordinator.claim(root);
         exitAnim.stop();
         shown = true;
         enterAnim.restart();
@@ -183,6 +184,7 @@ PopupWindow {
             root.pinned = false;
             contentHolder.x = root.bleed;
             contentHolder.y = root.bleed;
+            PopupCoordinator.release(root);
             root.dismissedFully();
         }
     }

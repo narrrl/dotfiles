@@ -11,13 +11,14 @@ Item {
     property color accent: Theme.primary
     property color hoverFill: Theme.accent
     property bool destructive: false
+    property bool selected: false
     property real lean: Theme.skew
     property real lunge: 6
     property bool wide: false
 
     signal clicked()
 
-    readonly property bool hovered: hover.hovered
+    readonly property bool hovered: hover.hovered || root.selected
     readonly property bool pressed: tap.pressed
 
     implicitWidth: wide ? 260 : (row.implicitWidth + panel.contentPad * 2)
