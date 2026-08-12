@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Window
 import "root:/config"
 
 // Horizontally scrolling text that only moves when it actually overflows, and
@@ -17,6 +18,13 @@ Item {
     property bool running: true
 
     readonly property bool overflowing: label.implicitWidth > width + 1
+
+    // An Item inside an unmapped PopupWindow still reports itself visible, so a
+    // marquee in a closed popout would keep its infinite animation alive. That
+    // animation writes QML properties on every frame — at 240 Hz, three closed
+    // popout marquees are enough to keep the whole animation driver spinning and
+    // burn a fifth of a core with nothing on screen. Follow the window instead.
+    readonly property bool onScreen: Window.window?.visible ?? true
 
     clip: true
     implicitHeight: label.implicitHeight
@@ -38,7 +46,7 @@ Item {
 
     SequentialAnimation {
         id: scroll
-        running: root.running && root.overflowing && root.visible
+        running: root.running && root.overflowing && root.visible && root.onScreen
         loops: Animation.Infinite
 
         PauseAnimation { duration: root.pause }

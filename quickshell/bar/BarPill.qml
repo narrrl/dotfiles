@@ -109,15 +109,20 @@ Item {
 
         // Track progress, shown until the pointer arrives and the hover rule
         // takes the band over.
+        //
+        // Deliberately untweened. MPRIS position is polled once a second, and a
+        // 480 ms ease on a 1 Hz input meant this rule was mid-animation roughly
+        // half of every second — about 115 animated frames per second on a
+        // 240 Hz screen, each one rebuilding this Skew's Shape geometry through
+        // the curve renderer and re-rendering the pill's layer textures with it.
+        // Stepping once per second costs 1 frame instead of 115, matches the rate
+        // the underlying data actually arrives at, and makes a seek land exactly
+        // where it was dropped instead of gliding there.
         Skew {
             height: parent.height
             width: parent.width * Math.max(0, Math.min(1, root.progress))
             color: Theme.accent
             visible: root.progress >= 0 && !root.hovered && !root.active
-
-            Behavior on width {
-                NumberAnimation { duration: 480; easing.type: Easing.OutQuad }
-            }
         }
 
         Skew {

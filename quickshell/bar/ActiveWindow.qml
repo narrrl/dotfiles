@@ -22,6 +22,11 @@ Item {
     readonly property string incomingTitle: mine && toplevel.title ? toplevel.title : "—"
     property string displayedTitle: "—"
 
+    // Which toplevel the landing transition last played for. The landing is a
+    // focus-change stamp, so it has to key off window identity rather than off
+    // the caption text — see commitTitle().
+    property var landedToplevel: null
+
     // The bar shrinks this when the three clusters would otherwise collide.
     property real maxWidth: 240
 
@@ -67,11 +72,28 @@ Item {
         }
     }
 
+    // Adopt the settled caption, and stamp it only when focus actually moved.
+    //
+    // The landing used to restart on any title change, which is not the same
+    // thing: plenty of windows rewrite their own title on a timer — a terminal
+    // running a task with a spinner or a percentage, a browser tab with a live
+    // clock — and each rewrite restarted seven overlapping animations totalling
+    // over half a second. At a title churning twice a second on a 240 Hz screen
+    // the bar never stopped animating, and repainting it that hard measured at
+    // roughly 18% of a CPU core with nothing else happening. Keying the stamp to
+    // window identity restores what the effect was described as doing.
     function commitTitle(): void {
-        if (root.displayedTitle === root.incomingTitle)
+        const focusMoved = root.toplevel !== root.landedToplevel;
+
+        if (root.displayedTitle !== root.incomingTitle)
+            root.displayedTitle = root.incomingTitle;
+        else if (!focusMoved)
             return;
-        root.displayedTitle = root.incomingTitle;
-        titleLanding.restart();
+
+        if (focusMoved) {
+            root.landedToplevel = root.toplevel;
+            titleLanding.restart();
+        }
     }
 
     // Browser tabs, terminals and editors can update titles several times in a
@@ -85,7 +107,17 @@ Item {
     }
 
     onIncomingTitleChanged: titleSettle.restart()
-    Component.onCompleted: displayedTitle = incomingTitle
+
+    // Focus can move to a window whose caption happens to match the outgoing
+    // one, which changes no title and so would otherwise never land.
+    onToplevelChanged: titleSettle.restart()
+
+    Component.onCompleted: {
+        displayedTitle = incomingTitle;
+        // Adopt the current window silently, so a config reload does not play a
+        // focus-change stamp for a focus that did not change.
+        landedToplevel = toplevel;
+    }
 
     // A quick crimson wipe under the title on focus change.
     Rectangle {

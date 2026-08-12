@@ -132,8 +132,13 @@ Item {
                     cursorShape: Qt.PointingHandCursor
                 }
 
+                // Hyprland evaluates IPC `dispatch` payloads as Lua now that the
+                // config is Lua (hyprland.lua rather than hyprland.conf), so the
+                // old `dispatch workspace 3` string is a Lua syntax error and the
+                // click silently does nothing. Dispatchers have to be called the
+                // same way lua/binds/workspaces.lua calls them.
                 TapHandler {
-                    onTapped: Hyprland.dispatch("workspace " + pip.wsId)
+                    onTapped: Hyprland.dispatch("hl.dsp.focus({workspace = " + pip.wsId + "})")
                 }
             }
         }

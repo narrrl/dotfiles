@@ -5,6 +5,13 @@
 # strings. The Quickshell config (~/.config/quickshell/services/Sys.qml) parses
 # them and does its own formatting. The previous human-readable Waybar formats
 # are preserved in config.toml.waybar-bak.
+#
+# Quickshell only consumes cpu, mem, gpu, disk, net, sys and power from fluxo.
+# Everything else it gets natively — Quickshell.Services.Mpris, .Pipewire,
+# .UPower, .Notifications, Quickshell.Bluetooth — and Brightness.qml reads
+# sysfs directly. Those fluxo modules are therefore switched off below: left on,
+# they held a libpulse context, a BlueZ D-Bus poll every 2 s and an MPRIS
+# marquee ticker firing twice a second, all feeding a bar that does not exist.
 
 [general]
 menu_command = "fuzzel --dmenu --prompt \"$FLUXO_PROMPT\""
@@ -44,12 +51,18 @@ format = "{mount}|{used:.1}|{total:.1}"
 format = "{percentage}"
 
 [audio]
+# Quickshell.Services.Pipewire drives Audio.qml; leaving this on kept a
+# libpulse context and its callbacks alive for nothing.
+enabled = false
 format_sink_unmuted = "{name} {volume:>3}% <span size='large'>{icon}</span>"
 format_sink_muted = "{name} <span size='large'> {icon}</span>"
 format_source_unmuted = "{name} {volume:>3}% <span size='large'>{icon}</span>"
 format_source_muted = "{name} <span size='large'>{icon}</span>"
 
 [bt]
+# Quickshell.Bluetooth drives Bt.qml. This module polled BlueZ over D-Bus every
+# 2 seconds regardless.
+enabled = false
 format_plugin = "{alias} [{left}|{right}] {anc} <span size='large'>󰂰</span>"
 format_connected = "{alias} <span size='large'>󰂰</span>"
 format_disconnected = "Disconnected <span size='large'>󰂯</span>"
@@ -60,9 +73,14 @@ format_active = "<span size='large'>󰊖</span>"
 format_inactive = "<span size='large'></span>"
 
 [mpris]
+# Quickshell.Services.Mpris drives Media.qml, and MediaPill/MediaPopout do their
+# own eliding and scrolling. This module was the single most expensive thing in
+# the daemon: `scroll` woke a ticker every `scroll_speed` ms to advance a marquee
+# offset for a Waybar that is not running, and each tick drove the signaler.
+enabled = false
 format = "{artist} - {title}"
 max_length = 20
-scroll = true 
+scroll = true
 scroll_speed = 500
 scroll_separator = " /// "
 
@@ -81,10 +99,14 @@ enabled = false
 format = "{layout}"
 
 [backlight]
-enable = true
+# Was `enable = true` — not a key fluxo reads, so this section was silently
+# running on its default of enabled. Brightness.qml reads
+# /sys/class/backlight directly, so the D-Bus watcher here is redundant.
+enabled = false
 format = "{percentage}"
 
 [dnd]
-enabled = true
+# Notifs.qml owns do-not-disturb via Quickshell.Services.Notifications.
+enabled = false
 format_dnd = "<span size='large'>󰂛</span>"
 format_normal = "<span size='large'>󰂚</span>"

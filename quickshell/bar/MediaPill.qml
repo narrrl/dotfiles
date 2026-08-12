@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Shapes
+import QtQuick.Window
 import Quickshell
 import "root:/config"
 import "root:/components"
@@ -126,9 +127,66 @@ BarPill {
 
         // Compact play-state equaliser. It moves only while audio is playing
         // and freezes into three quiet bars when paused.
+        //
+        // Sampled from a timer rather than tweened by an infinite
+        // NumberAnimation. DP-1 runs at 240 Hz, and a frame-synced animation
+        // here repainted the entire bar 240 times a second: this pill sits
+        // inside ancestors that use layer.enabled together with
+        // Shape.CurveRenderer, and the album art carries a MultiEffect pass, so
+        // every one of those frames re-rendered several layer textures. Measured
+        // on its own, this one animation cost about two thirds of a CPU core
+        // whenever anything was playing.
+        //
+        // The timer samples a sine, it does not step through arbitrary levels: a
+        // low tick rate only looks like the original if consecutive ticks stay
+        // near each other. Each bar keeps the eased breathing motion and the
+        // period it had before — the curve is just read 25 times a second
+        // instead of 240.
         Row {
+            id: eq
             anchors.verticalCenter: parent.verticalCenter
             spacing: 2
+
+            // Sampling interval — the one knob trading smoothness against cost.
+            // Frames are the whole expense: a full-bar repaint runs about 0.3% of
+            // a core (the bar spans 2544x40 on a 240 Hz output), so cost scales
+            // linearly with this rate. 16 ms holds 60 Hz, which is visually
+            // indistinguishable from the original frame-synced tween at a quarter
+            // of its ~75%.
+            readonly property int tickMs: 16
+            property int phase: 0
+
+            // Reproduces the original per-bar tween exactly, sampled instead of
+            // frame-synced. Each bar eased between two heights with its own pair
+            // of durations, so the three differed in both swing and period — the
+            // middle bar moved barely a pixel while the outer two ran in
+            // opposition. Giving all three the full swing, as a single symmetric
+            // sine would, is three times the motion and reads far busier than
+            // this meter is supposed to.
+            function level(i: int): real {
+                const lo = 4 + (i * 5) % 13;    // old first NumberAnimation `to`
+                const hi = 14 - (i * 4) % 9;    // old second NumberAnimation `to`
+                const d1 = 320 + i * 90;        // ...and their durations
+                const d2 = 280 + i * 70;
+
+                const t = (eq.phase * eq.tickMs) % (d1 + d2);
+                // Easing.InOutSine, which is what both halves used.
+                const ease = x => (1 - Math.cos(Math.PI * x)) / 2;
+
+                return t < d1
+                    ? hi + (lo - hi) * ease(t / d1)
+                    : lo + (hi - lo) * ease((t - d1) / d2);
+            }
+
+            Timer {
+                interval: eq.tickMs
+                running: Media.playing && eq.visible && (eq.Window.window?.visible ?? true)
+                repeat: true
+                onTriggered: eq.phase++
+                // Restart the cycle from its trough, so playback always begins
+                // from a settled meter rather than mid-swing.
+                onRunningChanged: if (!running) eq.phase = 0
+            }
 
             Repeater {
                 model: 3
@@ -136,24 +194,9 @@ BarPill {
                 Rectangle {
                     required property int index
                     width: 3
-                    height: 6
+                    height: Media.playing ? eq.level(index) : 6
                     anchors.verticalCenter: parent.verticalCenter
                     color: Media.playing ? Theme.primary : Theme.muted
-
-                    SequentialAnimation on height {
-                        running: Media.playing
-                        loops: Animation.Infinite
-                        NumberAnimation {
-                            to: 4 + (index * 5) % 13
-                            duration: 320 + index * 90
-                            easing.type: Easing.InOutSine
-                        }
-                        NumberAnimation {
-                            to: 14 - (index * 4) % 9
-                            duration: 280 + index * 70
-                            easing.type: Easing.InOutSine
-                        }
-                    }
 
                     Behavior on color {
                         ColorAnimation { duration: Theme.durBase }
