@@ -29,6 +29,7 @@ BarPill {
             label: "CPU"
             value: Sys.cpuUsage
             readout: Math.round(Sys.cpuUsage) + "%"
+            widest: "100%"
         }
 
         Divider {}
@@ -37,6 +38,7 @@ BarPill {
             label: "MEM"
             value: Sys.memPercent
             readout: Sys.memUsed.toFixed(1) + "G"
+            widest: "88.8G"
         }
 
         Divider { visible: Sys.gpuAvailable }
@@ -46,14 +48,23 @@ BarPill {
             label: "GPU"
             value: Sys.gpuUsage
             readout: Math.round(Sys.gpuUsage) + "%"
+            widest: "100%"
         }
     }
 
-    component Divider: Skew {
+    component Divider: Item {
         anchors.verticalCenter: parent.verticalCenter
-        width: 1
-        height: 18
-        color: Theme.alpha(Theme.outline, 0.8)
+        implicitWidth: rule.width
+        implicitHeight: 18
+
+        // Sized to hold its own lean — see the note on the bar's divider.
+        Skew {
+            id: rule
+            anchors.centerIn: parent
+            width: parent.height * Theme.skew + 1
+            height: parent.height
+            color: Theme.alpha(Theme.outline, 0.8)
+        }
     }
 
     // A tiny fixed label makes every number self-describing without turning the
@@ -65,14 +76,35 @@ BarPill {
         property real value: 0
         property string readout: ""
 
+        // The widest reading this metric will ever show. The number column is
+        // sized from this rather than from the live text, because sizing to the
+        // live text is what made the whole right-hand group breathe in and out:
+        // "9%" and "100%" are ~14px apart in Archivo Black, so every tick of the
+        // CPU sampler nudged the metrics, the media pill and the clock sideways.
+        // Reserving the maximum costs a few px of blank and buys a bar that
+        // never moves.
+        property string widest: "100%"
+
+        readonly property real numberWidth: Math.max(gauge.width, metrics.advanceWidth)
+        readonly property real headWidth: labelText.implicitWidth + head.spacing + numberWidth
+
         anchors.verticalCenter: parent.verticalCenter
         spacing: 2
+        width: Math.max(headWidth, 44)
+
+        TextMetrics {
+            id: metrics
+            text: metric.widest
+            font: gauge.font
+        }
 
         Row {
+            id: head
             spacing: 4
 
             Text {
-                anchors.baseline: readoutText.baseline
+                id: labelText
+                anchors.baseline: gauge.baseline
                 text: metric.label
                 color: Theme.muted
                 font.family: Theme.fontMono
@@ -83,7 +115,7 @@ BarPill {
             }
 
             Text {
-                id: readoutText
+                id: gauge
                 text: metric.readout
                 color: Theme.heat(metric.value)
                 font.family: Theme.fontDisplay
@@ -99,12 +131,15 @@ BarPill {
             }
         }
 
+        // Ends flush with the reading above it instead of stopping short at a
+        // fixed 43px, so each metric reads as one block.
         MeterBar {
             value: metric.value
             segments: 9
-            segmentWidth: 3
             spacing: 2
             height: 5
+            width: metric.width
+            segmentWidth: (width - 8 * spacing) / 9
         }
     }
 

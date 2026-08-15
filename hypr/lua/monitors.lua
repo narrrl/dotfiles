@@ -20,7 +20,12 @@ M.external = {
     { output = "desc:Samsung Electric Company LC27G7xT H4ZRA00734", mode = "2560x1440@240", position = "-2560x0", scale = 1 },
 }
 
-M.builtin = { output = M.laptop, mode = "1920x1080@60", position = "0x0", scale = 1 }
+-- `disabled = false` is load-bearing, not decoration. hl.monitor() merges into
+-- whatever rule the output already has, so a spec that simply omits the flag
+-- leaves an earlier `disabled = true` in place: the panel stays dark and the
+-- mode/position are applied to a monitor nobody can see. Opening the lid while
+-- docked hit exactly that.
+M.builtin = { output = M.laptop, mode = "1920x1080@60", position = "0x0", scale = 1, disabled = false }
 
 -- Anything not declared above falls back to Hyprland's auto placement, so a
 -- borrowed projector or a monitor at the office still lights up.

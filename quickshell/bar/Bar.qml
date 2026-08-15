@@ -115,10 +115,17 @@ PanelWindow {
         implicitWidth: Theme.padM * 2
         implicitHeight: Theme.barHeight
 
+        // A leaning hairline needs a box wide enough to hold the lean: at 20px
+        // tall the top edge sits 20 * skew ≈ 5px right of the bottom one, so a
+        // 1px-wide Skew folded into a bowtie instead. Width is the lean plus the
+        // stroke the rule should actually read as.
+        readonly property real ruleWeight: 1.5
+        readonly property real ruleHeight: 20
+
         Skew {
             anchors.centerIn: parent
-            width: 1
-            height: 20
+            width: parent.ruleHeight * Theme.skew + parent.ruleWeight
+            height: parent.ruleHeight
             color: Theme.alpha(Theme.outline, 0.9)
         }
     }

@@ -89,6 +89,7 @@ PanelWindow {
             id: volIcon
             icon: Audio.icon
             readout: Audio.muted ? "" : Audio.volumePercent + "%"
+            reserveReadout: true
             label: "Volume"
             statusText: Audio.muted ? "Muted" : Audio.volumePercent + "% · " + Audio.sinkName
             hint: "Scroll to adjust"
@@ -162,6 +163,7 @@ PanelWindow {
             readout: Notifs.unread > 0
                 ? (Notifs.unread > 9 ? "9+" : String(Notifs.unread))
                 : ""
+            reserveReadout: true
             dim: Notifs.dnd
             alert: Notifs.hasUnread && !Notifs.dnd
             suppressTooltip: notifPopout.detailActive
@@ -187,10 +189,17 @@ PanelWindow {
         implicitWidth: Theme.railWidth
         implicitHeight: Theme.padM + 4
 
+        // Same correction as the bar's divider, on the other axis: a 22px rule
+        // rises 22 * skew ≈ 5px across its run, so the box has to be that tall
+        // plus the weight of the stroke. At height 1 the polygon inverted and
+        // the rule rendered as a stubby wedge sitting left of centre.
+        readonly property real ruleWeight: 1.5
+        readonly property real ruleWidth: 22
+
         Skew {
             anchors.centerIn: parent
-            width: 22
-            height: 1
+            width: parent.ruleWidth
+            height: parent.ruleWidth * Theme.skew + parent.ruleWeight
             vertical: true
             color: Theme.alpha(Theme.outline, 0.9)
         }

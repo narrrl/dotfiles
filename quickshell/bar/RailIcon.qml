@@ -21,6 +21,13 @@ Item {
     property bool dim: false
     property bool pulsing: false
 
+    // Hold the readout line open even while there is nothing to put in it.
+    // Volume drops its percentage when muted and the bell only carries a count
+    // when something is unread, so without this the slot collapsed from 42px to
+    // 32px and every icon below it jumped a third of its own height.
+    property bool reserveReadout: false
+
+    readonly property bool hasReadout: root.readout !== "" || root.reserveReadout
     readonly property bool hovered: hover.hovered
 
     // Clearance between the wipe and the rail's left edge, chosen so the bar
@@ -31,16 +38,42 @@ Item {
     signal scrolled(real delta)
 
     implicitWidth: Theme.railWidth
-    implicitHeight: root.readout !== "" ? 42 : 32
+    implicitHeight: root.hasReadout ? root.glyphBand + readoutLine.height + 1 : root.glyphBand
 
-    Column {
+    // The glyph always sits centred in a fixed band at the top of the slot and
+    // the readout hangs below it, rather than the pair being centred together.
+    // Centring the pair meant the icon slid up and down by a few px whenever its
+    // number appeared or vanished — the icons stopped lining up with each other
+    // exactly when something was changing and you were looking at them.
+    readonly property real glyphBand: 32
+
+    // Nerd Font's status glyphs are not all centred inside their own advance —
+    // the muted-speaker and muted-mic marks carry their cross out to the right,
+    // so centring the advance box left them visibly off-axis next to the wifi
+    // and bluetooth glyphs. Centre the ink instead, capped so a glyph with an
+    // odd bounding box cannot slide far off the rail's axis.
+    readonly property real opticalShift: {
+        const ink = glyphMetrics.tightBoundingRect;
+        if (ink.width <= 0) return 0;
+        const off = glyphMetrics.advanceWidth / 2 - (ink.x + ink.width / 2);
+        return Math.max(-4, Math.min(4, off));
+    }
+
+    TextMetrics {
+        id: glyphMetrics
+        text: root.icon
+        font.family: Theme.fontIcon
+        font.pixelSize: Theme.fsLarge
+    }
+
+    Item {
         id: layout
-        anchors.centerIn: parent
-        spacing: 1
+        anchors.fill: parent
 
         Icon {
             id: glyph
-            anchors.horizontalCenter: parent.horizontalCenter
+            x: (root.width - width) / 2 + root.opticalShift
+            y: (root.glyphBand - height) / 2
             text: root.icon
             pulsing: root.pulsing
             font.pixelSize: Theme.fsLarge
@@ -57,7 +90,10 @@ Item {
         }
 
         Text {
+            id: readoutLine
             anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: root.glyphBand + 1
             visible: root.readout !== ""
             text: root.readout
             color: root.dim ? Theme.muted : Theme.subtext
@@ -88,7 +124,7 @@ Item {
         anchors.leftMargin: root.wipeInset
         anchors.verticalCenter: parent.verticalCenter
         width: 2
-        height: root.hovered ? layout.implicitHeight : 0
+        height: root.hovered ? root.height - 4 : 0
         color: Theme.glow
 
         Behavior on height {

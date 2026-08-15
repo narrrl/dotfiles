@@ -31,6 +31,20 @@ Shape {
     // rail slab.
     property bool vertical: false
 
+    // NOTE ON SIZING. The lean shifts one edge by `lean * height` (or by
+    // `lean * width` when vertical), and the piece that actually gets painted is
+    // what is left: a Skew declared 1px wide and 20px tall does not draw a 1px
+    // rule at an angle, it draws a rule |1 - 20 * 0.249| = 4px thick that hangs
+    // 4px to the *left* of the box it was given. That is why the bar's and the
+    // rail's hairlines came out fat and off-centre. A thin leaning rule has to be
+    // declared with room for its own lean — `height * Theme.skew + weight` — and
+    // the call sites that draw one now do exactly that.
+    //
+    // Zero-sized pieces still have a lean offset, so a collapsed hover wipe or a
+    // meter at 0 drew a sub-pixel wedge of pure accent — the stray red dot under
+    // the metrics. Nothing with no extent should paint at all.
+    visible: root.width > 0 && root.height > 0
+
     preferredRendererType: Shape.CurveRenderer
     asynchronous: false
 

@@ -37,9 +37,15 @@ Item {
     // crimson line struck through its bottom edge on hover. Reserving the band
     // and centring content in what is left is what keeps the rule under the
     // module instead of across it.
+    // The band reserved the full rule plus its inset — 7px off a 40px module,
+    // all of it taken from the bottom — so every module's content was centred
+    // 3.5px above the slab's own centre and the whole bar read as top-heavy.
+    // The rule is pushed closer to the edge now and the band keeps only enough
+    // clearance to stop the tallest content (the media pill's 24px art) from
+    // touching it, so content sits within a pixel of the slab's centre line.
     readonly property real ruleHeight: 2
-    readonly property real ruleInset: 5
-    readonly property real ruleBand: root.standalone ? 0 : root.ruleHeight + root.ruleInset
+    readonly property real ruleInset: 3
+    readonly property real ruleBand: root.standalone ? 0 : 2
 
     // Modules with a notion of progress (the player's track position) draw it in
     // the same band, so it can never be struck through the content. A module
