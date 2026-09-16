@@ -15,12 +15,38 @@ Singleton {
     property bool powerMenuOpen: false
     property bool lockRequested: false
     property bool sidebarOpen: false
+    property bool launcherOpen: false
+
+    // Seed text for the next launcher open. Lets a keybind or a script hand the
+    // launcher a query it did not have to type — `qs ipc call shell prompt
+    // "https://…"` is an open-with dialog for anything that can run a command.
+    property string launcherSeed: ""
 
     signal osdRequested(string kind)
 
     function togglePowerMenu() { root.powerMenuOpen = !root.powerMenuOpen; }
     function closePowerMenu() { root.powerMenuOpen = false; }
     function lock() { root.powerMenuOpen = false; root.lockRequested = true; }
+
+    function toggleLauncher() {
+        if (!root.launcherOpen) root.launcherSeed = "";
+        root.launcherOpen = !root.launcherOpen;
+    }
+    function closeLauncher() { root.launcherOpen = false; }
+
+    // Stand in for `fuzzel --dmenu`. See Apps.beginDmenu for the transport.
+    function dmenuLauncher(inPath: string, outPath: string, prompt: string) {
+        Apps.beginDmenu(inPath, outPath, prompt);
+        root.launcherSeed = "";
+        root.launcherOpen = false;
+        root.launcherOpen = true;
+    }
+
+    function promptLauncher(seed: string) {
+        root.launcherSeed = seed;
+        root.launcherOpen = false;
+        root.launcherOpen = true;
+    }
 
     // ------------------------------------------------------------- commands
     // Each slot gets its own Process so a slow one cannot cancel another.
@@ -62,6 +88,11 @@ Singleton {
 
         function lock(): void { root.lock(); }
         function power(): void { root.togglePowerMenu(); }
+        function launcher(): void { root.toggleLauncher(); }
+        function prompt(seed: string): void { root.promptLauncher(seed); }
+        function dmenu(inPath: string, outPath: string, prompt: string): void {
+            root.dmenuLauncher(inPath, outPath, prompt);
+        }
         function reloadConfig(): void { root.reloadShell(); }
         function toggleDnd(): void { Notifs.toggleDnd(); }
         function clearNotifications(): void { Notifs.clearAll(); }

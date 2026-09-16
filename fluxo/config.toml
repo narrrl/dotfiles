@@ -14,7 +14,7 @@
 # marquee ticker firing twice a second, all feeding a bar that does not exist.
 
 [general]
-menu_command = "fuzzel --dmenu --prompt \"$FLUXO_PROMPT\""
+menu_command = "takemi-dmenu --prompt \"$FLUXO_PROMPT\""
 
 [signals]
 network = 1

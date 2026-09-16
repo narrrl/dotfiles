@@ -199,8 +199,9 @@ Persona 3's blue and nothing else needs touching.
   `fish_frozen_theme.fish` that fish 4.3 generated on upgrade. The prompt arrow
   is white and turns crimson on a non-zero exit — the shell's one "wrong"
   signal, and so the one place that earns the accent.
-- **Fuzzel** — `fuzzel/takemi.ini`, selected by the `include` in `fuzzel.ini`.
-  Square corners rather than the stock radius, and a fully opaque ground.
+- **The launcher** — no external theming to keep in step, because it is part of
+  this shell (`launcher/`). Fuzzel is gone; `takemi-dmenu` stands in for
+  `fuzzel --dmenu` where a script needs a picker.
 - **No glass anywhere.** Alacritty is `opacity = 1.0, blur = false`, and
   Hyprland's `decoration:blur` is disabled with both opacities at `1.0`. Blur is
   the signature of the frosted-glass look, which is the opposite of flat ink on

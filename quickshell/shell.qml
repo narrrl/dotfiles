@@ -3,6 +3,7 @@ import Quickshell
 import "root:/config"
 import "root:/services"
 import "root:/bar"
+import "root:/launcher"
 import "root:/overlays"
 import "root:/lock"
 
@@ -10,6 +11,7 @@ import "root:/lock"
 //
 //   bar/       the top bar and its modules
 //   popouts/   hover panels hanging off bar modules
+//   launcher/  the application launcher
 //   overlays/  power menu, notification toasts, OSD
 //   lock/      session lock
 //   services/  data sources (fluxo, pipewire, bluez, upower, mpris, …)
@@ -28,6 +30,7 @@ ShellRoot {
         void Net.wifiEnabled;
         void Bt.available;
         void Actions.powerMenuOpen;
+        void Apps.index;
     }
 
     Variants {
@@ -40,6 +43,12 @@ ShellRoot {
         model: Quickshell.screens
 
         Rail {}
+    }
+
+    Variants {
+        model: Quickshell.screens
+
+        Launcher {}
     }
 
     Variants {

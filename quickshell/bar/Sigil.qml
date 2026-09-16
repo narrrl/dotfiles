@@ -17,7 +17,7 @@ BarPill {
     lean: Theme.skew
     implicitWidth: Theme.barHeight + contentPad
 
-    onClicked: Actions.launch("fuzzel")
+    onClicked: Actions.toggleLauncher()
     onRightClicked: Actions.reloadShell()
 
     // The wordmark. Was the Death arcana skull (nf-md-skull, U+F068C) — a
