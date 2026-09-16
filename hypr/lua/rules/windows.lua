@@ -8,7 +8,11 @@
 -- ==========================================
 -- Dialogs and utility apps that should float in the center
 local DIALOG_TITLES = "^(Open Form|Open File|Select a File|Choose a file|Open Workspace|Choose Directory.*|Save As.*|Save File.*|branchdialog|pinentry-gtk-2|Confirm to replace files|File Operation Progress|Open Files.*|Anmelden.*|File Upload.*|TRuDI-Export laden)$"
-local DIALOG_CLASSES = "^(pavucontrol|blueman-manager|nm-connection-editor|org.pulseaudio.pavucontrol|io.narl.proton-drive-linux-prompt)$"
+-- pdfs-prompt is the Proton Drive search: io.narl.* is its GTK window, plain
+-- pdfs-prompt the terminal `pdfs-prompt --fzf` spawns for itself. Every
+-- terminal it knows how to start sets that same class, so this one rule holds
+-- whichever is installed.
+local DIALOG_CLASSES = "^(pavucontrol|blueman-manager|nm-connection-editor|org.pulseaudio.pavucontrol|io.narl.proton-drive-linux-prompt|pdfs-prompt)$"
 
 local STEAM = "^(steam)$"
 local GAMESCOPE = "^(gamescope)$"

@@ -1,0 +1,13 @@
+[Unit]
+Description=Headroom proxy (work Claude profile)
+After=network-online.target
+
+[Service]
+Environment=HEADROOM_WORKSPACE_DIR=%h/.headroom-work
+Environment=HEADROOM_TELEMETRY=off
+ExecStart=%h/.local/share/headroom-venv/bin/headroom proxy --host 127.0.0.1 --port 8788 --mode cache --no-telemetry
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

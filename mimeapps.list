@@ -21,7 +21,7 @@ x-scheme-handler/claude-cli=claude-code-url-handler.desktop
 x-scheme-handler/msteams=teams-for-linux.desktop
 x-scheme-handler/slack=slack.desktop
 audio/flac=mpv.desktop
-x-scheme-handler/codex=ChatGPT.desktop
+x-scheme-handler/codex=chatgpt.desktop
 
 [Added Associations]
 application/pdf=org.pwmt.zathura-pdf-poppler.desktop;
