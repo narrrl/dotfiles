@@ -311,19 +311,19 @@ Singleton {
         root._remember(item.key);
 
         if (arg === "") {
-            proc.exec(["uwsm", "app", "--", item.key]);
+            Quickshell.execDetached(["uwsm", "app", "--", item.key]);
             return;
         }
 
         if (root.fieldRe.test(item.exec || "")) {
-            proc.exec(["uwsm", "app", "--", item.key, arg]);
+            Quickshell.execDetached(["uwsm", "app", "--", item.key, arg]);
             return;
         }
 
         const argv = root._tokenize(item.exec || "")
             .filter(t => !root.anyFieldRe.test(t));
         if (argv.length === 0) {
-            proc.exec(["uwsm", "app", "--", item.key]);
+            Quickshell.execDetached(["uwsm", "app", "--", item.key]);
             return;
         }
         argv.push(arg);
@@ -333,7 +333,7 @@ Singleton {
         const name = item.key.replace(".desktop", "").replace(/[^a-zA-Z0-9_-]/g, "-");
         const head = ["uwsm", "app", "-a", name];
         if (item.terminal) head.push("-T");
-        proc.exec(head.concat(["--"]).concat(argv));
+        Quickshell.execDetached(head.concat(["--"]).concat(argv));
     }
 
     // Exec lines are shell-ish but not shell: the spec allows double quotes and
@@ -367,17 +367,24 @@ Singleton {
 
     function runShell(line: string, inTerminal: bool): void {
         if (line.trim() === "") return;
-        if (inTerminal) proc.exec(["uwsm", "app", "-T", "--", "sh", "-c", line]);
-        else proc.exec(["uwsm", "app", "--", "sh", "-c", line]);
+        if (inTerminal) Quickshell.execDetached(["uwsm", "app", "-T", "--", "sh", "-c", line]);
+        else Quickshell.execDetached(["uwsm", "app", "--", "sh", "-c", line]);
     }
 
     function copy(text: string): void {
-        proc.exec(["wl-copy", "--", text]);
+        Quickshell.execDetached(["wl-copy", "--", text]);
     }
 
-    // Fire-and-forget. Each call replaces the last, which is fine because uwsm
-    // has already handed the app off to systemd by the time it exits.
-    Process { id: proc }
+    // Everything above spawns through `Quickshell.execDetached` rather than a
+    // `Process`, and it has to. `uwsm app` does not exit once the scope is up —
+    // it stays on as the scope's main process for as long as the app lives. A
+    // shared `Process` therefore never goes idle, so the next `exec()` kills the
+    // previous uwsm, systemd tears down the scope with it, and launching the
+    // second app closes the first. Shell reload did the same thing to every app
+    // at once, since `manageLifetime` kills the child when the object goes away.
+    //
+    // A detached spawn is owned by nobody here, which is exactly right: once
+    // uwsm has the scope, the shell has no further business in that lifetime.
 
     // ----------------------------------------------------------------- dmenu
     // The launcher can stand in for `fuzzel --dmenu`, which is what lets fuzzel
@@ -494,7 +501,7 @@ Singleton {
     // wl-copy without being round-tripped through a QML string.
     function pasteClip(item: var): void {
         if (!/^[0-9]+$/.test(item.clipId)) return;
-        proc.exec(["sh", "-c", "cliphist decode " + item.clipId + " | wl-copy"]);
+        Quickshell.execDetached(["sh", "-c", "cliphist decode " + item.clipId + " | wl-copy"]);
     }
 
     function searchClips(term: string): var {

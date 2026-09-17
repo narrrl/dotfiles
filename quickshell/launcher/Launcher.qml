@@ -11,10 +11,14 @@ import "root:/services"
 //
 // TYPING is always typing. Navigation lives on the arrows and on Ctrl+J/K so
 // that nothing you can type is ever stolen from you — except in select mode,
-// which you enter deliberately (the first arrow press does it) and which hands
-// h/j/k/l over to navigation until you press Escape or Backspace. That is the
-// compromise the vim keys need: a launcher whose input eats `j` is a launcher
-// you cannot use to find Jellyfin.
+// which hands h/j/k/l over to navigation. That is the compromise the vim keys
+// need: a launcher whose input eats `j` is a launcher you cannot use to find
+// Jellyfin.
+//
+// Select mode is vim's normal mode, and the modes change the way vim changes
+// them: Escape leaves insert, `i` (or `a`) goes back into it without leaving
+// an `i` behind, and Escape from select mode — with no insert left to leave —
+// ends the prompt. Unbound keys in select mode are eaten, not typed.
 //
 // The other half of the grammar is the argument. Type a URL and the list turns
 // into "open this with…", already sorted so the system default is row zero —
@@ -27,7 +31,10 @@ PanelWindow {
     required property var modelData
     screen: modelData
 
+    // Only the screen that had focus when the launcher was asked for shows it;
+    // the other copies stay dormant so the query is never typed into thin air.
     readonly property bool open: Actions.launcherOpen
+        && Actions.launcherScreen === modelData.name
     visible: root.open || closeAnim.running
 
     WlrLayershell.layer: WlrLayer.Overlay
@@ -403,14 +410,14 @@ PanelWindow {
                     font.letterSpacing: 3
                     renderType: Text.NativeRendering
                     text: root.selectMode
-                        ? "H J K L  MOVE     L  PIN     ESC  TYPE"
+                        ? "J K  MOVE     L  PIN     H  UNPIN     i  TYPE     ESC  QUIT"
                         : root.mode === "dmenu"
-                            ? "⏎  CHOOSE     ESC  CANCEL     ↑↓  SELECT"
+                            ? "⏎  CHOOSE     ESC  SELECT     ↑↓  MOVE"
                             : root.mode === "clip"
-                                ? "⏎  COPY     ESC  BACK     ↑↓  SELECT"
+                                ? "⏎  COPY     ESC  SELECT     ↑↓  MOVE"
                                 : root.pinned
-                                    ? "⏎  OPEN     ESC  UNPIN     ↑↓  PICK"
-                                    : "TAB  PIN     >  SHELL     =  CALC     :  CLIPBOARD"
+                                    ? "⏎  OPEN     ESC  SELECT     ↑↓  PICK"
+                                    : "ESC  SELECT     TAB  PIN     >  SHELL     =  CALC     :  CLIP"
                 }
             }
         }
@@ -422,12 +429,19 @@ PanelWindow {
 
         const ctrl = (event.modifiers & Qt.ControlModifier) !== 0;
 
-        // Escape peels one layer at a time: select mode, then the pin, then
-        // the launcher. Nothing about it is ever a surprise.
+        // Escape is the mode key, and it means what it means in vim: leave
+        // insert. From select mode there is nothing left to leave but the
+        // launcher itself, so the second press ends the prompt.
         if (event.key === Qt.Key_Escape) {
-            if (root.selectMode) root.selectMode = false;
-            else if (root.pinned) root.unpin();
+            if (!root.selectMode && root.results.length > 0) root.selectMode = true;
             else Actions.closeLauncher();
+            event.accepted = true;
+            return;
+        }
+
+        // …and Ctrl+C still walks out in one press, from wherever you are.
+        if (ctrl && event.key === Qt.Key_C) {
+            Actions.closeLauncher();
             event.accepted = true;
             return;
         }
@@ -446,7 +460,6 @@ PanelWindow {
 
         if (event.key === Qt.Key_Down || (ctrl && event.key === Qt.Key_J)
             || (ctrl && event.key === Qt.Key_N)) {
-            root.selectMode = true;
             root.move(1);
             event.accepted = true;
             return;
@@ -454,7 +467,6 @@ PanelWindow {
 
         if (event.key === Qt.Key_Up || (ctrl && event.key === Qt.Key_K)
             || (ctrl && event.key === Qt.Key_P)) {
-            root.selectMode = true;
             root.move(-1);
             event.accepted = true;
             return;
@@ -468,14 +480,23 @@ PanelWindow {
 
         if (!root.selectMode) return;
 
-        // Select mode. The letters navigate; anything else drops you back into
-        // the input, having typed nothing, so a mistyped `d` costs one press
-        // rather than a mangled query.
+        // Select mode. The letters are commands, not text: `i` and `a` go back
+        // to insert without leaving an `i` behind, and everything unclaimed is
+        // swallowed rather than typed, so a stray `d` costs nothing at all.
         switch (event.key) {
         case Qt.Key_J: root.move(1); event.accepted = true; return;
         case Qt.Key_K: root.move(-1); event.accepted = true; return;
         case Qt.Key_L: root.pin(); event.accepted = true; return;
         case Qt.Key_H: root.unpin(); event.accepted = true; return;
+        case Qt.Key_I:
+        case Qt.Key_A:
+            root.selectMode = false;
+            input.forceActiveFocus();
+            // `a` appends, `i` leaves the cursor where it was — the same
+            // distinction, for the same reason.
+            if (event.key === Qt.Key_A) input.cursorPosition = input.text.length;
+            event.accepted = true;
+            return;
         case Qt.Key_G:
             root.selected = (event.modifiers & Qt.ShiftModifier)
                 ? root.results.length - 1 : 0;
@@ -484,11 +505,13 @@ PanelWindow {
             return;
         case Qt.Key_Backspace:
             root.selectMode = false;
+            input.forceActiveFocus();
             event.accepted = true;
             return;
         }
 
-        if (event.text !== "") root.selectMode = false;
+        // Anything else in select mode is a command nobody bound. Eat it.
+        if (event.text !== "") event.accepted = true;
     }
 
     // ------------------------------------------------------------- animation

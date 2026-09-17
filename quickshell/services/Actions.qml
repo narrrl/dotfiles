@@ -3,6 +3,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import Quickshell.Hyprland
 import "root:/services"
 
 // Shell-wide UI state and the handful of external commands the shell fires.
@@ -22,14 +23,29 @@ Singleton {
     // "https://…"` is an open-with dialog for anything that can run a command.
     property string launcherSeed: ""
 
+    // A launcher window exists on every screen, but only one of them is being
+    // typed at. Latch the focused monitor at open time so the window appears
+    // there alone — latched rather than live, because the launcher itself takes
+    // keyboard focus and because a window should not hop mid-query.
+    property string launcherScreen: ""
+
     signal osdRequested(string kind)
 
     function togglePowerMenu() { root.powerMenuOpen = !root.powerMenuOpen; }
     function closePowerMenu() { root.powerMenuOpen = false; }
     function lock() { root.powerMenuOpen = false; root.lockRequested = true; }
 
+    function focusedScreenName(): string {
+        return Hyprland.focusedMonitor?.name
+            ?? Quickshell.screens[0]?.name
+            ?? "";
+    }
+
     function toggleLauncher() {
-        if (!root.launcherOpen) root.launcherSeed = "";
+        if (!root.launcherOpen) {
+            root.launcherSeed = "";
+            root.launcherScreen = root.focusedScreenName();
+        }
         root.launcherOpen = !root.launcherOpen;
     }
     function closeLauncher() { root.launcherOpen = false; }
@@ -38,31 +54,25 @@ Singleton {
     function dmenuLauncher(inPath: string, outPath: string, prompt: string) {
         Apps.beginDmenu(inPath, outPath, prompt);
         root.launcherSeed = "";
+        root.launcherScreen = root.focusedScreenName();
         root.launcherOpen = false;
         root.launcherOpen = true;
     }
 
     function promptLauncher(seed: string) {
         root.launcherSeed = seed;
+        root.launcherScreen = root.focusedScreenName();
         root.launcherOpen = false;
         root.launcherOpen = true;
     }
 
     // ------------------------------------------------------------- commands
-    // Each slot gets its own Process so a slow one cannot cancel another.
-    Process { id: slotA }
-    Process { id: slotB }
-    Process { id: slotC }
-
-    property int _slot: 0
-
+    // Detached, because nothing here is ever read back. Rotating a fixed set of
+    // `Process` slots only moves the collision: `uwsm app` lives as long as the
+    // app it started, so the fourth launch reclaims the first slot and kills the
+    // app still holding it — and a shell reload kills every one of them at once.
     function run(argv: var) {
-        const slots = [slotA, slotB, slotC];
-        const p = slots[root._slot % slots.length];
-        root._slot++;
-        p.running = false;
-        p.command = argv;
-        p.running = true;
+        Quickshell.execDetached(argv);
     }
 
     function launch(app: string) {
