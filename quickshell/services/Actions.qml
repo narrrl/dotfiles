@@ -29,9 +29,16 @@ Singleton {
     // keyboard focus and because a window should not hop mid-query.
     property string launcherScreen: ""
 
+    // Same story for the power menu: a window per screen, one of them wanted.
+    property string powerMenuScreen: ""
+
     signal osdRequested(string kind)
 
-    function togglePowerMenu() { root.powerMenuOpen = !root.powerMenuOpen; }
+    function togglePowerMenu() {
+        if (!root.powerMenuOpen)
+            root.powerMenuScreen = root.focusedScreenName();
+        root.powerMenuOpen = !root.powerMenuOpen;
+    }
     function closePowerMenu() { root.powerMenuOpen = false; }
     function lock() { root.powerMenuOpen = false; root.lockRequested = true; }
 

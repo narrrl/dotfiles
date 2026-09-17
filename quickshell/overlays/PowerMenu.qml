@@ -13,11 +13,16 @@ PanelWindow {
     required property var modelData
     screen: modelData
 
-    visible: Actions.powerMenuOpen || closeAnim.running
+    // Only the screen that had focus when the menu was asked for shows it; the
+    // other copies stay dormant so the keyboard has one place to land.
+    readonly property bool open: Actions.powerMenuOpen
+        && Actions.powerMenuScreen === modelData.name
+
+    visible: root.open || closeAnim.running
 
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.namespace: "takemi-power"
-    WlrLayershell.keyboardFocus: Actions.powerMenuOpen
+    WlrLayershell.keyboardFocus: root.open
         ? WlrKeyboardFocus.Exclusive
         : WlrKeyboardFocus.None
 
@@ -25,7 +30,6 @@ PanelWindow {
     color: "transparent"
     exclusionMode: ExclusionMode.Ignore
 
-    readonly property bool open: Actions.powerMenuOpen
     property int selectedAction: 0
 
     function focusSelectedAction(): void {
