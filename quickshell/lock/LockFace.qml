@@ -199,7 +199,7 @@ Item {
             text: surface.failed
                 ? (surface.status || "WRONG").toUpperCase()
                 : (surface.busy ? "CHECKING…" : "WHO GOES THERE")
-            color: surface.failed ? Theme.accent : Theme.text
+            color: surface.failed ? Theme.alarm : Theme.text
             pixelSize: Theme.fsTitle
             letterSpacing: 4
             horizontalAlignment: Text.AlignHCenter
@@ -223,10 +223,10 @@ Item {
                 : (input.activeFocus ? Theme.primary : Theme.outline)
             borderWidth: 2
             slash: true
-            slashColor: surface.failed ? Theme.accent : Theme.primary
+            slashColor: surface.failed ? Theme.alarm : Theme.primary
             slashWidth: 6
             halftone: true
-            halftoneColor: surface.failed ? Theme.accent : Theme.primary
+            halftoneColor: surface.failed ? Theme.alarm : Theme.primary
             halftoneOpacity: 0.08
 
             Row {
@@ -241,7 +241,7 @@ Item {
                         required property int index
                         width: 10
                         height: 20
-                        color: surface.failed ? Theme.accent : Theme.primary
+                        color: surface.failed ? Theme.alarm : Theme.primary
 
                         // Each new block snaps in.
                         Component.onCompleted: pop.start()

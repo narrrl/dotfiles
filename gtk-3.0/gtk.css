@@ -1,0 +1,7 @@
+/* Catppuccin Mocha Blue carries the whole GTK3 palette itself, so there is no
+ * surface override here — the Takemi branch only needed one because it was
+ * painting Fluent's greys black. All that is left is the one place the rice
+ * disagrees with stock Catppuccin: destructive actions are pink, matching the
+ * shell's alarm colour. */
+@define-color destructive_bg_color #f38ba8;
+@define-color destructive_fg_color #11111b;

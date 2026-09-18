@@ -107,7 +107,7 @@ ipc_socket = true
 ## GENERAL --------------------------------------------------------
 
 ## Import additional configuration files.
-import = ["~/.config/alacritty/takemi.toml", "~/.config/alacritty/fonts.toml"]
+import = ["~/.config/alacritty/catppuccin-mocha.toml", "~/.config/alacritty/fonts.toml"]
 
 [[keyboard.bindings]]
 key = "Return"

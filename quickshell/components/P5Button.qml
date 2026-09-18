@@ -46,20 +46,24 @@ FocusScope {
         padding: Theme.padS
         fill: {
             if (!root.enabled) return Theme.treatmentDisabledFill;
-            if (root.destructive) return Theme.treatmentDestructiveFill;
+            if (root.destructive)
+                return root.highlighted ? Theme.treatmentDestructiveActiveFill
+                                        : Theme.treatmentDestructiveFill;
             if (root.highlighted) return Theme.treatmentHoverFill;
             return Theme.treatmentRestFill;
         }
         fillOpacity: root.enabled ? 1.0 : 0.72
         border: {
             if (!root.enabled) return Theme.treatmentDisabledMark;
-            if (root.destructive) return Theme.treatmentFocusMark;
+            if (root.destructive)
+                return root.highlighted ? Theme.treatmentDestructiveActiveMark
+                                        : Theme.treatmentDestructiveMark;
             if (root.highlighted) return Theme.treatmentHoverMark;
             return Theme.alpha(root.accent, 0.55);
         }
         borderWidth: Theme.stroke
         slash: !root.highlighted
-        slashColor: root.destructive ? Theme.treatmentDestructiveMark : root.accent
+        slashColor: root.destructive ? Theme.alarm : root.accent
         halftone: root.enabled && root.highlighted
         halftoneColor: Theme.ink
         halftoneOpacity: 0.14
@@ -81,7 +85,9 @@ FocusScope {
                 font.pixelSize: Theme.fsTitle
                 color: {
                     if (!root.enabled) return Theme.treatmentDisabledText;
-                    if (root.destructive) return Theme.treatmentDestructiveText;
+                    if (root.destructive)
+                        return root.highlighted ? Theme.treatmentDestructiveActiveText
+                                                : Theme.treatmentDestructiveText;
                     if (root.highlighted) return Theme.treatmentHoverText;
                     return root.accent;
                 }
@@ -92,7 +98,9 @@ FocusScope {
                 text: root.text
                 color: {
                     if (!root.enabled) return Theme.treatmentDisabledText;
-                    if (root.destructive) return Theme.treatmentDestructiveText;
+                    if (root.destructive)
+                        return root.highlighted ? Theme.treatmentDestructiveActiveText
+                                                : Theme.treatmentDestructiveText;
                     if (root.highlighted) return Theme.treatmentHoverText;
                     return Theme.treatmentRestText;
                 }

@@ -1,10 +1,10 @@
 [global]
 corner_radius = 4
 transparency = 90
-frame_color = "#f38ba8"
+frame_color = "#89b4fa"
 frame_width = 1
 separator_color= frame
-highlight = "#89dceb"
+highlight = "#f5c2e7"
 
 [urgency_low]
 background = "#1e1e2e"

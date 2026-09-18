@@ -1,50 +1,51 @@
-# Takemi — matched to ~/.config/quickshell/config/Theme.qml,
-# ~/.config/alacritty/takemi.toml and ~/.config/nvim/lua/takemi.lua.
+# Mocha — matched to ~/.config/quickshell/config/Theme.qml,
+# ~/.config/alacritty/catppuccin-mocha.toml and ~/.config/nvim/lua/takemi.lua.
 #
-# Replaces the catppuccin fish_frozen_theme.fish that fish 4.3 generated on
-# upgrade. Same content as themes/Takemi.theme — that copy exists only so
-# `fish_config` can preview it; this one is what actually loads.
+# Catppuccin Mocha's own fish theme (themes/Catppuccin Mocha.theme), with the
+# selection and pager rows carried over from the Takemi layout: a solid accent
+# block with crust punched out of it, rather than a tinted surface. The shell
+# selects with a blue slab; the prompt should not disagree.
 #
 # Note that `fish_config` writing a theme from the web UI will recreate
 # fish_frozen_theme.fish, which sorts before this file and so would lose.
 
-set --global fish_color_normal ffffff
-set --global fish_color_command ffffff --bold
-set --global fish_color_keyword ff2d40
-set --global fish_color_param c8c8ce
-set --global fish_color_option 8d9bb8
-set --global fish_color_quote 7f9b6a
-set --global fish_color_escape 9db8bd
-set --global fish_color_operator c8c8ce
-set --global fish_color_redirection ff6b78
-set --global fish_color_end 6b6b70
-set --global fish_color_comment 6b6b70 --italics
-set --global fish_color_error ff2d40 --bold
-set --global fish_color_cancel ff2d40
-set --global fish_color_gray 6b6b70
-set --global fish_color_autosuggestion 4a4a52
-set --global fish_color_selection 000000 --background=ff2d40
-set --global fish_color_search_match 000000 --background=c8c8ce
-set --global fish_color_match 000000 --background=ff2d40
+set --global fish_color_normal cdd6f4
+set --global fish_color_command 89b4fa
+set --global fish_color_keyword f38ba8
+set --global fish_color_param f2cdcd
+set --global fish_color_option a6e3a1
+set --global fish_color_quote a6e3a1
+set --global fish_color_escape eba0ac
+set --global fish_color_operator f5c2e7
+set --global fish_color_redirection f5c2e7
+set --global fish_color_end fab387
+set --global fish_color_comment 7f849c --italics
+set --global fish_color_error f38ba8 --bold
+set --global fish_color_cancel f38ba8
+set --global fish_color_gray 6c7086
+set --global fish_color_autosuggestion 6c7086
+set --global fish_color_selection 11111b --background=89b4fa
+set --global fish_color_search_match 11111b --background=f5c2e7
+set --global fish_color_match 11111b --background=89b4fa
 set --global fish_color_history_current --bold
 set --global fish_color_valid_path --underline
-set --global fish_color_cwd ffffff --bold
-set --global fish_color_cwd_root ff2d40 --bold
-set --global fish_color_user c8c8ce
-set --global fish_color_host ffffff --bold
-set --global fish_color_host_remote ff6b78
-set --global fish_color_status ff2d40
+set --global fish_color_cwd f9e2af --bold
+set --global fish_color_cwd_root f38ba8 --bold
+set --global fish_color_user 94e2d5
+set --global fish_color_host 89b4fa --bold
+set --global fish_color_host_remote a6e3a1
+set --global fish_color_status f38ba8
 
-set --global fish_pager_color_progress 6b6b70 --background=141418
+set --global fish_pager_color_progress 6c7086 --background=313244
 set --global fish_pager_color_background
-set --global fish_pager_color_prefix ffffff --bold
-set --global fish_pager_color_completion c8c8ce
-set --global fish_pager_color_description 6b6b70
-set --global fish_pager_color_secondary_background --background=0d0d10
-set --global fish_pager_color_secondary_completion c8c8ce
-set --global fish_pager_color_secondary_description 6b6b70
-set --global fish_pager_color_secondary_prefix ffffff --bold
-set --global fish_pager_color_selected_background --background=ff2d40
-set --global fish_pager_color_selected_completion 000000
-set --global fish_pager_color_selected_description 000000
-set --global fish_pager_color_selected_prefix 000000 --bold
+set --global fish_pager_color_prefix f5c2e7 --bold
+set --global fish_pager_color_completion cdd6f4
+set --global fish_pager_color_description 6c7086
+set --global fish_pager_color_secondary_background --background=181825
+set --global fish_pager_color_secondary_completion cdd6f4
+set --global fish_pager_color_secondary_description 6c7086
+set --global fish_pager_color_secondary_prefix f5c2e7 --bold
+set --global fish_pager_color_selected_background --background=89b4fa
+set --global fish_pager_color_selected_completion 11111b
+set --global fish_pager_color_selected_description 11111b
+set --global fish_pager_color_selected_prefix 11111b --bold

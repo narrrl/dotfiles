@@ -3,55 +3,61 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// Takemi palette: crimson, black, white. Nothing else.
+// Mocha palette: Catppuccin Mocha ground, blue as the accent, pink as the
+// alarm. Persona geometry, softer colour.
 //
-// White does the work: text, icons, idle indicators. Crimson is the only accent
-// and it always means the same thing — active, or wrong. Black is structure,
-// used as a hard keyline rather than as a shadow. There are no gradients in
-// this shell; every fill is flat.
+// The Takemi branch ran monochrome-plus-crimson, where one hue carried both
+// "active" and "wrong". Mocha has room for two: blue is every resting accent —
+// focus, selection, the thing you are pointing at — and pink is reserved for
+// the things that bite, so destructive and error still read at a glance
+// without a third colour entering the shell.
 //
-// The wallpaper is teal. The UI used to be teal too, and the two fought each
-// other into a murky blue-grey. Letting the UI go monochrome-plus-red is what
-// lets the wallpaper read as the colour in the composition.
+// Everything else is Mocha's own neutral ramp. Fills stay flat and keylines
+// stay hard; only the hues moved.
 Singleton {
     id: root
 
     // ---------------------------------------------------------------- colors
-    readonly property color ink: "#000000"
+    // Crust, not pure black: it is the darkest thing in Mocha, so it keeps its
+    // job as the hard keyline and as text punched out of an accent fill.
+    readonly property color ink: "#11111b"
 
-    readonly property color base: "#0a0a0c"
-    readonly property color mantle: "#0d0d10"
-    readonly property color surface: "#141418"
-    readonly property color surfaceAlt: "#1c1c22"
-    readonly property color overlay: "#26262e"
-    readonly property color outline: "#3a3a44"
+    readonly property color base: "#1e1e2e"
+    readonly property color mantle: "#181825"
+    readonly property color surface: "#313244"
+    readonly property color surfaceAlt: "#45475a"
+    readonly property color overlay: "#585b70"
+    readonly property color outline: "#6c7086"
 
-    readonly property color text: "#ffffff"
-    readonly property color subtext: "#c8c8ce"
-    readonly property color muted: "#6b6b70"
+    readonly property color text: "#cdd6f4"
+    readonly property color subtext: "#a6adc8"
+    readonly property color muted: "#7f849c"
 
-    // ------------------------------------------------------------ THE KNOB
-    // The one colour in this shell. Change this line and the entire accent
-    // recolours — everything below is derived from it, and nothing else in the
-    // palette carries hue at all.
+    // ------------------------------------------------------------ THE KNOBS
+    // Two colours, two meanings, and nothing else in the shell carries hue.
     //
-    // Keep it in step with `$accent` at the top of
-    // ~/.config/hypr/modules/takemi.conf, which is what colours the Hyprland
-    // window borders. Those are the only two places the colour is written.
-    readonly property color accent: "#ff2d40"
+    // `accent` is blue: anything live, focused or selected. `alarm` is pink:
+    // anything destructive or failed. Swap either line and everything derived
+    // from it recolours.
+    //
+    // Keep them in step with `c.accent` / `c.alarm` in
+    // ~/.config/hypr/lua/palette.lua, which is what colours the Hyprland
+    // window borders. Those are the only places the colours are written.
+    readonly property color accent: "#89b4fa"
+    readonly property color alarm: "#f5c2e7"
 
-    readonly property color accentDim: Qt.darker(root.accent, 1.9)
-    readonly property color accentSoft: Qt.lighter(root.accent, 1.35)
+    readonly property color accentDim: "#5a7dc0"
+    readonly property color accentSoft: "#b4befe"
 
     // `primary` is the resting voice of the UI, which is now simply white.
     // Kept under the old name so the existing call sites don't all have to move.
     readonly property color primary: root.text
-    readonly property color primaryDim: "#9a9aa2"
+    readonly property color primaryDim: "#9399b2"
     readonly property color deep: root.surfaceAlt
 
-    // `glow` is the hover highlight. It used to be a brighter teal, which now
-    // that everything rests at white would have made hover invisible — so it
-    // resolves to crimson. Pointing at a thing lights it up red.
+    // `glow` is the hover highlight. Pointing at a thing lights it up blue —
+    // the same signal as focus, because it is the same statement about where
+    // your attention is.
     readonly property color glow: root.accent
 
     // ------------------------------------------------ semantic treatments
@@ -77,38 +83,43 @@ Singleton {
     readonly property color treatmentActiveMark: root.accent
     readonly property color treatmentActiveText: root.text
 
-    // Crimson carries destructive/error meaning. Text and keylines stay black:
-    // black-on-crimson is 5.70:1, while small white-on-crimson is only 3.68:1.
-    readonly property color treatmentDestructiveFill: root.accent
-    readonly property color treatmentDestructiveMark: root.ink
-    readonly property color treatmentDestructiveText: root.ink
-    readonly property color treatmentErrorFill: root.treatmentDestructiveFill
-    readonly property color treatmentErrorMark: root.treatmentDestructiveMark
-    readonly property color treatmentErrorText: root.treatmentDestructiveText
+    // Pink carries destructive/error meaning — never blue, so a dangerous
+    // button can never be mistaken for a merely focused one.
+    //
+    // At rest it is a keyline and a label, not a fill: Mocha's pink is a
+    // pastel, and a slab of it reads as a washed-out red rather than as a
+    // warning. The solid pink is held back for the moment the pointer or the
+    // selection is actually on the thing — then it lands, with crust punched
+    // out of it at 11.8:1.
+    readonly property color treatmentDestructiveFill: root.surface
+    readonly property color treatmentDestructiveMark: root.alarm
+    readonly property color treatmentDestructiveText: root.alarm
+
+    readonly property color treatmentDestructiveActiveFill: root.alarm
+    readonly property color treatmentDestructiveActiveMark: root.ink
+    readonly property color treatmentDestructiveActiveText: root.ink
+    readonly property color treatmentErrorFill: root.treatmentDestructiveActiveFill
+    readonly property color treatmentErrorMark: root.treatmentDestructiveActiveMark
+    readonly property color treatmentErrorText: root.treatmentDestructiveActiveText
 
     readonly property color treatmentUrgentFill: root.surface
-    readonly property color treatmentUrgentMark: root.accent
+    readonly property color treatmentUrgentMark: root.alarm
     readonly property color treatmentUrgentText: root.text
 
     readonly property color treatmentDisabledFill: root.surface
     readonly property color treatmentDisabledMark: root.outline
     readonly property color treatmentDisabledText: root.muted
 
-    // Retired hues. Aliases only — do not introduce new uses.
-    //
-    // `warn` used to be accentSoft, which put a washed-out pink-red on screen
-    // wherever something was merely notable. That reads as a faded accent, not
-    // as a decision. There is no half-crimson in this palette: a thing is wrong
-    // (accent) or it is not (text). `warn` now resolves to the real accent, so
-    // low battery shouts properly and everything merely informational is white.
-    readonly property color blue: root.primaryDim
+    // Semantic aliases. Still only two hues: a thing is fine (text), live
+    // (accent) or wrong (alarm). Nothing here introduces a third colour.
+    readonly property color blue: root.accent
     readonly property color ok: root.text
-    readonly property color warn: root.accent
+    readonly property color warn: root.alarm
 
-    // Display text carries a crimson and a black offset rather than an RGB
-    // split. Same trick, correct palette.
+    // Display text carries a blue and a pink offset rather than an RGB split.
+    // Same trick, this palette's two colours.
     readonly property color splitRed: root.accent
-    readonly property color splitCyan: root.ink
+    readonly property color splitCyan: root.alarm
 
     function alpha(c: color, a: real): color {
         return Qt.rgba(c.r, c.g, c.b, a);
@@ -122,11 +133,15 @@ Singleton {
                        a.a + (b.a - a.a) * k);
     }
 
-    // Load readouts sit white until the number actually matters, then bleed to
-    // crimson. Not a hue cycle — red always means the same thing.
+    // Load readouts sit at text until the number actually matters, then climb
+    // through the accent before they reach the alarm. Going straight from text
+    // to pink passes through a washed-out mid-tone that reads as a faded red
+    // rather than as a rising number; routing through blue keeps every step of
+    // the ramp a colour the shell already uses.
     function heat(pct: real): color {
-        if (pct <= 55) return root.text;
-        return root.mix(root.text, root.accent, (pct - 55) / 45);
+        if (pct <= 45) return root.text;
+        if (pct <= 75) return root.mix(root.text, root.accent, (pct - 45) / 30);
+        return root.mix(root.accent, root.alarm, (pct - 75) / 25);
     }
 
     // ----------------------------------------------------------------- fonts

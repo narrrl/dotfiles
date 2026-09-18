@@ -182,7 +182,7 @@ PanelWindow {
                     icon: entry.modelData.icon
                     destructive: entry.modelData.danger
                     selected: root.selectedAction === entry.index
-                    accent: entry.modelData.danger ? Theme.accent : Theme.primary
+                    accent: entry.modelData.danger ? Theme.alarm : Theme.primary
                     lean: Theme.skew
                     lunge: -10
                     onClicked: root.invoke(entry.modelData.act)

@@ -81,7 +81,7 @@ Singleton {
     // Urgency-driven accents for the popup chrome.
     function urgencyColor(u: int): color {
         switch (u) {
-        case NotificationUrgency.Critical: return Theme.accent;
+        case NotificationUrgency.Critical: return Theme.alarm;
         case NotificationUrgency.Low: return Theme.muted;
         default: return Theme.primary;
         }

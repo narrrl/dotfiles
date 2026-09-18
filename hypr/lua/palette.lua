@@ -1,6 +1,6 @@
--- Takemi palette — kept in step with ~/.config/quickshell/config/Theme.qml.
+-- Mocha palette — kept in step with ~/.config/quickshell/config/Theme.qml.
 --
--- Crimson, black, white. Nothing else carries hue.
+-- Catppuccin Mocha ground, blue accent, pink alarm. Nothing else carries hue.
 --
 -- Returned as a table, so every module that paints something does
 --   local c = require("lua/palette")
@@ -8,44 +8,45 @@
 
 local c = {}
 
--- ----------------------------------------------------------------- THE KNOB
--- The one colour in this setup. Change this line and the window borders,
--- group indicators and focus states all recolour with it.
+-- ---------------------------------------------------------------- THE KNOBS
+-- Two colours in this setup: blue for anything live (window borders, group
+-- indicators, focus), pink for anything wrong. Change these lines and every
+-- painted edge recolours with them.
 --
--- Keep it in step with `readonly property color accent` in
+-- Keep them in step with `accent` / `alarm` in
 -- ~/.config/quickshell/config/Theme.qml, which is what colours the shell.
--- Those are the only two places the colour is written.
-c.accent = "rgb(ff2d40)"
+-- Those are the only places the colours are written.
+c.accent = "rgb(89b4fa)"
+c.alarm = "rgb(f5c2e7)"
 
-c.accentDim = "rgb(8f1826)"
-c.accentSoft = "rgb(ff6b78)"
+c.accentDim = "rgb(5a7dc0)"
+c.accentSoft = "rgb(b4befe)"
 
 -- ------------------------------------------------------------------ neutrals
-c.ink = "rgb(000000)"
+c.ink = "rgb(11111b)"
 
-c.base = "rgb(0a0a0c)"
-c.mantle = "rgb(0d0d10)"
-c.surface = "rgb(141418)"
-c.surfaceAlt = "rgb(1c1c22)"
-c.overlay = "rgb(26262e)"
-c.outline = "rgb(3a3a44)"
+c.base = "rgb(1e1e2e)"
+c.mantle = "rgb(181825)"
+c.surface = "rgb(313244)"
+c.surfaceAlt = "rgb(45475a)"
+c.overlay = "rgb(585b70)"
+c.outline = "rgb(6c7086)"
 
-c.text = "rgb(ffffff)"
-c.subtext = "rgb(c8c8ce)"
-c.muted = "rgb(6b6b70)"
+c.text = "rgb(cdd6f4)"
+c.subtext = "rgb(a6adc8)"
+c.muted = "rgb(7f849c)"
 
--- Retired hues, kept as aliases so existing references resolve. The shell has
--- no teal any more — the wallpaper is the colour in the composition.
+-- Semantic aliases, so existing references resolve without inventing hues.
 c.primary = c.text
-c.primaryDim = "rgb(9a9aa2)"
+c.primaryDim = "rgb(9399b2)"
 c.glow = c.accent
-c.blue = c.primaryDim
+c.blue = c.accent
 c.deep = c.surfaceAlt
-c.warn = c.accentSoft
+c.warn = c.alarm
 c.ok = c.text
 
--- Crimson into its own shadow, on the diagonal. The accent is the only hue
--- here — a gradient into a second colour is what put blue in the border.
-c.activeBorder = { colors = { c.accent, c.accentDim }, angle = 135 }
+-- Blue into lavender, on the diagonal. Both ends are the accent's own family,
+-- so the border never reads as two colours arguing.
+c.activeBorder = { colors = { c.accent, c.accentSoft }, angle = 135 }
 
 return c
