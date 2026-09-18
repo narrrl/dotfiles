@@ -4,7 +4,7 @@ transparency = 90
 frame_color = "#89b4fa"
 frame_width = 1
 separator_color= frame
-highlight = "#f5c2e7"
+highlight = "#cba6f7"
 
 [urgency_low]
 background = "#1e1e2e"

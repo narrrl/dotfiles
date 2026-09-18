@@ -2,7 +2,3 @@
  * overrode Fluent's greys with black here; Mocha needs no override — its own
  * surfaces are the palette the rest of the rice is built on. */
 @import url("/usr/share/themes/catppuccin-mocha-blue-standard+default/gtk-4.0/gtk.css");
-
-/* Pink is the shell's alarm colour; keep destructive GTK buttons in step. */
-@define-color destructive_bg_color #f38ba8;
-@define-color destructive_fg_color #11111b;

@@ -8,9 +8,13 @@ import Quickshell
 //
 // The Takemi branch ran monochrome-plus-crimson, where one hue carried both
 // "active" and "wrong". Mocha has room for two: blue is every resting accent —
-// focus, selection, the thing you are pointing at — and pink is reserved for
+// focus, selection, the thing you are pointing at — and mauve is reserved for
 // the things that bite, so destructive and error still read at a glance
 // without a third colour entering the shell.
+//
+// Mauve rather than Mocha's pink: pink is a pastel, and a slab of it over this
+// ground goes chalky. Mauve is saturated enough to hold an edge against the
+// near-black surfaces the Persona layout is built from.
 //
 // Everything else is Mocha's own neutral ramp. Fills stay flat and keylines
 // stay hard; only the hues moved.
@@ -44,7 +48,7 @@ Singleton {
     // ~/.config/hypr/lua/palette.lua, which is what colours the Hyprland
     // window borders. Those are the only places the colours are written.
     readonly property color accent: "#89b4fa"
-    readonly property color alarm: "#f5c2e7"
+    readonly property color alarm: "#cba6f7"
 
     readonly property color accentDim: "#5a7dc0"
     readonly property color accentSoft: "#b4befe"
@@ -83,14 +87,12 @@ Singleton {
     readonly property color treatmentActiveMark: root.accent
     readonly property color treatmentActiveText: root.text
 
-    // Pink carries destructive/error meaning — never blue, so a dangerous
+    // Mauve carries destructive/error meaning — never blue, so a dangerous
     // button can never be mistaken for a merely focused one.
     //
-    // At rest it is a keyline and a label, not a fill: Mocha's pink is a
-    // pastel, and a slab of it reads as a washed-out red rather than as a
-    // warning. The solid pink is held back for the moment the pointer or the
-    // selection is actually on the thing — then it lands, with crust punched
-    // out of it at 11.8:1.
+    // At rest it is a keyline and a label, not a fill. The solid mauve is held
+    // back for the moment the pointer or the selection is actually on the
+    // thing — then it lands hard, with crust punched out of it at 9.1:1.
     readonly property color treatmentDestructiveFill: root.surface
     readonly property color treatmentDestructiveMark: root.alarm
     readonly property color treatmentDestructiveText: root.alarm
@@ -116,7 +118,7 @@ Singleton {
     readonly property color ok: root.text
     readonly property color warn: root.alarm
 
-    // Display text carries a blue and a pink offset rather than an RGB split.
+    // Display text carries a blue and a mauve offset rather than an RGB split.
     // Same trick, this palette's two colours.
     readonly property color splitRed: root.accent
     readonly property color splitCyan: root.alarm
@@ -135,7 +137,7 @@ Singleton {
 
     // Load readouts sit at text until the number actually matters, then climb
     // through the accent before they reach the alarm. Going straight from text
-    // to pink passes through a washed-out mid-tone that reads as a faded red
+    // to mauve passes through a washed-out mid-tone that reads as a faded red
     // rather than as a rising number; routing through blue keeps every step of
     // the ramp a colour the shell already uses.
     function heat(pct: real): color {
