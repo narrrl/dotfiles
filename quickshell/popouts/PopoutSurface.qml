@@ -10,7 +10,11 @@ P5Panel {
 
     fill: Theme.mantle
     fillOpacity: 0.97
-    border: Theme.alpha(tone, 0.75)
+    // A neutral keyline. `tone` used to colour the whole border at 75%, and
+    // since most panels pass the resting text colour that put a pale 2px frame
+    // around every popout — the loudest thing on screen for no reason. The
+    // tone lives in the slash now; the frame is structure.
+    border: Theme.surfaceAlt
     borderWidth: Theme.stroke
     halftone: textured
     halftoneColor: tone

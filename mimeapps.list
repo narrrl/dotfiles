@@ -22,6 +22,7 @@ x-scheme-handler/msteams=teams-for-linux.desktop
 x-scheme-handler/slack=slack.desktop
 audio/flac=mpv.desktop
 x-scheme-handler/codex=chatgpt.desktop
+x-scheme-handler/proton-inbox=proton-mail.desktop
 
 [Added Associations]
 application/pdf=org.pwmt.zathura-pdf-poppler.desktop;

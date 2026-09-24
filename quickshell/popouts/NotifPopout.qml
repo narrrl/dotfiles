@@ -37,7 +37,7 @@ Popout {
             P5Button {
                 text: Notifs.dnd ? "Silenced" : "Silence"
                 icon: Notifs.dnd ? "󰂛" : "󰂚"
-                accent: Notifs.dnd ? Theme.accent : Theme.primary
+                accent: Notifs.dnd ? Theme.treatmentOffText : Theme.primary
                 onClicked: Notifs.toggleDnd()
             }
 

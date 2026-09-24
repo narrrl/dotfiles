@@ -5,7 +5,7 @@ import "root:/config"
 import "root:/components"
 import "root:/services"
 
-// Full-screen power menu. Crimson stripes sweep in behind a stack of leaning
+// Full-screen power menu. An accent wedge and stripes sweep in behind a stack of leaning
 // buttons; Escape or a click on the backdrop dismisses it.
 PanelWindow {
     id: root
@@ -67,7 +67,7 @@ PanelWindow {
     Rectangle {
         id: backdrop
         anchors.fill: parent
-        color: Theme.alpha(Theme.base, 0.82)
+        color: Theme.alpha(Theme.base, 0.9)
         opacity: 0
 
         TapHandler {

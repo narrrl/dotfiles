@@ -56,7 +56,7 @@ Item {
             renderType: Text.NativeRendering
         }
 
-        // Crimson duplicate: visible only during the landing transition. The
+        // Accent duplicate: visible only during the landing transition. The
         // small opposing offset gives the title Persona's rough print snap
         // without leaving permanent motion in the bar.
         Text {
@@ -119,7 +119,7 @@ Item {
         landedToplevel = toplevel;
     }
 
-    // A quick crimson wipe under the title on focus change.
+    // A quick accent wipe under the title on focus change.
     Rectangle {
         id: wipe
         anchors.bottom: parent.bottom

@@ -4,7 +4,7 @@ import "root:/config"
 import "root:/components"
 import "root:/services"
 
-// Month grid with the current day slashed in crimson, plus uptime and a couple
+// Month grid with the current day slashed in the accent, plus uptime and a couple
 // of world clocks.
 Popout {
     id: root
@@ -99,9 +99,9 @@ Popout {
                     width: dayNames.width / 7
                     horizontalAlignment: Text.AlignHCenter
                     text: modelData
-                    color: index >= 5 ? Theme.alpha(Theme.accent, 0.8) : Theme.muted
+                    color: index >= 5 ? Theme.subtext : Theme.muted
                     font.family: Theme.fontMono
-                    font.pixelSize: 8
+                    font.pixelSize: Theme.fsMicro
                     font.letterSpacing: 1
                     renderType: Text.NativeRendering
                 }
@@ -126,7 +126,7 @@ Popout {
                     width: grid.width / 7
                     height: 30
 
-                    // Today gets a leaning crimson slab.
+                    // Today gets a leaning accent slab, inked like every selected slab.
                     Skew {
                         anchors.centerIn: parent
                         width: 26
@@ -139,7 +139,7 @@ Popout {
                         anchors.centerIn: parent
                         text: cell.modelData.day
                         color: {
-                            if (cell.modelData.today) return Theme.text;
+                            if (cell.modelData.today) return Theme.treatmentSelectedText;
                             if (!cell.modelData.inMonth) return Theme.alpha(Theme.muted, 0.45);
                             return Theme.subtext;
                         }
@@ -167,7 +167,7 @@ Popout {
                     text: "UPTIME"
                     color: Theme.muted
                     font.family: Theme.fontMono
-                    font.pixelSize: 8
+                    font.pixelSize: Theme.fsMicro
                     font.letterSpacing: 1.5
                     renderType: Text.NativeRendering
                 }
@@ -191,7 +191,7 @@ Popout {
                     text: "TOKYO"
                     color: Theme.muted
                     font.family: Theme.fontMono
-                    font.pixelSize: 8
+                    font.pixelSize: Theme.fsMicro
                     font.letterSpacing: 1.5
                     renderType: Text.NativeRendering
                 }
@@ -226,9 +226,9 @@ Popout {
 
         Skew {
             anchors.fill: parent
-            color: stepHover.hovered ? Theme.alpha(Theme.accent, 0.25) : "transparent"
+            color: stepHover.hovered ? Theme.treatmentHoverFill : "transparent"
             borderWidth: 1
-            borderColor: Theme.alpha(Theme.outline, 0.7)
+            borderColor: stepHover.hovered ? Theme.treatmentHoverMark : Theme.alpha(Theme.outline, 0.7)
         }
 
         Icon {

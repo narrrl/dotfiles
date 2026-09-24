@@ -5,7 +5,7 @@ import "root:/config"
 import "root:/components"
 
 // The base surface for everything in this shell: a leaning, corner-chopped slab
-// with an optional halftone wash and a crimson slash along its leading edge.
+// with an optional halftone wash and a accent slash along its leading edge.
 Item {
     id: root
 
@@ -29,7 +29,7 @@ Item {
     property real chop: Theme.cut
     property var chopCorners: [1, 3]
 
-    // Crimson slash down the leading edge — the Persona 5 tell.
+    // Tone slash down the leading edge — the Persona 5 tell.
     property bool slash: false
     property color slashColor: Theme.accent
     property real slashWidth: 4
@@ -183,7 +183,7 @@ Item {
     //
     // Its polygon is built from the panel's raw corners, so on a panel with a
     // chopped corner the slash used to run straight through the cut and out the
-    // far side — a crimson wedge sitting a few pixels outside the silhouette,
+    // far side — an accent wedge sitting a few pixels outside the silhouette,
     // at an angle that matched nothing. It is masked to the outline now, so the
     // slash ends exactly where the chamfer does.
     Loader {

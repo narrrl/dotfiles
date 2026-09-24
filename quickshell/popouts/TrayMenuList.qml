@@ -107,7 +107,7 @@ Column {
                 height: row.entry.isSeparator ? 0 : 26
                 visible: !row.entry.isSeparator
 
-                // Hover is a solid crimson block, the same statement the
+                // Hover is a solid accent block, the same statement the
                 // workspace ticks and the rail icons make.
                 Skew {
                     anchors.fill: parent

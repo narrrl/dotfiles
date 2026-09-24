@@ -52,8 +52,6 @@ Popout {
                     text: Math.round(Battery.percent) + "%"
                     pixelSize: Theme.fsHuge
                     color: Battery.tint
-                    split: 2.5
-                    splitOpacity: 0.7
                 }
             }
 
@@ -68,8 +66,6 @@ Popout {
                     horizontalAlignment: Text.AlignRight
                     text: Battery.timeLabel
                     pixelSize: Theme.fsBody
-                    split: 1.1
-                    splitOpacity: 0.55
                 }
 
                 Text {
@@ -89,7 +85,7 @@ Popout {
                     text: "Health " + Math.round(Battery.health) + "%"
                     anchors.right: parent.right
                     horizontalAlignment: Text.AlignRight
-                    color: Battery.health < 70 ? Theme.warn : Theme.muted
+                    color: Battery.health < 70 ? Theme.alarm : Theme.muted
                     font.family: Theme.fontMono
                     font.pixelSize: Theme.fsMicro
                     renderType: Text.NativeRendering

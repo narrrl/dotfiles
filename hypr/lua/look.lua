@@ -1,4 +1,5 @@
--- Takemi — Persona 5 flavoured theme, matched to ~/.config/quickshell.
+-- Persona × Mocha — Persona 5 shapes on the Catppuccin Mocha palette, matched
+-- to ~/.config/quickshell.
 --
 -- Everything static about how the desktop is painted. Motion lives next door
 -- in lua/animations.lua.
@@ -15,7 +16,10 @@ hl.config({
 
         col = {
             active_border = c.activeBorder,
-            inactive_border = c.outline,
+            -- Surface-level, not outline: an idle window's frame is structure,
+            -- and the outline grey was bright enough to compete with the
+            -- focused border.
+            inactive_border = c.surfaceAlt,
         },
 
         resize_on_border = false,
@@ -35,13 +39,16 @@ hl.config({
         active_opacity = 1.0,
         inactive_opacity = 1.0,
 
+        -- A hard crust offset, the same printed drop the shell's panels
+        -- carry, rather than a soft blur. Sharp with a 1px range leaves a
+        -- clean band down the right and bottom edges only.
         shadow = {
             enabled = true,
-            range = 18,
-            render_power = 3,
-            offset = { 0, 4 },
-            color = "rgba(000000ee)",
-            color_inactive = "rgba(00000088)",
+            sharp = true,
+            range = 1,
+            offset = { 4, 4 },
+            color = c.ink,
+            color_inactive = c.ink,
         },
 
         -- Off. Blur is the signature of the glass-and-frost look, which is the
@@ -66,7 +73,7 @@ hl.config({
     group = {
         col = {
             border_active = c.activeBorder,
-            border_inactive = c.outline,
+            border_inactive = c.surfaceAlt,
         },
 
         groupbar = {

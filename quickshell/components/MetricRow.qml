@@ -70,8 +70,6 @@ Item {
             text: root.readout
             pixelSize: Theme.fsBody
             color: Theme.text
-            split: 1
-            splitOpacity: 0.5
         }
     }
 

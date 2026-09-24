@@ -68,7 +68,7 @@ Item {
 
     // The same wedge-and-stripes ground the power menu stands on. The wedge
     // sits under the clock, which is where the power menu puts it under the
-    // title — so the two screens land the crimson mass in the same place.
+    // title — so the two screens land the accent mass in the same place.
     P5Backdrop {
         id: backdrop
         anchors.fill: parent

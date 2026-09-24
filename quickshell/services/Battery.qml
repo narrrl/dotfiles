@@ -58,9 +58,9 @@ Singleton {
     }
 
     readonly property color tint: {
-        if (root.charging || root.full) return Theme.ok;
+        if (root.charging || root.full) return Theme.text;
         if (root.critical) return Theme.alarm;
-        if (root.low) return Theme.warn;
+        if (root.low) return Theme.alarm;
         return Theme.primary;
     }
 

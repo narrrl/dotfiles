@@ -29,3 +29,10 @@ hl.env("EDITOR", "nvim")
 -- hl.env("INTEL_DEBUG", "noccs")
 -- hl.env("WLR_DRM_NO_ATOMIC", "1")
 -- hl.env("debug:full_cm_proto", "true")
+
+
+-- headroom
+
+hl.env("HEADROOM_ROLLOUT_CHANNEL", "beta")
+
+hl.env("HEADROOM_OUTPUT_SHAPER", "1")

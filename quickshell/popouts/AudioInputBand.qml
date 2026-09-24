@@ -19,7 +19,7 @@ Item {
         Icon {
             anchors.verticalCenter: parent.verticalCenter
             text: Audio.micIcon
-            color: Audio.micMuted ? Theme.accent : Theme.text
+            color: Audio.micMuted ? Theme.treatmentOffText : Theme.text
             font.pixelSize: Theme.fsLarge
         }
 
@@ -42,7 +42,7 @@ Item {
 
             Text {
                 text: Audio.micMuted ? "MUTED" : Audio.micPercent + "%"
-                color: Audio.micMuted ? Theme.accent : Theme.subtext
+                color: Audio.micMuted ? Theme.treatmentOffText : Theme.subtext
                 font.family: Theme.fontMono
                 font.pixelSize: Theme.fsMicro
                 font.weight: Font.Bold

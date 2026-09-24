@@ -63,7 +63,7 @@ BarPill {
             anchors.centerIn: parent
             width: parent.height * Theme.skew + 1
             height: parent.height
-            color: Theme.alpha(Theme.outline, 0.8)
+            color: Theme.alpha(Theme.outline, 0.5)
         }
     }
 
@@ -106,7 +106,7 @@ BarPill {
                 id: labelText
                 anchors.baseline: gauge.baseline
                 text: metric.label
-                color: Theme.muted
+                color: Theme.subtext
                 font.family: Theme.fontMono
                 font.pixelSize: Theme.fsMicro
                 font.weight: Font.Bold

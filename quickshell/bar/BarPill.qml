@@ -5,7 +5,7 @@ import "root:/components"
 // Shared chrome for every bar module.
 //
 // The bar is one continuous slab, so by default a module draws no panel of its
-// own — it is content inside the bar's surface, and marks hover with a crimson
+// own — it is content inside the bar's surface, and marks hover with an accent
 // underline rather than by lighting up a card. That is what stops the bar from
 // reading as a row of floating islands.
 //
@@ -34,7 +34,7 @@ Item {
     //
     // The rule used to be drawn into the same box as the content, so anything
     // taller than about 32px — the media pill's art, the metric meters — had a
-    // crimson line struck through its bottom edge on hover. Reserving the band
+    // accent line struck through its bottom edge on hover. Reserving the band
     // and centring content in what is left is what keeps the rule under the
     // module instead of across it.
     // The band reserved the full rule plus its inset — 7px off a 40px module,
@@ -102,7 +102,7 @@ Item {
         anchors.bottomMargin: root.ruleBand
     }
 
-    // Hover mark for in-bar modules: a crimson rule under the content, wiping
+    // Hover mark for in-bar modules: an accent rule under the content, wiping
     // out from the leading edge. Sheared to match the one angle everything uses.
     Item {
         visible: !root.standalone && root.interactive

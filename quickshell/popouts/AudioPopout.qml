@@ -85,12 +85,12 @@ Popout {
             Repeater {
                 model: Audio.sinks.length > 1 ? Audio.sinks : []
 
-                PickRow {
+                ListRow {
                     required property var modelData
                     width: column.width
                     label: modelData.nickname || modelData.description || modelData.name
                     icon: "󰓃"
-                    selected: Audio.sink === modelData
+                    current: Audio.sink === modelData
                     onClicked: Audio.setSink(modelData)
                 }
             }
@@ -147,7 +147,7 @@ Popout {
                 id: levelIcon
                 anchors.verticalCenter: parent.verticalCenter
                 text: levelRow.icon
-                color: levelRow.muted ? Theme.accent : levelRow.accent
+                color: levelRow.muted ? Theme.treatmentOffText : levelRow.accent
                 font.pixelSize: Theme.fsLarge
 
                 TapHandler { onTapped: levelRow.toggled() }
@@ -171,7 +171,7 @@ Popout {
                 id: readoutText
                 anchors.verticalCenter: parent.verticalCenter
                 text: levelRow.readout
-                color: levelRow.muted ? Theme.accent : Theme.subtext
+                color: levelRow.muted ? Theme.treatmentOffText : Theme.subtext
                 font.family: Theme.fontMono
                 font.pixelSize: Theme.fsMicro
                 font.weight: Font.Bold
@@ -187,96 +187,6 @@ Popout {
             accent: levelRow.accent
             enabled: !levelRow.muted
             onMoved: v => levelRow.moved(v)
-        }
-    }
-
-    component SectionRule: Item {
-        property string text: ""
-        implicitHeight: visible ? 18 : 0
-
-        Text {
-            id: sectionLabel
-            anchors.left: parent.left
-            anchors.verticalCenter: parent.verticalCenter
-            text: parent.text.toUpperCase()
-            color: Theme.muted
-            font.family: Theme.fontMono
-            font.pixelSize: Theme.fsMicro
-            font.letterSpacing: 2
-            renderType: Text.NativeRendering
-        }
-
-        Rectangle {
-            anchors.left: sectionLabel.right
-            anchors.leftMargin: Theme.padS
-            anchors.right: parent.right
-            anchors.verticalCenter: parent.verticalCenter
-            height: 1
-            color: Theme.alpha(Theme.outline, 0.6)
-        }
-    }
-
-    component PickRow: Item {
-        id: pickRow
-
-        property string label: ""
-        property string icon: ""
-        property bool selected: false
-
-        signal clicked()
-
-        implicitHeight: 26
-
-        Rectangle {
-            anchors.fill: parent
-            color: pickHover.hovered
-                ? Theme.alpha(Theme.primary, 0.14)
-                : (pickRow.selected ? Theme.alpha(Theme.primary, 0.07) : "transparent")
-        }
-
-        Rectangle {
-            anchors.left: parent.left
-            anchors.verticalCenter: parent.verticalCenter
-            width: 3
-            height: pickRow.selected ? 18 : 0
-            color: Theme.accent
-
-            Behavior on height {
-                NumberAnimation { duration: Theme.durBase; easing.type: Easing.OutBack }
-            }
-        }
-
-        Row {
-            anchors.left: parent.left
-            anchors.leftMargin: Theme.padM
-            anchors.verticalCenter: parent.verticalCenter
-            spacing: Theme.padS
-
-            Icon {
-                anchors.verticalCenter: parent.verticalCenter
-                text: pickRow.icon
-                color: pickRow.selected ? Theme.primary : Theme.muted
-                font.pixelSize: Theme.fsBody
-            }
-
-            Text {
-                anchors.verticalCenter: parent.verticalCenter
-                text: pickRow.label
-                color: pickRow.selected ? Theme.text : Theme.subtext
-                font.family: Theme.fontDisplay
-                font.pixelSize: Theme.fsSmall
-                font.italic: true
-                renderType: Text.NativeRendering
-            }
-        }
-
-        HoverHandler {
-            id: pickHover
-            cursorShape: Qt.PointingHandCursor
-        }
-
-        TapHandler {
-            onTapped: pickRow.clicked()
         }
     }
 }

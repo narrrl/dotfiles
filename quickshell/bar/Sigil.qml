@@ -22,7 +22,7 @@ BarPill {
 
     // The wordmark. Was the Death arcana skull (nf-md-skull, U+F068C) — a
     // pictogram in a shell that otherwise says everything in heavy italic
-    // type. SplitText puts it in the display face with the crimson-and-black
+    // type. SplitText puts it in the display face with the ink print
     // offset every other heading carries, so the house mark is built out of
     // the same parts as the rest of the bar.
     SplitText {

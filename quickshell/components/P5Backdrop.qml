@@ -3,7 +3,7 @@ import QtQuick.Shapes
 import "root:/config"
 import "root:/components"
 
-// The shared ground for the two full-screen surfaces: a crimson wedge leaning
+// The shared ground for the two full-screen surfaces: an accent wedge leaning
 // at the house angle, a tiled stripe field that sweeps in from the left, and a
 // halftone dot wash over the top.
 //
@@ -33,7 +33,9 @@ Item {
     property real wedgeSpan: 0.34
 
     property bool stripes: true
-    property real stripeOpacity: 0.10
+    // Tuned down from 0.10 for Mocha. Crust stripes on the blue-grey base read
+    // far heavier than they did on black, and buzzed against the text.
+    property real stripeOpacity: 0.07
 
     property bool halftone: true
     property real halftoneOpacity: 0.05

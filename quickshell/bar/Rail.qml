@@ -94,7 +94,7 @@ PanelWindow {
             statusText: Audio.muted ? "Muted" : Audio.volumePercent + "% · " + Audio.sinkName
             hint: "Scroll to adjust"
             suppressTooltip: audioPopout.detailActive
-            alert: Audio.muted
+            dim: Audio.muted
             onClicked: audioPopout.togglePinned()
             onScrolled: delta => Audio.changeVolume(delta > 0 ? 0.05 : -0.05)
         }
@@ -106,7 +106,7 @@ PanelWindow {
             statusText: Audio.micMuted ? "Muted" : Audio.micPercent + "% · " + Audio.sourceName
             hint: "Scroll to adjust"
             suppressTooltip: audioPopout.detailActive
-            alert: Audio.micMuted
+            dim: Audio.micMuted
             onClicked: audioPopout.togglePinned()
             onScrolled: delta => Audio.setMicVolume(Audio.micVolume + (delta > 0 ? 0.05 : -0.05))
         }
@@ -132,7 +132,7 @@ PanelWindow {
             label: "Battery"
             statusText: Math.round(Battery.percent) + "% · " + Battery.timeLabel
             suppressTooltip: battPopout.detailActive
-            alert: Battery.critical
+            alarm: Battery.critical
             pulsing: Battery.critical
             onClicked: battPopout.togglePinned()
         }
@@ -165,7 +165,7 @@ PanelWindow {
                 : ""
             reserveReadout: true
             dim: Notifs.dnd
-            alert: Notifs.hasUnread && !Notifs.dnd
+            live: Notifs.hasUnread && !Notifs.dnd
             suppressTooltip: notifPopout.detailActive
             onClicked: {
                 notifPopout.togglePinned();
@@ -178,7 +178,7 @@ PanelWindow {
             icon: "󰐥"
             label: "Power"
             statusText: "Session actions"
-            alert: Actions.powerMenuOpen
+            live: Actions.powerMenuOpen
             onClicked: Actions.togglePowerMenu()
         }
     }
@@ -201,7 +201,7 @@ PanelWindow {
             width: parent.ruleWidth
             height: parent.ruleWidth * Theme.skew + parent.ruleWeight
             vertical: true
-            color: Theme.alpha(Theme.outline, 0.9)
+            color: Theme.alpha(Theme.outline, 0.5)
         }
     }
 

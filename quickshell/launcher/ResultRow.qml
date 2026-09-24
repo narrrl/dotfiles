@@ -36,7 +36,7 @@ Item {
         }
     }
 
-    // Hover is a crimson tick in the gutter rather than a second slab, so
+    // Hover is an accent tick in the gutter rather than a second slab, so
     // pointing at a row cannot be mistaken for selecting it.
     Skew {
         anchors.verticalCenter: parent.verticalCenter

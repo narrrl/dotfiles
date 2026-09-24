@@ -66,10 +66,12 @@ PanelWindow {
 
     readonly property color tone: {
         switch (root.kind) {
-        case "mic": return Audio.micMuted ? Theme.accent : Theme.blue;
-        // Turning the screen up is not a warning. White, like volume.
-        case "brightness": return Theme.text;
-        default: return Audio.muted ? Theme.accent : Theme.primary;
+        // One tone for every level: the accent while the channel is live, the
+        // off grey while it is muted. Muted used to be the accent too, so a
+        // silenced speaker flashed the same colour as a live one.
+        case "mic": return Audio.micMuted ? Theme.treatmentOffText : Theme.accent;
+        case "brightness": return Theme.accent;
+        default: return Audio.muted ? Theme.treatmentOffText : Theme.accent;
         }
     }
 
@@ -104,15 +106,11 @@ PanelWindow {
         anchors.margins: 4
         fill: Theme.mantle
         fillOpacity: 0.97
-        border: Theme.alpha(root.tone, 0.85)
+        border: Theme.surfaceAlt
         borderWidth: Theme.stroke
         slash: true
         slashColor: root.tone
         slashWidth: 5
-        halftone: true
-        halftoneColor: root.tone
-        halftoneOpacity: 0.08
-        sheen: true
         lean: 0.09
         chop: 14
         padding: Theme.padM
@@ -180,8 +178,6 @@ PanelWindow {
                     // widening readout only moves its own left edge.
                     text: Math.round(root.level * 100) + "%"
                     pixelSize: Theme.fsBody
-                    split: 1
-                    splitOpacity: 0.5
                 }
             }
 

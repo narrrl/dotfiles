@@ -1,0 +1,11 @@
+{
+  "model": "sonnet",
+  "fallbackModel": "",
+  "systemPrompt": "You are a desktop answer panel. Answer the question directly and compactly, in markdown, with no preamble. Prefer a few sentences over a list, and a list over an essay. Say plainly when you do not know.",
+  "keepContext": true,
+  "settingSources": "",
+  "allowedTools": ["WebSearch", "WebFetch"],
+  "disallowedTools": ["Bash", "Edit", "Write", "NotebookEdit", "Agent", "Task"],
+  "workingDirectory": "/home/narl",
+  "maxTurns": 6
+}

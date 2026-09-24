@@ -13,9 +13,9 @@ PanelWindow {
     required property var modelData
     screen: modelData
 
-    // Only the primary bar screen shows toasts, to avoid duplicates.
-    readonly property bool primaryScreen: Quickshell.screens.length === 0
-        || Quickshell.screens[0] === modelData
+    // A toast window exists on every screen, but each notification lands only
+    // on the monitor that had focus when it arrived. Latched per toast rather
+    // than live, so a card does not hop screens while it is being read.
 
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.namespace: "takemi-toasts"
@@ -31,7 +31,7 @@ PanelWindow {
     implicitHeight: Math.max(1, stack.implicitHeight)
     color: "transparent"
     exclusionMode: ExclusionMode.Ignore
-    visible: primaryScreen && stack.children.length > 0
+    visible: root.live.length > 0
 
     // Toasts currently on screen, newest first.
     property list<Notification> live: []
@@ -39,9 +39,8 @@ PanelWindow {
 
     Connections {
         target: Notifs
-        enabled: root.primaryScreen
-
         function onPopupRequested(notif) {
+            if (Actions.focusedScreenName() !== root.modelData.name) return;
             root.live = [notif, ...root.live].slice(0, root.maxLive);
         }
     }

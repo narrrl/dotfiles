@@ -31,10 +31,13 @@ Item {
         anchors.left: parent.left
         anchors.right: parent.right
         height: root.activeFocus ? 10 : 6
+        // Focus widens the rail and rings it in the accent rather than filling
+        // it: the level fill is often the accent itself, and a solid accent
+        // rail swallowed it.
         color: root.activeFocus
-            ? Theme.treatmentFocusFill
+            ? Theme.surfaceAlt
             : Theme.alpha(root.enabled ? Theme.outline : Theme.treatmentDisabledMark, 0.7)
-        borderColor: root.activeFocus ? Theme.treatmentFocusMark : "transparent"
+        borderColor: root.activeFocus ? Theme.accent : "transparent"
         borderWidth: root.activeFocus ? Theme.stroke : 0
 
         Behavior on height {

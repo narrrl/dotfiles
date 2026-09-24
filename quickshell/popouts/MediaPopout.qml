@@ -80,7 +80,7 @@ Popout {
                 preferredRendererType: Shape.CurveRenderer
                 ShapePath {
                     fillColor: Theme.surface
-                    strokeColor: Theme.alpha(Theme.primary, 0.5)
+                    strokeColor: Theme.surfaceAlt
                     strokeWidth: 2
                     PathPolyline {
                         path: Geom.chamfer(Geom.parallelogram(108, 108, 0.1), 18, [1, 3])
@@ -93,7 +93,7 @@ Popout {
                 visible: art.status !== Image.Ready
                 text: Media.sourceIcon
                 font.pixelSize: 42
-                color: Theme.alpha(Theme.primary, 0.7)
+                color: Theme.muted
             }
 
             // Spinning rule around the art while playing.
@@ -265,14 +265,14 @@ Popout {
                             : (chip.activeFocus
                             ? Theme.treatmentFocusFill
                             : (chip.current
-                                ? Theme.alpha(Theme.primary, 0.22)
-                                : (chipHover.hovered ? Theme.alpha(Theme.primary, 0.1) : "transparent")))
+                                ? Theme.treatmentActiveFill
+                                : (chipHover.hovered ? Theme.treatmentHoverFill : "transparent")))
                         borderWidth: chip.activeFocus ? Theme.stroke : 1
                         borderColor: !chip.enabled
                             ? Theme.treatmentDisabledMark
                             : (chip.activeFocus
                             ? Theme.treatmentFocusMark
-                            : (chip.current ? Theme.primary : Theme.alpha(Theme.outline, 0.7)))
+                            : (chip.current ? Theme.treatmentActiveMark : Theme.alpha(Theme.outline, 0.7)))
                     }
 
                     Text {
@@ -283,7 +283,7 @@ Popout {
                             ? Theme.treatmentDisabledText
                             : (chip.activeFocus
                             ? Theme.treatmentFocusText
-                            : (chip.current ? Theme.text : Theme.muted))
+                            : (chip.current || chipHover.hovered ? Theme.text : Theme.subtext))
                         font.family: Theme.fontMono
                         font.pixelSize: Theme.fsMicro
                         renderType: Text.NativeRendering
@@ -334,14 +334,17 @@ Popout {
             color: {
                 if (!tb.enabled) return "transparent";
                 if (tb.activeFocus) return Theme.treatmentFocusFill;
-                if (tbHover.hovered) return tb.primary ? Theme.accent : Theme.alpha(Theme.primary, 0.22);
-                return tb.primary ? Theme.alpha(Theme.primary, 0.18) : "transparent";
+                // The play button is the one solid control on the panel: a
+                // surface slab at rest, the accent slab under the pointer. The
+                // others stay bare until hovered.
+                if (tbHover.hovered) return tb.primary ? Theme.accent : Theme.treatmentHoverFill;
+                return tb.primary ? Theme.surface : "transparent";
             }
             borderWidth: tb.activeFocus ? Theme.stroke * 2 : (tb.primary ? 2 : 1)
             borderColor: tb.enabled
                 ? (tb.activeFocus
                     ? Theme.treatmentFocusMark
-                    : (tbHover.hovered ? Theme.text : Theme.alpha(Theme.primary, 0.6)))
+                    : (tbHover.hovered ? Theme.treatmentHoverMark : (tb.primary ? Theme.overlay : Theme.surfaceAlt)))
                 : Theme.alpha(Theme.outline, 0.4)
 
             Behavior on color {
@@ -356,8 +359,9 @@ Popout {
             color: {
                 if (!tb.enabled) return Theme.alpha(Theme.muted, 0.5);
                 if (tb.activeFocus) return Theme.treatmentFocusText;
-                if (tbHover.hovered && tb.primary) return Theme.text;
-                return Theme.primary;
+                // Ink on the accent slab. White on light blue was barely 2:1.
+                if (tbHover.hovered && tb.primary) return Theme.ink;
+                return Theme.text;
             }
         }
 

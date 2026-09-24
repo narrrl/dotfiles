@@ -1,20 +1,21 @@
-# Takemi
+# Takemi — Persona × Mocha
 
-A Persona 5 flavoured Quickshell desktop for Hyprland. Crimson, black and white,
-with no gradients anywhere. Everything leans by the same 14°, corners are
-chopped rather than rounded, and every surface is one continuous slab divided by
-hairlines rather than a cluster of floating cards.
+A Persona 5 flavoured Quickshell desktop for Hyprland, painted in Catppuccin
+Mocha. Blue for anything live, mauve for anything wrong, the Mocha greys for
+everything else, and no gradients anywhere. Everything leans by the same 14°,
+corners are chopped rather than rounded, and every surface is one continuous
+slab divided by hairlines rather than a cluster of floating cards.
 
 Replaces Waybar, dunst and hyprlock.
 
 ## Running
 
 ```sh
-qs                       # starts the shell (Hyprland does this via autostart.conf)
+qs                       # starts the shell (Hyprland does this via autostart.lua)
 qs -p lockpreview.qml    # the lock screen in an ordinary window, for styling
 ```
 
-Hyprland starts it from `~/.config/hypr/modules/autostart.conf`.
+Hyprland starts it from `~/.config/hypr/lua/autostart.lua`.
 
 ## Layout
 
@@ -41,8 +42,8 @@ cost 4.4% of the height on top of what the bar already takes.
 
 Each permanent surface is a single continuous `ChromeSurface` with modules
 divided by sheared hairlines. `BarPill` is chromeless by default — a module is
-*content inside* a surface, not a surface of its own — and marks hover with a
-crimson underline. Pass `standalone: true` for the rare thing that really is its
+*content inside* a surface, not a surface of its own — and marks hover with an
+accent underline. Pass `standalone: true` for the rare thing that really is its
 own panel.
 
 The shell uses three deliberate surface tiers. **Chrome** (`ChromeSurface`) is
@@ -55,7 +56,7 @@ it is never used as decoration inside ordinary chrome or popouts.
 ```
 shell.qml        entrypoint — bar, rail, power menu, toasts, OSD per screen
 config/          palette, type scale, geometry, motion curves
-components/      the P5 primitives: panels, gauges, sliders, split-ink text
+components/      the P5 primitives: panels, sliders, list rows, print-shadowed text
 services/        data sources, all singletons
 bar/             the two surfaces and their modules
 popouts/         hover panels hanging off rail and bar modules
@@ -106,12 +107,13 @@ dismisses the screen.
 
 ## Keybinds
 
-Set in `~/.config/hypr/modules/keybinds.conf`:
+Set in `~/.config/hypr/lua/binds/shell.lua`:
 
 - `Super+Ctrl+L` — lock
 - `Super+P` — power menu
 - `Super+Shift+N` — toggle do not disturb
 - `Super+Ctrl+Shift+N` — clear notifications
+- `Super+A` — ask panel
 - `Super+Shift+R` — reload the shell
 
 All of these go through Quickshell's IPC, so they work from any script:
@@ -120,9 +122,51 @@ All of these go through Quickshell's IPC, so they work from any script:
 qs ipc call shell lock
 qs ipc call shell power
 qs ipc call shell toggleDnd
+qs ipc call shell ask
+qs ipc call shell askAbout "why is the sky blue"
 qs ipc call shell clearNotifications
 qs ipc call shell reloadConfig
 ```
+
+## Ask
+
+`Super+A` drops a panel off the top edge and hands whatever you type to
+`claude -p`, streamed token by token. It is the subscription that answers —
+the CLI already holds the credentials, so nothing here has an API key and
+nothing here has to be given one.
+
+The panel is a chat, not a coding session. Settings sources, MCP servers and
+project files are switched off by default, which keeps a question asked from
+the desktop from arriving with the last project's hooks, `CLAUDE.md` and tone
+attached. The thread survives closing the panel; `Ctrl+L` starts a new one.
+
+| Key | Does |
+|---|---|
+| `Enter` | ask |
+| `Shift+Enter` | newline |
+| `Ctrl+M` | next model, written back to `ask.json` |
+| `Ctrl+Y` | copy the last answer |
+| `Ctrl+L` | new conversation |
+| `Ctrl+S` | stop the answer |
+| `Escape` | hide, keeping the thread |
+
+Configured in `ask.json`, watched and reloaded live:
+
+```json
+{
+  "model": "sonnet",
+  "systemPrompt": "…",
+  "keepContext": true,
+  "settingSources": "",
+  "allowedTools": ["WebSearch", "WebFetch"],
+  "disallowedTools": ["Bash", "Edit", "Write"],
+  "workingDirectory": "/home/narl",
+  "maxTurns": 6
+}
+```
+
+`settingSources` is the escape hatch: set it to `"user,project,local"` and the
+panel becomes your ordinary Claude Code, hooks and all.
 
 ## Data sources
 
@@ -165,69 +209,81 @@ The display face is Archivo Black, set italic almost everywhere. Change
 
 ## Palette discipline
 
-Crimson, black, white. That is the whole palette.
+Catppuccin Mocha, spent on two hues. **Hue is meaning**; nothing gets a colour
+for decoration.
 
-**Changing the accent.** The colour is written in exactly three places, one per
-program:
+- **Blue (`accent`, Mocha blue)** means live: the focused workspace, the
+  selected row, the hovered control, a channel that is on, an unread badge.
+- **Mauve (`alarm`, Mocha mauve)** means wrong or destructive: critical battery,
+  an urgent workspace, a critical notification, reboot and shut down.
+- **Grey** is everything else, and that includes *off*. A muted speaker, a
+  muted mic and Do Not Disturb drop to `muted` grey with their off glyph. They
+  used to be painted in the accent, which made a silenced channel look the most
+  alive thing on the rail.
+- **Crust (`ink`)** is structure: the hard keyline, the offset under display
+  type and panels, the text on an accent slab.
 
-| File | Line | Covers |
-|---|---|---|
-| `quickshell/config/Theme.qml` | `readonly property color accent: "#ff2d40"` | the shell |
-| `hypr/modules/takemi.conf` | `$accent = rgb(ff2d40)` | window borders, groups |
-| `alacritty/takemi.toml` | `red`, cursor, selection | the terminal |
+**Selection is an inverted slab.** Focus and selection fill with the accent and
+print their text in crust (about 9:1). Hover stays on the surface tone with an
+accent mark. Destructive-active is the same slab in mauve. The `treatment*`
+tokens in `Theme.qml` encode all of this; use them rather than picking colours
+per widget.
 
-Everything else derives. `accentDim` and `accentSoft` come off `accent` via
-`Qt.darker`/`Qt.lighter`, `glow` (the hover highlight) *is* `accent`, and every
-Hyprland border, group indicator and focus state references `$accent`. Change
-those lines and the whole setup recolours — swap in Persona 4's yellow or
-Persona 3's blue and nothing else needs touching.
+**Print, not blur.** Display text (`SplitText`) carries one hard crust offset.
+The blue and mauve ghosts appear only while `glitch()` runs. Drawn permanently
+1.6px off the body, they read as a focus problem on Mocha's pastels rather than
+as misregistered print. The lock screen and the power menu are the exceptions;
+they are the cinematic surfaces and keep their split.
+
+**Texture is tiered.** Chrome (bar, rail, tooltips) and transient panels
+(popouts, OSD, toasts) are flat. Stripes and halftone live only in
+`P5Backdrop`, behind the lock screen and the power menu.
+
+**Type has a floor.** Nothing renders below `Theme.fsMicro` (10px).
+
+**Changing the palette.** The colours are written once per program:
+
+| File | Covers |
+|---|---|
+| `quickshell/config/Theme.qml` | the shell: `accent`, `alarm` and the neutral ramp |
+| `hypr/lua/palette.lua` | window borders, groups, shadows |
+| `alacritty/catppuccin-mocha.toml` | the terminal (stock Mocha, cursor in the accent) |
+
+Everything else derives. `accentDim` and `accentSoft` come off `accent`, `glow`
+*is* `accent`, and `primary` is plain `text`. `Theme.heat()` is a continuous
+text → blue → mauve ramp, so a CPU figure that has gone mauve means the same
+thing as a battery that has gone mauve. Tray icons are flattened to one colour
+(subtext, the accent on hover) for the same reason: app brand colours wreck the
+palette faster than anything else in the shell. nm-applet and blueman are
+hidden from the tray, since the rail already shows network and bluetooth, but
+keep running as the secret and pairing agents.
 
 ## The rest of the desktop
 
-- **Alacritty** — `alacritty/takemi.toml`, selected by the `import` in
-  `alacritty.toml`. The Catppuccin files are left in place, just unreferenced.
-  Near-black ground, white text, crimson cursor and selection. The sixteen ANSI
-  slots keep their hues because syntax highlighters need to tell them apart, but
-  every one is desaturated so nothing competes with the accent.
-- **Neovim** — `nvim/lua/takemi.lua`, loaded through `nvim/colors/takemi.lua`
-  so `:colorscheme takemi` and `require("takemi").lualine()` both work. Same
-  palette, same rule: crimson is spent only on keywords, types and errors,
-  functions are plain white-bold, and `terminal_color_0..15` mirror
-  `takemi.toml` slot for slot so `:terminal` matches the shell around it.
-- **Fish** — `fish/conf.d/takemi_theme.fish`, with a preview copy in
-  `fish/themes/Takemi.theme` for `fish_config`. Replaced the Catppuccin
-  `fish_frozen_theme.fish` that fish 4.3 generated on upgrade. The prompt arrow
-  is white and turns crimson on a non-zero exit — the shell's one "wrong"
-  signal, and so the one place that earns the accent.
+- **Hyprland** — `hypr/lua/look.lua`. No rounding, no blur, both opacities at
+  `1.0`. The active border runs blue into lavender and the inactive border is
+  `surfaceAlt`. The window shadow is a sharp 4px crust offset, the same printed
+  drop the shell's panels carry, not a soft glow.
+- **Alacritty** — `alacritty/catppuccin-mocha.toml`, selected by the `import`
+  in `alacritty.toml`. Stock Mocha except for the cursor, which is the accent.
+  `takemi.toml` is left in place, unreferenced.
+- **Neovim** — the `catppuccin` plugin, flavour mocha, configured in
+  `nvim/lua/plugins/ui.lua`. Blue is the accent there too. `colors/takemi.lua`
+  is left in place, unused.
+- **Fish** — `fish/conf.d/takemi_theme.fish` is Catppuccin Mocha's fish theme
+  with the Takemi selection rows: a solid accent block with crust punched out.
 - **The launcher** — no external theming to keep in step, because it is part of
   this shell (`launcher/`). Fuzzel is gone; `takemi-dmenu` stands in for
   `fuzzel --dmenu` where a script needs a picker.
 - **No glass anywhere.** Alacritty is `opacity = 1.0, blur = false`, and
-  Hyprland's `decoration:blur` is disabled with both opacities at `1.0`. Blur is
-  the signature of the frosted-glass look, which is the opposite of flat ink on
-  flat ground — and with nothing translucent left it was costing three render
-  passes for no visible result.
+  Hyprland's `decoration:blur` is disabled. Blur is the signature of the
+  frosted-glass look, which is the opposite of flat ink on flat ground — and
+  with nothing translucent left it was costing three render passes for no
+  visible result.
 
-White is the resting voice — text, icons, idle indicators. Crimson is the only
-accent and always means one thing: active, or wrong. Black is structure, used as
-a hard keyline rather than as a soft shadow. **There are no gradients in this
-shell**; every fill is flat. `Theme.sheen` still exists as a no-op property
-because a teal-to-transparent wash on every panel was the single biggest source
-of the murky blue cast the design used to have.
-
-`primary`, `glow`, `blue`, `ok` and `warn` survive in `Theme.qml` only as
-aliases onto white, crimson and grey, so the existing call sites keep working —
-don't introduce new uses. `warn` used to alias `accentSoft`, which put a
-washed-out pink-red wherever something was merely notable; there is no
-half-crimson in this palette, so it aliases the real `accent` now and anything
-merely informational (brightness, most readouts) is white instead. `Theme.heat()` is a continuous white→crimson ramp, so
-a CPU figure that has gone red means the same thing as a battery that has gone
-red. Tray icons are force-flattened to a single colour for the same reason: app
-brand colours wreck the palette faster than anything else in the shell.
-
-The wallpaper is teal. The UI used to be teal too, and the two fought each other
-into a blue-grey mush. Going monochrome-plus-red is what lets the wallpaper be
-the colour in the composition.
+There are **no gradients in this shell**; every fill is flat. `Theme.sheen`
+still exists as a no-op property because a teal-to-transparent wash on every
+panel was once the biggest source of murk in the design.
 
 ## Geometry discipline
 

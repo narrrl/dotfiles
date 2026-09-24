@@ -4,6 +4,7 @@ import "root:/config"
 import "root:/services"
 import "root:/bar"
 import "root:/launcher"
+import "root:/ask"
 import "root:/overlays"
 import "root:/lock"
 
@@ -12,6 +13,7 @@ import "root:/lock"
 //   bar/       the top bar and its modules
 //   popouts/   hover panels hanging off bar modules
 //   launcher/  the application launcher
+//   ask/       the question panel, dropped from the top edge
 //   overlays/  power menu, notification toasts, OSD
 //   lock/      session lock
 //   services/  data sources (fluxo, pipewire, bluez, upower, mpris, …)
@@ -49,6 +51,12 @@ ShellRoot {
         model: Quickshell.screens
 
         Launcher {}
+    }
+
+    Variants {
+        model: Quickshell.screens
+
+        AskPanel {}
     }
 
     Variants {

@@ -126,7 +126,7 @@ PanelWindow {
             anchors.centerIn: parent
             width: parent.ruleHeight * Theme.skew + parent.ruleWeight
             height: parent.ruleHeight
-            color: Theme.alpha(Theme.outline, 0.9)
+            color: Theme.alpha(Theme.outline, 0.5)
         }
     }
 }

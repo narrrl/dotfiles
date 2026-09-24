@@ -5,7 +5,7 @@ import "root:/config"
 import "root:/components"
 
 // Workspace indicator: leaning ticks that stretch open when focused. Occupied
-// workspaces glow teal, urgent ones snap to crimson.
+// workspaces fill in, urgent ones snap to the alarm colour.
 Item {
     id: root
 
@@ -65,8 +65,12 @@ Item {
 
                 // Every tick is the same height and the same shear. Only the
                 // width changes, and only to say which workspace is focused.
-                width: focused ? 32 : (occupied ? 16 : 9)
-                height: 18
+                //
+                // Kept well short of the bar's 20px divider rules. At 18px an
+                // empty outline tick was the same height, lean and weight as a
+                // divider, and the workspace strip read as a row of rules.
+                width: focused ? 30 : (occupied ? 16 : 8)
+                height: 14
 
                 Behavior on width {
                     NumberAnimation {
@@ -80,22 +84,31 @@ Item {
                     id: tick
                     anchors.fill: parent
 
-                    // Focused is a solid crimson block. Occupied is a white
-                    // block at half weight. Empty is an outline. Three states,
-                    // two colours, no ambiguity.
+                    // Focused is a solid accent block. Urgent is a solid alarm
+                    // block — it used to be the accent too, which made an
+                    // urgent workspace indistinguishable from the focused one.
+                    // Occupied is a subtext block. Empty is a flat recessed
+                    // slot, filled rather than outlined so it cannot pass for a
+                    // divider.
                     color: {
-                        if (pip.focused || pip.urgent) return Theme.accent;
+                        if (pip.focused) return Theme.accent;
+                        if (pip.urgent) return Theme.alarm;
                         if (pip.hovered) return Theme.text;
-                        if (pip.occupied) return Theme.alpha(Theme.text, 0.5);
-                        return "transparent";
+                        if (pip.occupied) return Theme.subtext;
+                        return Theme.surfaceAlt;
                     }
-                    borderColor: pip.occupied || pip.focused
-                        ? "transparent"
-                        : Theme.alpha(Theme.text, 0.35)
-                    borderWidth: 1
 
                     Behavior on color {
                         ColorAnimation { duration: Theme.durBase }
+                    }
+
+                    // Urgent is the one pip that has to be seen peripherally.
+                    SequentialAnimation on opacity {
+                        running: pip.urgent && !pip.focused
+                        loops: Animation.Infinite
+                        alwaysRunToEnd: true
+                        NumberAnimation { to: 0.4; duration: 520; easing.type: Easing.InOutQuad }
+                        NumberAnimation { to: 1.0; duration: 520; easing.type: Easing.InOutQuad }
                     }
                 }
 
@@ -107,7 +120,7 @@ Item {
                     text: pip.wsId
                     color: Theme.ink
                     font.family: Theme.fontDisplay
-                    font.pixelSize: Theme.fsBody
+                    font.pixelSize: Theme.fsSmall
                     font.weight: Theme.weightDisplay
                     font.italic: true
                     renderType: Text.NativeRendering

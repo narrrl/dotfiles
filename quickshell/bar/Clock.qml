@@ -36,7 +36,8 @@ BarPill {
                 color: Theme.accent
                 font.family: Theme.fontMono
                 font.pixelSize: Theme.fsMicro
-                font.letterSpacing: 2.5
+                font.weight: Font.Bold
+                font.letterSpacing: 3
                 renderType: Text.NativeRendering
             }
 
@@ -98,7 +99,6 @@ BarPill {
             text: Qt.formatDateTime(clock.date, "HH:mm")
             pixelSize: Theme.fsTitle
             horizontalAlignment: Text.AlignHCenter
-            split: 1.4
         }
 
     }

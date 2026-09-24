@@ -4,9 +4,11 @@ foreground = "#cdd6f4"
 dim_foreground = "#7f849c"
 bright_foreground = "#cdd6f4"
 
+# Cursor in the shell accent (Mocha blue) rather than stock rosewater, so the
+# terminal caret matches the focus colour everywhere else on the desktop.
 [colors.cursor]
-text = "#1e1e2e"
-cursor = "#f5e0dc"
+text = "#11111b"
+cursor = "#89b4fa"
 
 [colors.vi_mode_cursor]
 text = "#1e1e2e"

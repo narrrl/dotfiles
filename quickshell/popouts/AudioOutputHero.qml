@@ -51,7 +51,7 @@ Item {
 
         Text {
             text: Audio.muted ? "MUTED" : "LIVE"
-            color: Audio.muted ? Theme.accent : Theme.text
+            color: Audio.muted ? Theme.treatmentOffText : Theme.accent
             font.family: Theme.fontMono
             font.pixelSize: Theme.fsMicro
             font.weight: Font.Bold

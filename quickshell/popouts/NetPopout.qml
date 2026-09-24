@@ -76,17 +76,13 @@ Popout {
             }
         }
 
-        Text {
+        SectionRule {
             id: apsLabel
             anchors.top: controls.bottom
             anchors.topMargin: Theme.padM
             anchors.left: parent.left
-            text: Net.scanning ? "SCANNING…" : "NETWORKS"
-            color: Theme.muted
-            font.family: Theme.fontMono
-            font.pixelSize: Theme.fsMicro
-            font.letterSpacing: 2
-            renderType: Text.NativeRendering
+            anchors.right: parent.right
+            text: Net.scanning ? "Scanning…" : "Networks"
         }
 
         ListView {
@@ -99,94 +95,44 @@ Popout {
             spacing: 2
             model: Net.wifiNetworks
 
-            delegate: Item {
+            delegate: ListRow {
                 id: apRow
 
                 required property var modelData
 
                 width: ListView.view.width
-                height: 30
+                icon: Net.signalIcon(modelData.signalStrength ?? 0)
+                label: modelData.name
+                current: modelData.connected
 
-                Rectangle {
-                    anchors.fill: parent
-                    color: apHover.hovered
-                        ? Theme.alpha(Theme.primary, 0.14)
-                        : (apRow.modelData.connected ? Theme.alpha(Theme.primary, 0.07) : "transparent")
-                }
-
-                Rectangle {
-                    anchors.left: parent.left
-                    anchors.verticalCenter: parent.verticalCenter
-                    width: 3
-                    height: apRow.modelData.connected ? 20 : 0
-                    color: Theme.accent
-
-                    Behavior on height {
-                        NumberAnimation { duration: Theme.durBase; easing.type: Easing.OutBack }
-                    }
-                }
-
-                Row {
-                    anchors.left: parent.left
-                    anchors.leftMargin: Theme.padM
-                    anchors.verticalCenter: parent.verticalCenter
-                    spacing: Theme.padS
-
-                    Icon {
-                        anchors.verticalCenter: parent.verticalCenter
-                        text: Net.signalIcon(apRow.modelData.signalStrength ?? 0)
-                        color: apRow.modelData.connected ? Theme.primary : Theme.subtext
-                        font.pixelSize: Theme.fsBody
-                    }
-
-                    Text {
-                        anchors.verticalCenter: parent.verticalCenter
-                        text: apRow.modelData.name
-                        color: apRow.modelData.connected ? Theme.text : Theme.subtext
-                        font.family: Theme.fontDisplay
-                        font.pixelSize: Theme.fsSmall
-                        font.italic: true
-                        font.weight: apRow.modelData.connected ? Font.Black : Font.Medium
-                        renderType: Text.NativeRendering
-                    }
-
-                    Icon {
-                        anchors.verticalCenter: parent.verticalCenter
-                        visible: Net.secured(apRow.modelData)
-                        text: "󰌾"
-                        color: Theme.muted
-                        font.pixelSize: Theme.fsMicro
+                onClicked: {
+                    if (apRow.modelData.connected) {
+                        apRow.modelData.disconnect();
+                    } else {
+                        // Saved networks connect directly; new secured ones
+                        // need a passphrase, which NetworkManager's own
+                        // agent will prompt for.
+                        apRow.modelData.connect();
                     }
                 }
 
                 Text {
-                    anchors.right: parent.right
-                    anchors.rightMargin: Theme.padS
                     anchors.verticalCenter: parent.verticalCenter
-                    text: apRow.modelData.known ? "SAVED" : ""
+                    visible: apRow.modelData.known
+                    text: "SAVED"
                     color: Theme.muted
                     font.family: Theme.fontMono
-                    font.pixelSize: 8
+                    font.pixelSize: Theme.fsMicro
                     font.letterSpacing: 1
                     renderType: Text.NativeRendering
                 }
 
-                HoverHandler {
-                    id: apHover
-                    cursorShape: Qt.PointingHandCursor
-                }
-
-                TapHandler {
-                    onTapped: {
-                        if (apRow.modelData.connected) {
-                            apRow.modelData.disconnect();
-                        } else {
-                            // Saved networks connect directly; new secured ones
-                            // need a passphrase, which NetworkManager's own
-                            // agent will prompt for.
-                            apRow.modelData.connect();
-                        }
-                    }
+                Icon {
+                    anchors.verticalCenter: parent.verticalCenter
+                    visible: Net.secured(apRow.modelData)
+                    text: "󰌾"
+                    color: Theme.muted
+                    font.pixelSize: Theme.fsSmall
                 }
             }
         }
@@ -228,7 +174,7 @@ Popout {
                     text: rateBlock.label.toUpperCase()
                     color: Theme.muted
                     font.family: Theme.fontMono
-                    font.pixelSize: 8
+                    font.pixelSize: Theme.fsMicro
                     font.letterSpacing: 1.5
                     renderType: Text.NativeRendering
                 }

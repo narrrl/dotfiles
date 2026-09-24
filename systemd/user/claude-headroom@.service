@@ -1,0 +1,13 @@
+# Written by `claude-account headroom install`. Do not edit by hand.
+[Unit]
+Description=Headroom proxy for the %i Claude account
+After=network-online.target
+
+[Service]
+EnvironmentFile=%h/.config/claude-account/headroom-%i.env
+ExecStart=/home/narl/.local/share/headroom-venv/bin/headroom proxy --host 127.0.0.1 --port ${CLAUDE_ACCOUNT_PORT} --mode cache --no-telemetry
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

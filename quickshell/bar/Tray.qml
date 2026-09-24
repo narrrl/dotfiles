@@ -1,5 +1,4 @@
 import QtQuick
-import QtQuick.Effects
 import Quickshell
 import Quickshell.Services.SystemTray
 import Quickshell.Widgets
@@ -15,10 +14,19 @@ Column {
     id: root
 
     spacing: Theme.padS + 2
-    visible: SystemTray.items.values.length > 0
+    visible: root.shownItems.length > 0
+
+    // Applets whose whole job the rail already does. nm-applet and blueman keep
+    // running — they are the Wi-Fi secret agent and the pairing agent — but
+    // their icons were a second network and a second bluetooth glyph a few
+    // slots below the rail's own.
+    readonly property var hiddenIds: ["nm-applet", "blueman"]
+
+    readonly property var shownItems: SystemTray.items.values
+        .filter(item => root.hiddenIds.indexOf(item.id) === -1)
 
     Repeater {
-        model: SystemTray.items
+        model: root.shownItems
 
         Item {
             id: entry
@@ -31,8 +39,8 @@ Column {
 
             // App icons arrive in their own brand colours, which wrecks the
             // two-hue palette faster than anything else in the shell. Flatten
-            // every one of them to a single-colour silhouette: white at rest,
-            // crimson under the pointer. Detail inside the glyph is lost on
+            // every one of them to a single-colour silhouette: subtext at rest,
+            // a notch under the rail's own glyphs, and accent under the pointer. Detail inside the glyph is lost on
             // purpose — that flattening *is* the screen-printed look.
             IconImage {
                 id: img
@@ -41,21 +49,14 @@ Column {
                 asynchronous: true
 
                 layer.enabled: true
-                layer.effect: MultiEffect {
-                    colorization: 1.0
-                    colorizationColor: itemHover.hovered
+                layer.effect: TintEffect {
+                    tintColor: itemHover.hovered
                         ? Theme.accent
-                        : Theme.text
+                        : Theme.subtext
 
-                    Behavior on colorizationColor {
+                    Behavior on tintColor {
                         ColorAnimation { duration: Theme.durFast }
                     }
-                }
-
-                opacity: itemHover.hovered ? 1.0 : 0.82
-
-                Behavior on opacity {
-                    NumberAnimation { duration: Theme.durFast }
                 }
             }
 

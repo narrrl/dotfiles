@@ -3,7 +3,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// Mocha palette: Catppuccin Mocha ground, blue as the accent, pink as the
+// Mocha palette: Catppuccin Mocha ground, blue as the accent, mauve as the
 // alarm. Persona geometry, softer colour.
 //
 // The Takemi branch ran monochrome-plus-crimson, where one hue carried both
@@ -40,8 +40,10 @@ Singleton {
     // ------------------------------------------------------------ THE KNOBS
     // Two colours, two meanings, and nothing else in the shell carries hue.
     //
-    // `accent` is blue: anything live, focused or selected. `alarm` is pink:
-    // anything destructive or failed. Swap either line and everything derived
+    // `accent` is blue: anything live, focused or selected. `alarm` is mauve:
+    // anything destructive, failed or critical. Things that are merely off —
+    // muted, disabled, do-not-disturb — carry no hue at all; see the `Off`
+    // treatment below. Swap either line and everything derived
     // from it recolours.
     //
     // Keep them in step with `c.accent` / `c.alarm` in
@@ -66,8 +68,8 @@ Singleton {
 
     // ------------------------------------------------ semantic treatments
     // These tokens describe interaction meaning, not new palette entries. Each
-    // state is composed only from Takemi's black, white, crimson, and neutral
-    // surfaces so callers do not invent one-off state colors.
+    // state is composed only from crust, the neutral ramp, blue and mauve, so
+    // callers do not invent one-off state colours.
     readonly property color treatmentRestFill: root.surface
     readonly property color treatmentRestMark: root.outline
     readonly property color treatmentRestText: root.text
@@ -76,7 +78,11 @@ Singleton {
     readonly property color treatmentHoverMark: root.accent
     readonly property color treatmentHoverText: root.text
 
-    readonly property color treatmentFocusFill: root.text
+    // Focus and selection are an inverted slab: solid blue with crust punched
+    // out of it (9:1). This used to be a white fill, which was right against
+    // Takemi's black but glares as a lavender-white block on Mocha — and it
+    // made "selected" a third look that was neither hover nor accent.
+    readonly property color treatmentFocusFill: root.accent
     readonly property color treatmentFocusMark: root.ink
     readonly property color treatmentFocusText: root.ink
     readonly property color treatmentSelectedFill: root.treatmentFocusFill
@@ -112,16 +118,13 @@ Singleton {
     readonly property color treatmentDisabledMark: root.outline
     readonly property color treatmentDisabledText: root.muted
 
-    // Semantic aliases. Still only two hues: a thing is fine (text), live
-    // (accent) or wrong (alarm). Nothing here introduces a third colour.
-    readonly property color blue: root.accent
-    readonly property color ok: root.text
-    readonly property color warn: root.alarm
+    // Off is a state the user chose — muted, do-not-disturb, radio switched
+    // off. It is neither live nor wrong, so it gets no hue: painting a muted
+    // speaker blue said "active", and painting it mauve would say "broken".
+    readonly property color treatmentOffFill: root.surface
+    readonly property color treatmentOffMark: root.overlay
+    readonly property color treatmentOffText: root.muted
 
-    // Display text carries a blue and a mauve offset rather than an RGB split.
-    // Same trick, this palette's two colours.
-    readonly property color splitRed: root.accent
-    readonly property color splitCyan: root.alarm
 
     function alpha(c: color, a: real): color {
         return Qt.rgba(c.r, c.g, c.b, a);
@@ -154,13 +157,17 @@ Singleton {
     readonly property int weightDisplay: Font.Black
     readonly property int weightBody: Font.Medium
 
-    readonly property int fsMicro: 9
+    // Nothing in the shell renders below this. 9px mono was legible on
+    // crimson-on-black; on Mocha's lower-contrast ramp it was not.
+    readonly property int fsMicro: 10
     readonly property int fsSmall: 11
     readonly property int fsBody: 12
     readonly property int fsLarge: 15
     readonly property int fsTitle: 20
     readonly property int fsHuge: 34
     readonly property int fsMega: 92
+
+    readonly property int fsRailIcon: 17
 
     // -------------------------------------------------------------- geometry
     readonly property int barHeight: 40
@@ -180,7 +187,7 @@ Singleton {
     readonly property int cut: 10
     readonly property int stroke: 2
 
-    // Pure-black keyline and offset copy behind panels. This is the one piece of
+    // Crust keyline and offset copy behind panels. This is the one piece of
     // layering the style needs; it is not a soft shadow and never blurs.
     readonly property real dropOffset: 3
     readonly property real keylineWidth: 2
@@ -213,5 +220,5 @@ Singleton {
     // which asks hyprpaper what is actually on screen — a path written down
     // here goes stale the moment the wallpaper is switched, which is exactly
     // what happened to the lock screen.
-    readonly property url fallbackWallpaper: "file:///home/narl/.wallpapers/takemi_1.jpg"
+    readonly property url fallbackWallpaper: "file:///home/narl/.wallpapers/arch.png"
 }

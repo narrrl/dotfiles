@@ -34,13 +34,16 @@ Item {
         chop: root.chop
         fill: Theme.surface
         fillOpacity: 0.97
-        border: Theme.alpha(root.tone, hover.hovered ? 0.95 : 0.5)
+        // Urgency lives in the slash, and in the frame only when critical. A
+        // tone-tinted frame on every card drew a pale outline round ordinary
+        // notifications, and the critical halftone was painted in the accent,
+        // so the most urgent card wore the colour that means "live".
+        border: root.notif?.urgency === NotificationUrgency.Critical
+            ? root.tone
+            : (hover.hovered ? Theme.treatmentHoverMark : Theme.surfaceAlt)
         slash: true
         slashColor: root.tone
         slashWidth: 4
-        halftone: root.notif?.urgency === NotificationUrgency.Critical
-        halftoneColor: Theme.accent
-        halftoneOpacity: 0.12
         padding: Theme.padM
 
         Column {
@@ -66,7 +69,7 @@ Item {
                     text: (root.notif?.appName || "System").toUpperCase()
                     color: root.tone
                     font.family: Theme.fontMono
-                    font.pixelSize: 8
+                    font.pixelSize: Theme.fsMicro
                     font.letterSpacing: 2
                     renderType: Text.NativeRendering
                 }
@@ -126,18 +129,16 @@ Item {
 
                         Skew {
                             anchors.fill: parent
-                            color: actionHover.hovered
-                                ? Theme.alpha(root.tone, 0.3)
-                                : Theme.alpha(root.tone, 0.1)
+                            color: actionHover.hovered ? Theme.accent : Theme.surfaceAlt
                             borderWidth: 1
-                            borderColor: Theme.alpha(root.tone, 0.6)
+                            borderColor: actionHover.hovered ? Theme.accent : Theme.overlay
                         }
 
                         Text {
                             id: actionLabel
                             anchors.centerIn: parent
                             text: actionChip.modelData.text
-                            color: Theme.text
+                            color: actionHover.hovered ? Theme.ink : Theme.text
                             font.family: Theme.fontDisplay
                             font.pixelSize: Theme.fsMicro
                             font.italic: true

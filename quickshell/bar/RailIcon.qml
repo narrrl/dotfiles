@@ -3,10 +3,10 @@ import "root:/config"
 import "root:/components"
 
 // One slot on the right-hand rail: a glyph with an optional micro readout
-// stacked beneath it, and a crimson bar that wipes down the leading edge on
-// hover. The rail is only 48px wide, so unlike StatusIcon the readout sits
-// under the glyph rather than beside it, and anything longer than a percentage
-// belongs in the popout instead.
+// stacked beneath it, and an accent bar that wipes down the leading edge on
+// hover. The rail is only 48px wide, so the readout sits under the glyph
+// rather than beside it, and anything longer than a percentage belongs in the
+// popout instead.
 Item {
     id: root
 
@@ -17,7 +17,15 @@ Item {
     property string hint: ""
     property bool suppressTooltip: false
     property color tint: Theme.primary
-    property bool alert: false
+
+    // Three states, three meanings. `live` wants attention but nothing is wrong
+    // (unread notifications, an open power menu): accent. `alarm` is wrong or
+    // critical (a dying battery): alarm. `dim` is off by choice (muted, radio
+    // off, do-not-disturb): grey. These used to be one `alert` flag painted in
+    // the accent, which made a muted speaker look like the most active thing
+    // on the rail.
+    property bool live: false
+    property bool alarm: false
     property bool dim: false
     property bool pulsing: false
 
@@ -63,7 +71,7 @@ Item {
         id: glyphMetrics
         text: root.icon
         font.family: Theme.fontIcon
-        font.pixelSize: Theme.fsLarge
+        font.pixelSize: Theme.fsRailIcon
     }
 
     Item {
@@ -76,9 +84,10 @@ Item {
             y: (root.glyphBand - height) / 2
             text: root.icon
             pulsing: root.pulsing
-            font.pixelSize: Theme.fsLarge
+            font.pixelSize: Theme.fsRailIcon
             color: {
-                if (root.alert) return Theme.accent;
+                if (root.alarm) return Theme.alarm;
+                if (root.live) return Theme.accent;
                 if (root.dim) return Theme.muted;
                 if (root.hovered) return Theme.glow;
                 return root.tint;
@@ -96,7 +105,11 @@ Item {
             anchors.topMargin: root.glyphBand + 1
             visible: root.readout !== ""
             text: root.readout
-            color: root.dim ? Theme.muted : Theme.subtext
+            color: {
+                if (root.alarm) return Theme.alarm;
+                if (root.dim) return Theme.muted;
+                return Theme.subtext;
+            }
             font.family: Theme.fontMono
             font.pixelSize: Theme.fsMicro
             font.weight: Font.DemiBold
@@ -116,9 +129,9 @@ Item {
     // scale then pushed it out past the silhouette onto the desktop. The inset
     // has to survive that scale, which is why it is not simply 1 or 2.
     //
-    // It is crimson rather than `tint` because it only ever appears on hover,
-    // and hover is crimson everywhere else in the shell (Theme.glow). Painting
-    // it white put a white bar on the rail's edge for no stated reason.
+    // It is the accent rather than `tint` because it only ever appears on
+    // hover, and hover is the accent everywhere else in the shell (Theme.glow).
+    // Painting it white put a white bar on the rail's edge for no stated reason.
     Rectangle {
         anchors.left: parent.left
         anchors.leftMargin: root.wipeInset
@@ -137,7 +150,8 @@ Item {
         NumberAnimation { duration: Theme.durBase; easing.type: Easing.OutBack }
     }
 
-    onAlertChanged: if (alert) glyph.bump()
+    onAlarmChanged: if (alarm) glyph.bump()
+    onLiveChanged: if (live) glyph.bump()
 
     HoverHandler {
         id: hover

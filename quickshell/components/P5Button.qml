@@ -21,6 +21,12 @@ FocusScope {
     readonly property bool focusedOrSelected: root.activeFocus || root.selected
     readonly property bool highlighted: root.hovered || root.focusedOrSelected
 
+    // Keyboard focus and roving selection invert the slab to solid accent.
+    // Pointer hover stays a keyline change, so the two never look alike and a
+    // mouse user never sees the "selected" treatment by accident. Destructive
+    // buttons keep their own mauve inversion for both.
+    readonly property bool inverted: root.enabled && !root.destructive && root.focusedOrSelected
+
     // Pointer activation must not turn a transient action into the black/white
     // keyboard-focus treatment. Tab still reaches it, and programmatic focus
     // (power-menu roving selection / pinned popouts) still works.
@@ -49,6 +55,7 @@ FocusScope {
             if (root.destructive)
                 return root.highlighted ? Theme.treatmentDestructiveActiveFill
                                         : Theme.treatmentDestructiveFill;
+            if (root.inverted) return Theme.treatmentFocusFill;
             if (root.highlighted) return Theme.treatmentHoverFill;
             return Theme.treatmentRestFill;
         }
@@ -58,15 +65,13 @@ FocusScope {
             if (root.destructive)
                 return root.highlighted ? Theme.treatmentDestructiveActiveMark
                                         : Theme.treatmentDestructiveMark;
+            if (root.inverted) return Theme.treatmentFocusMark;
             if (root.highlighted) return Theme.treatmentHoverMark;
             return Theme.alpha(root.accent, 0.55);
         }
         borderWidth: Theme.stroke
         slash: !root.highlighted
         slashColor: root.destructive ? Theme.alarm : root.accent
-        halftone: root.enabled && root.highlighted
-        halftoneColor: Theme.ink
-        halftoneOpacity: 0.14
 
         Behavior on fillOpacity {
             NumberAnimation { duration: Theme.durFast }
@@ -88,6 +93,7 @@ FocusScope {
                     if (root.destructive)
                         return root.highlighted ? Theme.treatmentDestructiveActiveText
                                                 : Theme.treatmentDestructiveText;
+                    if (root.inverted) return Theme.treatmentFocusText;
                     if (root.highlighted) return Theme.treatmentHoverText;
                     return root.accent;
                 }
@@ -101,6 +107,7 @@ FocusScope {
                     if (root.destructive)
                         return root.highlighted ? Theme.treatmentDestructiveActiveText
                                                 : Theme.treatmentDestructiveText;
+                    if (root.inverted) return Theme.treatmentFocusText;
                     if (root.highlighted) return Theme.treatmentHoverText;
                     return Theme.treatmentRestText;
                 }

@@ -17,6 +17,7 @@ Singleton {
     property bool lockRequested: false
     property bool sidebarOpen: false
     property bool launcherOpen: false
+    property bool askOpen: false
 
     // Seed text for the next launcher open. Lets a keybind or a script hand the
     // launcher a query it did not have to type — `qs ipc call shell prompt
@@ -31,6 +32,13 @@ Singleton {
 
     // Same story for the power menu: a window per screen, one of them wanted.
     property string powerMenuScreen: ""
+
+    // …and for the ask panel, which also takes the keyboard.
+    property string askScreen: ""
+
+    // Seed text for the next ask open. A seeded open asks straight away, so
+    // `qs ipc call shell askAbout "$(wl-paste)"` is a one-shot question.
+    property string askSeed: ""
 
     signal osdRequested(string kind)
 
@@ -56,6 +64,22 @@ Singleton {
         root.launcherOpen = !root.launcherOpen;
     }
     function closeLauncher() { root.launcherOpen = false; }
+
+    function toggleAsk() {
+        if (!root.askOpen) {
+            root.askSeed = "";
+            root.askScreen = root.focusedScreenName();
+        }
+        root.askOpen = !root.askOpen;
+    }
+    function closeAsk() { root.askOpen = false; }
+
+    function askAbout(seed: string) {
+        root.askSeed = seed;
+        root.askScreen = root.focusedScreenName();
+        root.askOpen = false;
+        root.askOpen = true;
+    }
 
     // Stand in for `fuzzel --dmenu`. See Apps.beginDmenu for the transport.
     function dmenuLauncher(inPath: string, outPath: string, prompt: string) {
@@ -106,6 +130,8 @@ Singleton {
         function lock(): void { root.lock(); }
         function power(): void { root.togglePowerMenu(); }
         function launcher(): void { root.toggleLauncher(); }
+        function ask(): void { root.toggleAsk(); }
+        function askAbout(question: string): void { root.askAbout(question); }
         function prompt(seed: string): void { root.promptLauncher(seed); }
         function dmenu(inPath: string, outPath: string, prompt: string): void {
             root.dmenuLauncher(inPath, outPath, prompt);

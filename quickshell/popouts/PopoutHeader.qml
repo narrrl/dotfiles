@@ -2,8 +2,8 @@ import QtQuick
 import "root:/config"
 import "root:/components"
 
-// Title bar for a popout: glyph, split-ink heading, right-aligned status text,
-// and a crimson rule with a chopped tail.
+// Title bar for a popout: glyph, print-shadowed heading, right-aligned status
+// text, and a rule with a chopped accent tail.
 Item {
     id: root
 
@@ -32,8 +32,6 @@ Item {
             text: root.title.toUpperCase()
             pixelSize: Theme.fsLarge
             letterSpacing: 1.5
-            split: 1.3
-            splitOpacity: 0.7
         }
     }
 
@@ -43,7 +41,7 @@ Item {
         anchors.topMargin: 6
         visible: root.subtitle !== ""
         text: root.subtitle
-        color: Theme.muted
+        color: Theme.subtext
         font.family: Theme.fontMono
         font.pixelSize: Theme.fsMicro
         font.letterSpacing: 1
