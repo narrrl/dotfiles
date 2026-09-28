@@ -304,18 +304,25 @@ Singleton {
     // So when the target declares no placeholder we build the command line
     // ourselves and hand uwsm an argv instead of an ID. It is still scoped and
     // still supervised; we just did the expansion.
+    //
+    // The same fallback covers entries whose file name uwsm will not accept as
+    // an ID at all. Its check is the regex below, so `Proton Authenticator
+    // .desktop` and most Steam/Lutris shortcuts ("Hollow Knight.desktop") fail
+    // with "Invalid Desktop Entry ID" before anything runs.
     readonly property var fieldRe: /%[fFuU]/
     readonly property var anyFieldRe: /^%[a-zA-Z]$/
+    readonly property var uwsmIdRe: /^[a-zA-Z0-9_][a-zA-Z0-9_.-]*\.desktop(:.*)?$/
 
     function launch(item: var, arg: string): void {
         root._remember(item.key);
+        const byId = root.uwsmIdRe.test(item.key);
 
-        if (arg === "") {
+        if (byId && arg === "") {
             Quickshell.execDetached(["uwsm", "app", "--", item.key]);
             return;
         }
 
-        if (root.fieldRe.test(item.exec || "")) {
+        if (byId && root.fieldRe.test(item.exec || "")) {
             Quickshell.execDetached(["uwsm", "app", "--", item.key, arg]);
             return;
         }
@@ -323,10 +330,10 @@ Singleton {
         const argv = root._tokenize(item.exec || "")
             .filter(t => !root.anyFieldRe.test(t));
         if (argv.length === 0) {
-            Quickshell.execDetached(["uwsm", "app", "--", item.key]);
+            if (byId) Quickshell.execDetached(["uwsm", "app", "--", item.key]);
             return;
         }
-        argv.push(arg);
+        if (arg !== "") argv.push(arg);
 
         // Without this the unit is named after the bare executable and every
         // app launched this way collides in the unit namespace.

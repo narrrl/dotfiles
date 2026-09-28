@@ -17,7 +17,7 @@ return {
     -- results appear as you type; a dmenu could only filter a list it was
     -- handed once, which made searching a two-step. It spawns its own terminal
     -- (class pdfs-prompt, floated in lua/rules/windows.lua).
-    pdfs = "pdfs-prompt --fzf",
+    pdfs = "pdfs-prompt --gtk",
 
     -- bluetooth menu
     bluetooth = "fluxo bt menu",

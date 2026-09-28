@@ -16,14 +16,31 @@ Column {
     spacing: Theme.padS + 2
     visible: root.shownItems.length > 0
 
-    // Applets whose whole job the rail already does. nm-applet and blueman keep
-    // running — they are the Wi-Fi secret agent and the pairing agent — but
-    // their icons were a second network and a second bluetooth glyph a few
-    // slots below the rail's own.
-    readonly property var hiddenIds: ["nm-applet", "blueman"]
+    // Applets whose whole job the rail already does. blueman keeps running as
+    // the pairing agent, but its icon was a second bluetooth glyph a few slots
+    // below the rail's own.
+    readonly property var hiddenIds: ["blueman"]
 
     readonly property var shownItems: SystemTray.items.values
         .filter(item => root.hiddenIds.indexOf(item.id) === -1)
+
+    // Electron and Chromium apps send only a full-colour pixmap, and flattening
+    // that loses everything inside the outline: Brave's lion became a plain
+    // shield. The icon theme often ships a panel glyph drawn for exactly this
+    // job, so look one up by the app's name and use the pixmap only when none
+    // exists. The id is no help here ("chrome_status_icon_1" for Brave and
+    // Proton Pass alike), so the tooltip title is the name we go by.
+    function themedIcon(item: SystemTrayItem): string {
+        if (item.icon.startsWith("image://icon/")) return item.icon;
+
+        const name = (item.tooltipTitle || item.title || item.id)
+            .toLowerCase().replace(/[^a-z0-9]+/g, "-");
+        for (const suffix of ["-tray", "-panel", "-symbolic"]) {
+            const path = Quickshell.iconPath(name + suffix, true);
+            if (path !== "") return path;
+        }
+        return item.icon;
+    }
 
     Repeater {
         model: root.shownItems
@@ -45,7 +62,7 @@ Column {
             IconImage {
                 id: img
                 anchors.fill: parent
-                source: entry.modelData.icon
+                source: root.themedIcon(entry.modelData)
                 asynchronous: true
 
                 layer.enabled: true

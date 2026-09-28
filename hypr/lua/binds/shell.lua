@@ -12,3 +12,7 @@ shell("ask", { key = mod .. " + A", description = "ask claude" })
 shell("toggleDnd", { key = mod .. " + SHIFT + N", description = "toggle do not disturb" })
 shell("clearNotifications", { key = mod .. " + CTRL + SHIFT + N", description = "clear notifications" })
 shell("reloadConfig", { key = mod .. " + SHIFT + R", description = "reload shell config" })
+
+-- Not a shell call, but it lives with the other session toggles.
+local mirror = require("lua/mirror")
+hl.bind(mod .. " + SHIFT + P", mirror.toggle, { description = "mirror laptop to all screens" })
