@@ -8,16 +8,23 @@ P5Panel {
     property color tone: Theme.primary
     property bool textured: false
 
-    fill: Theme.mantle
-    fillOpacity: 0.97
+    // Inside a Popout the panel is part of the hull, which paints the fill
+    // and the rim itself; the surface only lays out the content. Elsewhere —
+    // the launcher, the ask panel — it is a free-standing panel of its own.
+    readonly property bool attached: parent?.frameAttached ?? false
+
+    fill: attached ? "transparent" : Theme.mantle
+    // Zero, not a transparent fill: P5Panel re-applies this opacity to the
+    // fill colour, which turned "transparent" into 97% black.
+    fillOpacity: attached ? 0 : 0.97
     // The frame is structure: a neutral hairline. The tone goes into the
     // corner ticks, which is where NieR puts the one bright mark on a panel.
     border: Theme.surfaceAlt
-    borderWidth: Theme.stroke
+    borderWidth: attached ? 0 : Theme.stroke
     halftone: textured
     halftoneColor: tone
     halftoneOpacity: 0.06
-    ticks: true
+    ticks: !attached
     tickColor: tone
     padding: Theme.padM
 }

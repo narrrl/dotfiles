@@ -42,7 +42,7 @@ cost 4.4% of the height on top of what the bar already takes.
 - **bar** — identity and workspaces on the left; the focused window, the
   player, the CPU/MEM/GPU readout and the clock on the right.
 - **rail** — network, bluetooth, audio, mic, backlight, battery, tray,
-  notifications, power. Popouts open leftward, into the screen.
+  notifications, power. Popouts grow leftward out of it, into the screen.
 
 Modules are divided by hairlines. `BarPill` is chromeless by default — a module
 is *content inside* the hull, not a surface of its own — and marks hover with
@@ -71,6 +71,22 @@ assets/          halftone and stripe tiles, generated with ImageMagick
 `P5Panel` is the base surface everything sits on. It does not auto-size —
 callers set implicit sizes from their own layout (`row.implicitWidth +
 contentPad * 2`), which keeps the shape maths out of binding loops.
+
+## Popouts
+
+Hover panels (`components/Popout.qml`) are part of the hull, not cards
+floating near their trigger. Each one sits flush against the frame edge it
+opens from, is painted in the hull colour, joins the frame through concave
+fillets, carries the rim round its open side, and slides out from behind the
+frame. `PopoutSurface` notices it is inside a `Popout` and leaves the fill and
+the frame to the hull; in the launcher and the ask panel it is still a
+free-standing panel with corner ticks.
+
+Placement is explicit: centred on the trigger, then — if that would land the
+panel within `dockReach` of one of the opening's corners — docked into the
+corner instead, attached to the bar and the rail at once (`dock` is `top`,
+`right`, `topRight` or `bottomRight`). Without docking, a panel near the rail
+left a thin strip of opening between itself and the rail.
 
 ## Dashboard
 
