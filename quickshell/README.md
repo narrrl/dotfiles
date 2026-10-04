@@ -105,6 +105,11 @@ meters, and what is playing. Escape or focusing anything else puts it away; a
 `HyprlandFocusGrab` handles the latter, and `Actions.dashboardClosedAt` stops
 the clock click that cleared the grab from opening it straight back up.
 
+Under the columns, past a hairline, a row of switches: Wi-Fi, Bluetooth, do
+not disturb and stay awake, plus night light when `hyprsunset` is installed
+(it runs at 4200 K for as long as the switch is on). On is the light slab
+with ink type, the same as a selection everywhere else; off is a hairline.
+
 ## Modules
 
 | Module | Where | Left click | Right click | Middle | Scroll | Hover |

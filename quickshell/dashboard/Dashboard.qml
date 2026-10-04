@@ -58,7 +58,8 @@ PanelWindow {
     readonly property real pad: Theme.padL
 
     readonly property real bodyWidth: columns.implicitWidth + root.pad * 2
-    readonly property real bodyHeight: columns.implicitHeight + root.pad * 2
+    readonly property real bodyHeight: columns.implicitHeight + toggles.implicitHeight
+        + Theme.padL + 1 + root.pad * 3
 
     implicitWidth: root.bodyWidth + root.fillet * 2
     implicitHeight: root.bodyHeight + 1
@@ -549,6 +550,65 @@ PanelWindow {
                         }
                     }
                 }
+
+                // A hairline, then the switches you reach for most.
+                Rectangle {
+                    id: togglesRule
+                    x: root.pad
+                    y: columns.y + columns.implicitHeight + Theme.padL
+                    width: root.bodyWidth - root.pad * 2
+                    height: 1
+                    color: Theme.alpha(Theme.outline, 0.5)
+                }
+
+                Row {
+                    id: toggles
+                    x: root.pad
+                    y: togglesRule.y + 1 + root.pad
+                    spacing: Theme.padS
+
+                    readonly property int count: nightLight.available ? 5 : 4
+                    readonly property real chipWidth:
+                        (root.bodyWidth - root.pad * 2 - toggles.spacing * (toggles.count - 1)) / toggles.count
+
+                    Toggle {
+                        width: toggles.chipWidth
+                        glyph: Net.wifiEnabled ? "󰖩" : "󰖪"
+                        label: "Wi-Fi"
+                        on: Net.wifiEnabled
+                        onClicked: Net.toggleWifi()
+                    }
+                    Toggle {
+                        width: toggles.chipWidth
+                        enabled: Bt.available
+                        glyph: Bt.enabled ? "󰂯" : "󰂲"
+                        label: "Bluetooth"
+                        on: Bt.enabled
+                        onClicked: Bt.toggle()
+                    }
+                    Toggle {
+                        width: toggles.chipWidth
+                        glyph: Notifs.dnd ? "󰂛" : "󰂚"
+                        label: "Do not disturb"
+                        on: Notifs.dnd
+                        onClicked: Notifs.toggleDnd()
+                    }
+                    Toggle {
+                        width: toggles.chipWidth
+                        glyph: "󰅶"
+                        label: "Stay awake"
+                        on: Idle.stayAwake
+                        onClicked: Idle.toggleStayAwake()
+                    }
+                    Toggle {
+                        width: toggles.chipWidth
+                        visible: nightLight.available
+                        glyph: "󰖔"
+                        label: "Night light"
+                        on: nightLight.running
+                        onClicked: nightLight.running = !nightLight.running
+                    }
+                }
             }
         }
     }
@@ -571,6 +631,78 @@ PanelWindow {
     }
 
     readonly property real columnHeight: 214
+
+    // A warm screen for the evening, through hyprsunset if it is installed.
+    // It runs for as long as night light is on; stopping it restores the
+    // screen. The chip only appears when the binary exists.
+    Process {
+        id: nightLight
+        property bool available: false
+        command: ["hyprsunset", "--temperature", "4200"]
+    }
+
+    Process {
+        running: true
+        command: ["sh", "-c", "command -v hyprsunset"]
+        onExited: code => nightLight.available = code === 0
+    }
+
+    // A switch: a pill with a glyph and a name. On is the light slab with ink
+    // type, the same as a selection everywhere else; off is a hairline.
+    component Toggle: Item {
+        id: tg
+        property string glyph: ""
+        property string label: ""
+        property bool on: false
+        signal clicked()
+
+        height: 38
+        opacity: tg.enabled ? 1 : 0.35
+
+        Rectangle {
+            anchors.fill: parent
+            radius: height / 2
+            color: tg.on ? Theme.accentSoft : (tgHover.hovered ? Theme.treatmentHoverFill : "transparent")
+            border.width: tg.on ? 0 : 1
+            border.color: tgHover.hovered ? Theme.treatmentHoverMark : Theme.overlay
+
+            Behavior on color { ColorAnimation { duration: Theme.durBase } }
+        }
+
+        Row {
+            anchors.centerIn: parent
+            spacing: Theme.padS
+
+            Icon {
+                anchors.verticalCenter: parent.verticalCenter
+                text: tg.glyph
+                font.pixelSize: Theme.fsLarge
+                color: tg.on ? Theme.ink : (tgHover.hovered ? Theme.accent : Theme.text)
+            }
+
+            Text {
+                anchors.verticalCenter: parent.verticalCenter
+                text: tg.label.toUpperCase()
+                color: tg.on ? Theme.ink : Theme.subtext
+                font.family: Theme.fontDisplay
+                font.pixelSize: Theme.fsMicro
+                font.weight: Font.DemiBold
+                font.letterSpacing: Theme.tracking
+                renderType: Text.NativeRendering
+            }
+        }
+
+        HoverHandler {
+            id: tgHover
+            enabled: tg.enabled
+            cursorShape: Qt.PointingHandCursor
+        }
+
+        TapHandler {
+            enabled: tg.enabled
+            onTapped: tg.clicked()
+        }
+    }
 
     // A label and its reading on one line, label left, reading right.
     component Fact: Item {
