@@ -50,7 +50,7 @@ Item {
         }
     }
 
-    P5Button {
+    ActionButton {
         id: muteButton
         anchors.right: parent.right
         anchors.top: parent.top
@@ -59,7 +59,7 @@ Item {
         onClicked: Audio.toggleMicMute()
     }
 
-    P5Slider {
+    LevelSlider {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom

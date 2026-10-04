@@ -172,7 +172,7 @@ Popout {
                 renderType: Text.NativeRendering
             }
 
-            P5Slider {
+            LevelSlider {
                 anchors.left: elapsed.right
                 anchors.right: total.left
                 anchors.leftMargin: Theme.padS

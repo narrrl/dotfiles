@@ -48,7 +48,7 @@ FocusScope {
     implicitWidth: wide ? 260 : (row.implicitWidth + panel.contentPad * 2)
     implicitHeight: 44
 
-    P5Panel {
+    Panel {
         id: panel
         anchors.fill: parent
         lean: root.lean

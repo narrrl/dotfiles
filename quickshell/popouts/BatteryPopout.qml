@@ -123,7 +123,7 @@ Popout {
 
         // Follows the detail line rather than being pinned to the bottom of a
         // fixed-height panel, which is what left a dead band above it.
-        P5Button {
+        ActionButton {
             id: suspendButton
             anchors.top: detailText.bottom
             anchors.topMargin: Theme.padL

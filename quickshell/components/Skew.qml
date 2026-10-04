@@ -3,7 +3,7 @@ import QtQuick.Shapes
 import "root:/config"
 import "root:/components"
 
-// A small block — the small-scale counterpart to P5Panel. Upright and rounded
+// A small block — the small-scale counterpart to Panel. Upright and rounded
 // under the YoRHa theme; it still leans if given a lean.
 //
 // Every tick, rule, meter segment and slider rail in this shell leans at
@@ -23,12 +23,12 @@ Shape {
     property color borderColor: "transparent"
     property real borderWidth: 0
 
-    // Lean of the vertical edges as a fraction of height, matching P5Panel.
+    // Lean of the vertical edges as a fraction of height, matching Panel.
     property real lean: Theme.skew
     property bool leanLeft: false
 
     // Wide, short pieces — the rail's hairline rules — slant their horizontal
-    // edges by a fraction of width instead, exactly as P5Panel does for the
+    // edges by a fraction of width instead, exactly as Panel does for the
     // rail slab.
     property bool vertical: false
 

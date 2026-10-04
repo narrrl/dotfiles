@@ -73,7 +73,7 @@ Item {
         anchors.fill: parent
         active: root.standalone
 
-        sourceComponent: P5Panel {
+        sourceComponent: Panel {
             lean: root.lean
             leanLeft: root.leanLeft
             chop: root.chop

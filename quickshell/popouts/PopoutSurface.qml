@@ -3,8 +3,8 @@ import "root:/config"
 import "root:/components"
 
 // The slab every popout sits on. Pure preset — it declares no children of its
-// own, so P5Panel's default content property stays usable by callers.
-P5Panel {
+// own, so Panel's default content property stays usable by callers.
+Panel {
     property color tone: Theme.primary
     property bool textured: false
 
@@ -14,7 +14,7 @@ P5Panel {
     readonly property bool attached: parent?.frameAttached ?? false
 
     fill: attached ? "transparent" : Theme.mantle
-    // Zero, not a transparent fill: P5Panel re-applies this opacity to the
+    // Zero, not a transparent fill: Panel re-applies this opacity to the
     // fill colour, which turned "transparent" into 97% black.
     fillOpacity: attached ? 0 : 0.97
     // The frame is structure: a neutral hairline. A free-standing panel takes

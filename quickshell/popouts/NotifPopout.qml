@@ -34,14 +34,14 @@ Popout {
             anchors.left: parent.left
             spacing: Theme.padS
 
-            P5Button {
+            ActionButton {
                 text: Notifs.dnd ? "Silenced" : "Silence"
                 icon: Notifs.dnd ? "󰂛" : "󰂚"
                 accent: Notifs.dnd ? Theme.treatmentOffText : Theme.primary
                 onClicked: Notifs.toggleDnd()
             }
 
-            P5Button {
+            ActionButton {
                 text: "Clear"
                 icon: "󰎟"
                 destructive: true

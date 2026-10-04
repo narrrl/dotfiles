@@ -62,14 +62,14 @@ Popout {
             anchors.left: parent.left
             spacing: Theme.padS
 
-            P5Button {
+            ActionButton {
                 text: Net.wifiEnabled ? "Wi-Fi On" : "Wi-Fi Off"
                 icon: Net.wifiEnabled ? "󰖩" : "󰖪"
                 accent: Net.wifiEnabled ? Theme.primary : Theme.muted
                 onClicked: Net.toggleWifi()
             }
 
-            P5Button {
+            ActionButton {
                 text: "Settings"
                 icon: "󰒓"
                 onClicked: Actions.openNetworkSettings()

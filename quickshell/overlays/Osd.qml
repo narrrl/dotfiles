@@ -124,7 +124,7 @@ PanelWindow {
         }
     }
 
-    P5Panel {
+    Panel {
         id: panel
         anchors.fill: parent
         anchors.margins: 4

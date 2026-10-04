@@ -10,7 +10,7 @@ import "root:/components"
 // implementation, but that draws a stock widget popup — square corners, system
 // palette, no lean — hanging off the corner of a shell that has none of those
 // things. This walks the menu with QsMenuOpener instead and draws it as a
-// P5Panel, so a right click on a tray icon produces the same object language as
+// Panel, so a right click on a tray icon produces the same object language as
 // everything else on the rail.
 //
 // Dismissal is a Hyprland focus grab: click anywhere outside and the compositor

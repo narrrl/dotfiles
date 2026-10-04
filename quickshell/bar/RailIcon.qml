@@ -122,7 +122,7 @@ Item {
     }
 
     // Leading-edge wipe. On the rail this runs vertically down the left side,
-    // mirroring the accent bar P5Panel puts on horizontal modules.
+    // mirroring the accent bar Panel puts on horizontal modules.
     //
     // Held off the edge by `wipeInset`: the icon spans the rail's full width, so
     // at x = 0 this landed exactly on the slab's own border.
@@ -162,7 +162,7 @@ Item {
         onWheel: event => root.scrolled(event.angleDelta.y)
     }
 
-    P5Tooltip {
+    Tooltip {
         anchorItem: root
         triggerHovered: root.hovered
         title: root.label

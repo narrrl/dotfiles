@@ -74,7 +74,7 @@ backdrop/        the wallpaper, drawn by the shell
 assets/          halftone and stripe tiles, generated with ImageMagick
 ```
 
-`P5Panel` is the base surface everything sits on. It does not auto-size —
+`Panel` is the base surface everything sits on. It does not auto-size —
 callers set implicit sizes from their own layout (`row.implicitWidth +
 contentPad * 2`), which keeps the shape maths out of binding loops.
 
@@ -441,7 +441,7 @@ zones itself, so every piece is placed from the screen edge.
 
 **Soft, everywhere else.** The porthole is the shape the desktop is built
 around, and every smaller surface is a gentler echo of it. `Theme.skew` and
-`Theme.cut` are `0`; `P5Panel` and `Skew` draw `Geom.roundedRect` with
+`Theme.cut` are `0`; `Panel` and `Skew` draw `Geom.roundedRect` with
 `Theme.radiusS` (pills, chips, meter tracks), `radiusM` (rows, buttons) or
 `radiusL`. `radiusL` is `frameRadius - padS`: anything inset by `padS` inside
 one of the frame's curves — a hovered notification in the drawer's corner —

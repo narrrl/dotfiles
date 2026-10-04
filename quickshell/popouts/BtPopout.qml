@@ -40,14 +40,14 @@ Popout {
             anchors.left: parent.left
             spacing: Theme.padS
 
-            P5Button {
+            ActionButton {
                 text: Bt.enabled ? "On" : "Off"
                 icon: Bt.enabled ? "󰂯" : "󰂲"
                 accent: Bt.enabled ? Theme.accent : Theme.muted
                 onClicked: Bt.toggle()
             }
 
-            P5Button {
+            ActionButton {
                 text: Bt.discovering ? "Scanning" : "Scan"
                 icon: "󰐷"
                 accent: Bt.discovering ? Theme.accent : Theme.primary

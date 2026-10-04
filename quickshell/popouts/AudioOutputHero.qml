@@ -57,7 +57,7 @@ Item {
         }
     }
 
-    P5Slider {
+    LevelSlider {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom

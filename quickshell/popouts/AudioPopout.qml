@@ -50,7 +50,7 @@ Popout {
                 width: parent.width
                 spacing: Theme.padS
 
-                P5Button {
+                ActionButton {
                     id: outputMuteButton
                     width: parent.width
                     text: Audio.muted ? "Unmute output" : "Mute output"
@@ -58,7 +58,7 @@ Popout {
                     onClicked: Audio.toggleMute()
                 }
 
-                P5Button {
+                ActionButton {
                     width: parent.width
                     text: "Open audio mixer"
                     icon: "󰕾"
@@ -178,7 +178,7 @@ Popout {
             }
         }
 
-        P5Slider {
+        LevelSlider {
             anchors.bottom: parent.bottom
             anchors.left: parent.left
             anchors.right: parent.right
