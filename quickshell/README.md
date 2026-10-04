@@ -293,6 +293,8 @@ dark, the rim hairline and the wallpaper, not from patterns.
 | `fish/conf.d/yorha_theme.fish` | the prompt and pager |
 | `nvim/lua/yorha.lua` | the editor and its statusline |
 | `btop/themes/yorha.theme` | the resource monitor |
+| `gtk-3.0/gtk.css`, `gtk-4.0/gtk.css` | GTK and libadwaita apps |
+| `qt6ct/colors/yorha.conf` | Qt apps |
 
 Everything else derives. `glow` *is* `accent`, and `primary` is plain `text`.
 `Theme.heat()` is a continuous text → light → red ramp, so a CPU figure that
@@ -325,7 +327,14 @@ network and bluetooth, but keep running as the secret and pairing agents.
   surfaces with rounded rims, menus selecting with the light slab.
 - **btop** — `btop/themes/yorha.theme`. Hairline boxes; gradients climb from
   grey to the light, and only temperature and CPU load run on into rust.
-- **GTK and Qt** — still `catppuccin-mocha-blue`. Not yet moved.
+- **GTK** — the `adw-gtk3-dark` theme (package `adw-gtk-theme`) for the
+  libadwaita shapes, recoloured by `gtk-3.0/gtk.css` and `gtk-4.0/gtk.css`.
+  libadwaita apps such as Nautilus read the same overrides as CSS variables.
+  Selection is the light slab with ink text; only destructive actions are red.
+  The theme name is also in `xsettingsd/xsettingsd.conf` and has to be set with
+  `gsettings` for portal-aware apps.
+- **Qt** — qt6ct with `qt6ct/colors/yorha.conf`, the same palette in
+  `QPalette` roles. The style is Fusion unless Darkly is installed.
 - **Fish** — `fish/conf.d/yorha_theme.fish`.
 - **The launcher** — no external theming to keep in step, because it is part of
   this shell (`launcher/`). Fuzzel is gone; `takemi-dmenu` stands in for

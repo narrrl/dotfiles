@@ -1,4 +1,95 @@
-/* Catppuccin Mocha Blue, straight from the installed theme. The Takemi branch
- * overrode Fluent's greys with black here; Mocha needs no override — its own
- * surfaces are the palette the rest of the rice is built on. */
-@import url("/usr/share/themes/catppuccin-mocha-blue-standard+default/gtk-4.0/gtk.css");
+/* YoRHa colours for libadwaita and adw-gtk3 — kept in step with
+ * ~/.config/quickshell/config/Theme.qml and gtk-3.0/gtk.css.
+ *
+ * libadwaita reads its palette from CSS variables; the named colours below
+ * the variables cover GTK4 apps that still go through the adw-gtk3 theme. */
+
+:root {
+  --accent-color: #eef1ea;
+  --accent-bg-color: #bcc1bf;
+  --accent-fg-color: #090a08;
+  --destructive-color: #c8684f;
+  --destructive-bg-color: #c8684f;
+  --destructive-fg-color: #090a08;
+  --error-color: #c8684f;
+  --error-bg-color: #c8684f;
+  --error-fg-color: #090a08;
+  --warning-color: #c9b27c;
+  --warning-bg-color: #c9b27c;
+  --warning-fg-color: #090a08;
+  --success-color: #8fa37e;
+  --success-bg-color: #8fa37e;
+  --success-fg-color: #090a08;
+  --window-bg-color: #0f110e;
+  --window-fg-color: #ccd2cb;
+  --view-bg-color: #0c0d0b;
+  --view-fg-color: #ccd2cb;
+  --headerbar-bg-color: #161915;
+  --headerbar-fg-color: #ccd2cb;
+  --headerbar-border-color: #2a2f28;
+  --headerbar-backdrop-color: #0f110e;
+  --headerbar-shade-color: rgba(0, 0, 0, 0.36);
+  --sidebar-bg-color: #161915;
+  --sidebar-fg-color: #ccd2cb;
+  --sidebar-backdrop-color: #0f110e;
+  --sidebar-shade-color: rgba(0, 0, 0, 0.36);
+  --secondary-sidebar-bg-color: #0f110e;
+  --secondary-sidebar-fg-color: #ccd2cb;
+  --secondary-sidebar-backdrop-color: #0c0d0b;
+  --card-bg-color: #161915;
+  --card-fg-color: #ccd2cb;
+  --card-shade-color: rgba(0, 0, 0, 0.36);
+  --dialog-bg-color: #161915;
+  --dialog-fg-color: #ccd2cb;
+  --popover-bg-color: #20241f;
+  --popover-fg-color: #ccd2cb;
+  --popover-shade-color: rgba(0, 0, 0, 0.36);
+  --thumbnail-bg-color: #20241f;
+  --thumbnail-fg-color: #ccd2cb;
+  --shade-color: rgba(0, 0, 0, 0.36);
+  --scrollbar-outline-color: rgba(0, 0, 0, 0.5);
+}
+
+@define-color accent_color #eef1ea;
+@define-color accent_bg_color #bcc1bf;
+@define-color accent_fg_color #090a08;
+@define-color destructive_color #c8684f;
+@define-color destructive_bg_color #c8684f;
+@define-color destructive_fg_color #090a08;
+@define-color error_color #c8684f;
+@define-color error_bg_color #c8684f;
+@define-color error_fg_color #090a08;
+@define-color warning_color #c9b27c;
+@define-color warning_bg_color #c9b27c;
+@define-color warning_fg_color #090a08;
+@define-color success_color #8fa37e;
+@define-color success_bg_color #8fa37e;
+@define-color success_fg_color #090a08;
+@define-color window_bg_color #0f110e;
+@define-color window_fg_color #ccd2cb;
+@define-color view_bg_color #0c0d0b;
+@define-color view_fg_color #ccd2cb;
+@define-color headerbar_bg_color #161915;
+@define-color headerbar_fg_color #ccd2cb;
+@define-color headerbar_border_color #2a2f28;
+@define-color headerbar_backdrop_color #0f110e;
+@define-color headerbar_shade_color rgba(0, 0, 0, 0.36);
+@define-color sidebar_bg_color #161915;
+@define-color sidebar_fg_color #ccd2cb;
+@define-color sidebar_backdrop_color #0f110e;
+@define-color sidebar_shade_color rgba(0, 0, 0, 0.36);
+@define-color secondary_sidebar_bg_color #0f110e;
+@define-color secondary_sidebar_fg_color #ccd2cb;
+@define-color secondary_sidebar_backdrop_color #0c0d0b;
+@define-color card_bg_color #161915;
+@define-color card_fg_color #ccd2cb;
+@define-color card_shade_color rgba(0, 0, 0, 0.36);
+@define-color dialog_bg_color #161915;
+@define-color dialog_fg_color #ccd2cb;
+@define-color popover_bg_color #20241f;
+@define-color popover_fg_color #ccd2cb;
+@define-color popover_shade_color rgba(0, 0, 0, 0.36);
+@define-color thumbnail_bg_color #20241f;
+@define-color thumbnail_fg_color #ccd2cb;
+@define-color shade_color rgba(0, 0, 0, 0.36);
+@define-color scrollbar_outline_color rgba(0, 0, 0, 0.5);

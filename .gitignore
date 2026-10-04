@@ -44,3 +44,6 @@ gtk-4.0/*
 !qt6ct/
 qt6ct/*
 !qt6ct/qt6ct.conf
+!qt6ct/colors/
+qt6ct/colors/*
+!qt6ct/colors/yorha.conf
