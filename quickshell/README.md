@@ -43,7 +43,9 @@ cost 4.4% of the height on top of what the bar already takes.
   `Super+S` scratchpad holds windows, filled while it is open); the focused window, the
   player, the CPU/MEM/GPU readout and the clock on the right.
 - **rail** — network, bluetooth, audio, mic, backlight, battery, tray,
-  notifications, power. Popouts grow leftward out of it, into the screen.
+  notifications, power. While something records the mic, uses a camera or
+  shares the screen, a lit icon heads the rail (`services/Privacy.qml`, read
+  from PipeWire). Popouts grow leftward out of it, into the screen.
 
 Modules are divided by hairlines. `BarPill` is chromeless by default — a module
 is *content inside* the hull, not a surface of its own — and marks hover with

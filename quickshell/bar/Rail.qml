@@ -47,6 +47,19 @@ PanelWindow {
         anchors.horizontalCenter: parent.horizontalCenter
         spacing: 0
 
+        // Something is recording or watching. First on the rail and in the
+        // light, because it is the one thing here you did not ask to see.
+        RailIcon {
+            id: privacyIcon
+            visible: Privacy.active
+            icon: Privacy.screen ? "󰹑" : (Privacy.camera ? "󰄀" : "󰍬")
+            label: "In use"
+            statusText: Privacy.detail
+            live: true
+        }
+
+        Divider { visible: Privacy.active }
+
         RailIcon {
             id: netIcon
             icon: Net.icon
