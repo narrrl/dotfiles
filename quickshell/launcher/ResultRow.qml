@@ -28,6 +28,7 @@ Item {
         anchors.fill: parent
         anchors.leftMargin: -Theme.padS
         anchors.rightMargin: -Theme.padS
+        radius: Theme.radiusM
         color: root.selected ? Theme.treatmentSelectedFill : "transparent"
         opacity: root.selected ? 1 : 0
 

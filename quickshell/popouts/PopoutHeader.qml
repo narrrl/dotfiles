@@ -3,7 +3,7 @@ import "root:/config"
 import "root:/components"
 
 // Title bar for a popout, in the NieR header pattern: glyph, tracked heading,
-// right-aligned status text, and a hairline rule that ends in a square.
+// right-aligned status text, and a hairline rule that ends in a dot.
 Item {
     id: root
 
@@ -62,6 +62,7 @@ Item {
         anchors.right: parent.right
         width: Theme.marker
         height: Theme.marker
+        radius: width / 2
         color: Theme.accent
     }
 }

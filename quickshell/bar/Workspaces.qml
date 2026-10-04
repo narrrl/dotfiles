@@ -4,7 +4,7 @@ import Quickshell.Hyprland
 import "root:/config"
 import "root:/components"
 
-// Workspace indicator: leaning ticks that stretch open when focused. Occupied
+// Workspace indicator: soft pills that stretch open when focused. Occupied
 // workspaces fill in, urgent ones snap to the alarm colour.
 Item {
     id: root
@@ -82,6 +82,7 @@ Item {
                 Skew {
                     id: tick
                     anchors.fill: parent
+                    radius: height / 2
 
                     // Focused is a solid accent block. Urgent is a solid alarm
                     // block — it used to be the accent too, which made an
@@ -132,6 +133,7 @@ Item {
                 Rectangle {
                     visible: pip.info !== undefined && pip.info.fullscreen && !pip.focused
                     width: 4; height: 4
+                    radius: 2
                     color: Theme.accent
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.top: parent.bottom

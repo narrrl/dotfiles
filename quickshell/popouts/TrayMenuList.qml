@@ -106,6 +106,7 @@ Column {
                     anchors.fill: parent
                     anchors.leftMargin: Theme.padS
                     anchors.rightMargin: Theme.padS
+                    radius: Theme.radiusM
                     color: row.hovered ? Theme.accent : "transparent"
 
                     Behavior on color {

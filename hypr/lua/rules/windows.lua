@@ -54,7 +54,6 @@ hl.window_rule({ match = { class = GAMESCOPE }, workspace = "1" })
 
 -- Special workspaces
 hl.window_rule({ match = { class = "^(Spotify|spotify)$" }, workspace = "special:virtual" })
-hl.window_rule({ match = { class = "^(discord|vesktop)$" }, workspace = "special:discord" })
 
 -- ==========================================
 -- STEAM & GAMING

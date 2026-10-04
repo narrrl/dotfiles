@@ -7,7 +7,7 @@ import "root:/config"
 // came out as a faint milky film. This is the one row they share now.
 //
 // Rest is bare. Hover lifts the row onto the surface tone. The current item —
-// connected, in use — carries the NieR square marker at its leading edge and
+// connected, in use — carries a dot at its leading edge and
 // an accent glyph, and its label goes to full weight.
 Item {
     id: root
@@ -30,6 +30,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
+        radius: Theme.radiusM
         color: root.hovered ? Theme.treatmentHoverFill : "transparent"
 
         Behavior on color {
@@ -43,6 +44,7 @@ Item {
         anchors.leftMargin: 2
         width: root.current ? Theme.marker : 0
         height: width
+        radius: width / 2
         color: Theme.accent
 
         Behavior on width {

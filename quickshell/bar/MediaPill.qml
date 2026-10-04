@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Shapes
 import QtQuick.Window
 import Quickshell
+import Quickshell.Widgets
 import "root:/config"
 import "root:/components"
 import "root:/services"
@@ -41,12 +42,13 @@ BarPill {
         anchors.left: parent.left
         spacing: Theme.padS
 
-        // Album art in a hairline frame.
-        Rectangle {
+        // Album art, rounded, in a hairline frame.
+        ClippingRectangle {
             id: artFrame
             anchors.verticalCenter: parent.verticalCenter
             width: 24
             height: 24
+            radius: Theme.radiusS
             color: Theme.surface
             border.width: 1
             border.color: Theme.overlay
@@ -111,9 +113,9 @@ BarPill {
             }
         }
 
-        // Signal meter: five hairline bars, NieR's audio readout rather than a
+        // Signal meter: five thin rounded bars, NieR's audio readout rather than a
         // chunky equaliser. It moves only while audio is playing and settles
-        // into a row of square dots when paused — the channel is open, there
+        // into a row of dots when paused — the channel is open, there
         // is just nothing on it.
         //
         // Sampled from a timer rather than tweened by an infinite
@@ -181,7 +183,8 @@ BarPill {
 
                 Rectangle {
                     required property int index
-                    width: 1
+                    width: 2
+                    radius: 1
                     height: Media.playing ? eq.level(index) : 2
                     anchors.verticalCenter: parent.verticalCenter
                     color: Media.playing ? Theme.primary : Theme.muted

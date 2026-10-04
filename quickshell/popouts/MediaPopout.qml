@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Shapes
 import Quickshell
+import Quickshell.Widgets
 import "root:/config"
 import "root:/components"
 import "root:/services"
@@ -32,14 +33,15 @@ Popout {
             subtitle: Media.identity
         }
 
-        // Cover art in a hairline frame.
-        Rectangle {
+        // Cover art, rounded, in a hairline frame.
+        ClippingRectangle {
             id: artFrame
             anchors.top: header.bottom
             anchors.topMargin: Theme.padM
             anchors.left: parent.left
             width: 108
             height: 108
+            radius: Theme.radiusL
             color: Theme.surface
             border.width: 1
             border.color: Theme.overlay
@@ -216,6 +218,7 @@ Popout {
 
                     Skew {
                         anchors.fill: parent
+                        radius: height / 2
                         color: !chip.enabled
                             ? Theme.treatmentDisabledFill
                             : (chip.activeFocus
@@ -287,6 +290,7 @@ Popout {
 
         Skew {
             anchors.fill: parent
+            radius: width / 2
             color: {
                 if (!tb.enabled) return "transparent";
                 if (tb.activeFocus) return Theme.treatmentFocusFill;

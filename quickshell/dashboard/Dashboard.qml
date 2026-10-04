@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Shapes
 import Quickshell
+import Quickshell.Widgets
 import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Hyprland
@@ -241,7 +242,7 @@ PanelWindow {
 
                     Rule { height: root.columnHeight }
 
-                    // The month, Monday first. Today is the NieR cursor: an inverted square.
+                    // The month, Monday first. Today is the NieR cursor: an inverted disc.
                     Item {
                         id: month
                         implicitWidth: 238
@@ -311,7 +312,8 @@ PanelWindow {
                                     Rectangle {
                                         anchors.centerIn: parent
                                         width: 22
-                                        height: 20
+                                        height: 22
+                                        radius: 11
                                         visible: parent.modelData.today
                                         color: Theme.treatmentSelectedFill
                                     }
@@ -418,10 +420,11 @@ PanelWindow {
                             anchors.bottom: parent.bottom
                             visible: Media.hasPlayer
 
-                            Rectangle {
+                            ClippingRectangle {
                                 id: artFrame
                                 width: 96
                                 height: 96
+                                radius: Theme.radiusL
                                 color: Theme.surface
                                 border.width: 1
                                 border.color: Theme.overlay
@@ -506,6 +509,7 @@ PanelWindow {
                                     x: parent.width * Media.progress - width / 2
                                     width: Theme.marker
                                     height: Theme.marker
+                                    radius: width / 2
                                     color: Theme.accent
                                 }
                             }
@@ -596,7 +600,7 @@ PanelWindow {
         }
     }
 
-    // A square hairline button. Hover lifts it; nothing here inverts, since
+    // A round hairline button. Hover lifts it; nothing here inverts, since
     // inversion is reserved for the keyboard's cursor.
     component Transport: Item {
         id: tb
@@ -609,6 +613,7 @@ PanelWindow {
 
         Rectangle {
             anchors.fill: parent
+            radius: width / 2
             color: tbHover.hovered ? Theme.treatmentHoverFill : "transparent"
             border.width: 1
             border.color: tbHover.hovered ? Theme.treatmentHoverMark : Theme.overlay

@@ -3,9 +3,10 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// Polygon maths for panel shapes. Under the YoRHa theme nothing leans and
-// nothing is chopped (Theme.skew and Theme.cut are 0), so these collapse to
-// plain rectangles; they are kept so a shape can be brought back on purpose.
+// Shape maths for panels. Under the YoRHa theme nothing leans and nothing is
+// chopped (Theme.skew and Theme.cut are 0); surfaces are rounded rectangles
+// (roundedRect). The polygon helpers are kept so a shape can be brought back
+// on purpose.
 // Originally the Persona 5 panel language: everything leans, and corners
 // get chopped rather than rounded.
 Singleton {
@@ -87,6 +88,25 @@ Singleton {
             out.push(root.toward(p, pts[(i + 1) % n], size));
         }
         return root.closed(out);
+    }
+
+    // A polygon as an SVG path string, for PathSvg.
+    function svg(pts: var): string {
+        if (pts.length === 0) return "";
+        let d = `M ${pts[0].x} ${pts[0].y}`;
+        for (let i = 1; i < pts.length; i++) d += ` L ${pts[i].x} ${pts[i].y}`;
+        return d + " Z";
+    }
+
+    // A w x h rectangle with every corner rounded by `r`, clamped so a short
+    // piece becomes a pill rather than folding over itself.
+    function roundedRect(w: real, h: real, r: real): string {
+        const k = Math.max(0, Math.min(r, w / 2, h / 2));
+        if (k <= 0) return root.svg([Qt.point(0, 0), Qt.point(w, 0), Qt.point(w, h), Qt.point(0, h)]);
+        return `M ${k} 0 H ${w - k} A ${k} ${k} 0 0 1 ${w} ${k}`
+             + ` V ${h - k} A ${k} ${k} 0 0 1 ${w - k} ${h}`
+             + ` H ${k} A ${k} ${k} 0 0 1 0 ${h - k}`
+             + ` V ${k} A ${k} ${k} 0 0 1 ${k} 0 Z`;
     }
 
     function closed(pts: var): var {

@@ -3,7 +3,7 @@
 A NieR:Automata flavoured Quickshell desktop for Hyprland, kept dark and lit
 like its wallpaper: a lone figure at a porthole, the void outside, one planet's
 light. The planet white for anything live, the hull red for anything wrong,
-grey-green for everything else. Hairlines, square markers, corner ticks,
+grey-green for everything else. Hairlines, small dots, soft rounded corners,
 letter-spaced capitals, and selection shown by inverting the row. The bar, the
 rail and a thin border are one hull around the desktop, and the desktop is the
 porthole cut out of it.
@@ -91,7 +91,7 @@ left a thin strip of opening between itself and the rail.
 ## Dashboard
 
 `dashboard/Dashboard.qml` is a drawer that slides down out of the underside of
-the bar — clock click, `SUPER + I`, or `qs ipc call shell dashboard`. It is
+the bar — clock click, `SUPER + D`, or `qs ipc call shell dashboard`. It is
 painted in the hull colour and joins the bar through two concave fillets, so it
 reads as more of the hull rather than as a floating card (caelestia's idea).
 Four columns divided by hairlines: operator and time, the month, the system
@@ -262,10 +262,9 @@ brings the marker up to full light, but never inverts. Destructive-active is
 the same slab in red. The `treatment*` tokens in `Theme.qml` encode all of
 this; use them rather than picking colours per widget.
 
-**Markers, not slashes.** The current row, a button under the pointer and the
-end of a header rule carry a small square (`Theme.marker`). Popouts are framed
-by corner ticks (`Theme.tick`) in their tone colour; the border itself is
-structure and stays neutral.
+**Dots, not slashes.** The current row, a button under the pointer, the end of
+a header rule and a notification's urgency carry a small dot (`Theme.marker`).
+Borders are structure and stay neutral.
 
 **Flicker, not print.** Display text (`SplitText`) is upright, tracked by
 `Theme.tracking`, on a one-pixel soft drop. The two ghosts either side of it
@@ -332,16 +331,22 @@ inside the ship and the windows sit in the porthole. The bar and the rail draw
 no surface of their own and ignore exclusive zones; Frame reserves all four
 zones itself, so every piece is placed from the screen edge.
 
-**Rectangles, everywhere else.** NieR panels are plain boxes. `Theme.skew` and
-`Theme.cut` are both `0`, so `P5Panel`, `Skew` and `Geom` all collapse to
-rectangles; the knobs are kept so a shape can be brought back on purpose. The
-porthole's curve is the only one on screen, which is what lets it read.
+**Soft, everywhere else.** The porthole is the shape the desktop is built
+around, and every smaller surface is a gentler echo of it. `Theme.skew` and
+`Theme.cut` are `0`; `P5Panel` and `Skew` draw `Geom.roundedRect` with
+`Theme.radiusS` (pills, chips, meter tracks), `radiusM` (rows, buttons) or
+`radiusL`. `radiusL` is `frameRadius - padS`: anything inset by `padS` inside
+one of the frame's curves — a hovered notification in the drawer's corner —
+gets a corner concentric with it, so the gap stays even and nothing pokes past
+the curve. Free-standing panels (launcher, ask) take `frameRadius` itself.
+Toggles, transport buttons, workspace pips and today's date are pills or
+discs; album art is rounded via `ClippingRectangle`.
 
 **Motion glides.** No overshoot anywhere: things ease in on `OutCubic` or
 `OutExpo` and settle. Nothing scales up or nudges sideways on hover either;
-hover brightens and marks, the way NieR's menus do. Meters are thin segment
-rows, album art sits square in a hairline frame, and the bar's player shows a
-five-hairline signal meter.
+hover brightens and marks, the way NieR's menus do. Meters are one continuous
+rounded line that glides to its level, and the bar's player shows a
+five-line signal meter.
 
 Each surface is **one continuous slab**, with modules divided by hairline rules
 rather than by gaps. A row of separate floating cards reads as clutter; that is

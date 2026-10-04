@@ -5,9 +5,8 @@ import "root:/config"
 import "root:/components"
 
 // The base surface for everything in this shell. Under the YoRHa theme it is a
-// plain rectangle with a hairline border, an optional dot wash, an optional
-// accent bar down its leading edge, and optional corner ticks — the brackets
-// NieR frames its panels with.
+// rounded rectangle with a hairline border, an optional dot wash, an optional
+// accent bar down its leading edge, and optional corner ticks.
 //
 // The lean and chop knobs still exist and still work, so a caller can bring a
 // shape back on purpose, but Theme.skew and Theme.cut are both zero.
@@ -33,6 +32,10 @@ Item {
     // read as "cut" against the lean.
     property real chop: Theme.cut
     property var chopCorners: [1, 3]
+
+    // Corner radius. Used whenever the panel neither leans nor is chopped,
+    // which under the YoRHa theme is always.
+    property real radius: Theme.radiusM
 
     // Accent bar down the leading edge.
     property bool slash: false
@@ -67,6 +70,11 @@ Item {
     readonly property real leanInset:
         (vertical ? width : height) * Math.abs(lean)
 
+    // The outline every layer below is drawn from.
+    readonly property string outline: root.lean === 0 && root.chop <= 0
+        ? Geom.roundedRect(root.width, root.height, root.radius)
+        : Geom.svg(Geom.chamfer(root.polygon, root.chop, root.chopCorners).slice(0, -1))
+
     readonly property var polygon: vertical
         ? (leanLeft ? Geom.parallelogramVL(width, height, lean)
                     : Geom.parallelogramV(width, height, lean))
@@ -99,8 +107,8 @@ Item {
             strokeColor: "transparent"
             joinStyle: ShapePath.MiterJoin
 
-            PathPolyline {
-                path: Geom.chamfer(root.polygon, root.chop, root.chopCorners)
+            PathSvg {
+                path: root.outline
             }
         }
     }
@@ -123,8 +131,8 @@ Item {
                 strokeColor: "transparent"
                 joinStyle: ShapePath.MiterJoin
 
-                PathPolyline {
-                    path: Geom.chamfer(root.polygon, root.chop, root.chopCorners)
+                PathSvg {
+                    path: root.outline
                 }
             }
         }
@@ -148,8 +156,8 @@ Item {
             joinStyle: ShapePath.MiterJoin
             capStyle: ShapePath.FlatCap
 
-            PathPolyline {
-                path: Geom.chamfer(root.polygon, root.chop, root.chopCorners)
+            PathSvg {
+                path: root.outline
             }
         }
 
@@ -161,8 +169,8 @@ Item {
             joinStyle: ShapePath.MiterJoin
             capStyle: ShapePath.FlatCap
 
-            PathPolyline {
-                path: Geom.chamfer(root.polygon, root.chop, root.chopCorners)
+            PathSvg {
+                path: root.outline
             }
         }
     }

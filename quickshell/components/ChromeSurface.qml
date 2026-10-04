@@ -18,4 +18,5 @@ P5Panel {
     slashColor: tone
     slashWidth: 2
     padding: Theme.padS
+    radius: Theme.radiusM
 }

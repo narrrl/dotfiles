@@ -2,8 +2,12 @@ import QtQuick
 import "root:/config"
 import "root:/components"
 
-// A segmented load meter — upright ticks that light up left to right. Reads as
-// a gauge at a glance and keeps the panel language consistent.
+// A load meter: a soft rounded track with the level filling it from the left.
+// It used to be a row of separate segments; one continuous line reads calmer,
+// and a level that glides reads as a quantity rather than as a count.
+//
+// `segments`, `segmentWidth` and `spacing` are accepted and ignored, so the
+// call sites that still size a segmented meter do not have to be chased down.
 Item {
     id: root
 
@@ -12,42 +16,33 @@ Item {
     property real segmentWidth: 4
     property real spacing: 3
     property color activeColor: Theme.heat(value)
-    property color idleColor: Theme.alpha(Theme.outline, 0.55)
+    property color idleColor: Theme.alpha(Theme.outline, 0.35)
     property real lean: Theme.skew
 
-    readonly property int litCount: Math.round(Math.max(0, Math.min(100, value)) / 100 * segments)
-
     implicitWidth: segments * segmentWidth + (segments - 1) * spacing
-    implicitHeight: 14
+    implicitHeight: 4
 
-    Row {
+    readonly property real fraction: Math.max(0, Math.min(100, root.value)) / 100
+
+    Rectangle {
         anchors.fill: parent
-        spacing: root.spacing
+        radius: height / 2
+        color: root.idleColor
+    }
 
-        Repeater {
-            model: root.segments
+    Rectangle {
+        height: parent.height
+        // Never narrower than its own height, so a near-zero level is a dot
+        // rather than a sliver.
+        width: root.fraction > 0 ? Math.max(height, parent.width * root.fraction) : 0
+        radius: height / 2
+        color: root.activeColor
 
-            Item {
-                required property int index
-                width: root.segmentWidth
-                height: root.height
-
-                Skew {
-                    width: root.segmentWidth
-                    height: root.height
-                    lean: root.lean
-                    color: parent.index < root.litCount ? root.activeColor : root.idleColor
-
-                    // Peak segments glow, so a pegged CPU is visible peripherally.
-                    opacity: parent.index < root.litCount
-                        ? (parent.index >= root.segments - 2 ? 1.0 : 0.9)
-                        : 1.0
-
-                    Behavior on color {
-                        ColorAnimation { duration: Theme.durBase }
-                    }
-                }
-            }
+        Behavior on width {
+            NumberAnimation { duration: Theme.durSlow; easing.type: Easing.OutCubic }
+        }
+        Behavior on color {
+            ColorAnimation { duration: Theme.durBase }
         }
     }
 }

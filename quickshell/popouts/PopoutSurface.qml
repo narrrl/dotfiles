@@ -17,14 +17,16 @@ P5Panel {
     // Zero, not a transparent fill: P5Panel re-applies this opacity to the
     // fill colour, which turned "transparent" into 97% black.
     fillOpacity: attached ? 0 : 0.97
-    // The frame is structure: a neutral hairline. The tone goes into the
-    // corner ticks, which is where NieR puts the one bright mark on a panel.
+    // The frame is structure: a neutral hairline. A free-standing panel takes
+    // the frame's own corner radius, so it reads as a piece of the hull set
+    // down somewhere else rather than as a hard card.
     border: Theme.surfaceAlt
     borderWidth: attached ? 0 : Theme.stroke
     halftone: textured
     halftoneColor: tone
     halftoneOpacity: 0.06
-    ticks: !attached
+    ticks: false
+    radius: Theme.frameRadius
     tickColor: tone
     padding: Theme.padM
 }

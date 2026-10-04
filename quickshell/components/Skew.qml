@@ -3,7 +3,8 @@ import QtQuick.Shapes
 import "root:/config"
 import "root:/components"
 
-// A leaning block — the small-scale counterpart to P5Panel.
+// A small block — the small-scale counterpart to P5Panel. Upright and rounded
+// under the YoRHa theme; it still leans if given a lean.
 //
 // Every tick, rule, meter segment and slider rail in this shell leans at
 // Theme.skew. Shearing a plain Rectangle with a Matrix4x4 does that, but Qt
@@ -31,6 +32,11 @@ Shape {
     // rail slab.
     property bool vertical: false
 
+    // Corner radius for an upright piece, clamped to a pill. Small by default,
+    // so a meter segment or a hover wash reads soft rather than as a block;
+    // a hairline stays a hairline.
+    property real radius: Theme.radiusS
+
     // NOTE ON SIZING. The lean shifts one edge by `lean * height` (or by
     // `lean * width` when vertical), and the piece that actually gets painted is
     // what is left: a Skew declared 1px wide and 20px tall does not draw a 1px
@@ -55,14 +61,16 @@ Shape {
         joinStyle: ShapePath.MiterJoin
         capStyle: ShapePath.FlatCap
 
-        PathPolyline {
+        PathSvg {
             path: {
                 const w = root.width, h = root.height, l = root.lean;
+                if (l === 0)
+                    return Geom.roundedRect(w, h, root.radius);
                 if (root.vertical)
-                    return Geom.closed(root.leanLeft ? Geom.parallelogramVL(w, h, l)
-                                                     : Geom.parallelogramV(w, h, l));
-                return Geom.closed(root.leanLeft ? Geom.parallelogramL(w, h, l)
-                                                 : Geom.parallelogram(w, h, l));
+                    return Geom.svg(root.leanLeft ? Geom.parallelogramVL(w, h, l)
+                                                  : Geom.parallelogramV(w, h, l));
+                return Geom.svg(root.leanLeft ? Geom.parallelogramL(w, h, l)
+                                              : Geom.parallelogram(w, h, l));
             }
         }
     }

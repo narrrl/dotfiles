@@ -130,7 +130,8 @@ Popout {
                     Skew {
                         anchors.centerIn: parent
                         width: 26
-                        height: 24
+                        height: 26
+                        radius: 13
                         visible: cell.modelData.today
                         color: Theme.accent
                     }

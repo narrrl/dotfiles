@@ -2,8 +2,7 @@ import QtQuick
 import "root:/config"
 import "root:/components"
 
-// Hairline slider with a square handle, the NieR settings-menu slider. Drag or
-// click anywhere on the rail.
+// Hairline slider with a round handle. Drag or click anywhere on the rail.
 Item {
     id: root
 
@@ -68,6 +67,7 @@ Item {
     Skew {
         id: handle
         width: height
+        radius: height / 2
         height: root.activeFocus || hover.hovered || drag.active ? 12 : 10
         color: root.enabled ? Theme.text : Theme.treatmentDisabledText
         anchors.verticalCenter: parent.verticalCenter

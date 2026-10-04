@@ -190,9 +190,8 @@ Singleton {
     readonly property int frame: 8
     readonly property int frameRadius: 18
 
-    // Nothing leans and nothing is chopped. NieR panels are plain rectangles;
-    // their character comes from hairlines, square markers and corner ticks.
-    // Both knobs are kept so the shape code still has one place to ask.
+    // Nothing leans and nothing is chopped. Both knobs are kept so the shape
+    // code still has one place to ask.
     readonly property real skew: 0
     readonly property int cut: 0
     readonly property int stroke: 1
@@ -202,8 +201,21 @@ Singleton {
     readonly property real dropOffset: 0
     readonly property real keylineWidth: 0
 
-    // The square bullet that marks the current row, and the length of the
-    // corner ticks that frame a panel.
+    // Corners. Everything is soft — the porthole is the shape the whole
+    // desktop is built around, and every smaller surface is a gentler echo of
+    // it rather than a hard block.
+    //
+    //   radiusS  pills and small chips: buttons, tags, meter tracks
+    //   radiusM  rows and panels inside a surface
+    //   radiusL  anything that sits a padS inside the frame's own curve:
+    //            frameRadius - padS, so its corner is concentric with the
+    //            corner it sits in and the gap between them stays even
+    readonly property int radiusS: 6
+    readonly property int radiusM: 10
+    readonly property int radiusL: frameRadius - padS
+
+    // The dot that marks the current row, and the length of the corner
+    // ticks a panel can still ask for.
     readonly property int marker: 6
     readonly property int tick: 8
 

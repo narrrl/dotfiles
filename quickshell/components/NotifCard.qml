@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell
+import Quickshell.Widgets
 import Quickshell.Services.Notifications
 import "root:/config"
 import "root:/components"
@@ -7,14 +8,14 @@ import "root:/services"
 
 // One notification, used both in the history list and in the toast drawer.
 //
-// Laid out like an entry in NieR's message log rather than as a card: a square
-// marker and the sender's name running into a hairline, the summary, the body,
-// and hairline buttons for any actions. There is no panel of its own — both
-// places it appears are already hull surfaces — so rest is bare, hover lifts
-// the row onto the surface tone, and entries are divided by the hairline in
-// their own header.
+// Laid out like an entry in NieR's message log rather than as a card: a dot
+// and the sender's name running into a hairline, the summary, the body, and
+// pill buttons for any actions. There is no panel of its own — both places it
+// appears are already hull surfaces — so rest is bare, hover lifts the entry
+// onto a soft rounded wash, and entries are divided by the hairline in their
+// own header.
 //
-// Urgency is the marker: the light for normal, grey for low, red for critical.
+// Urgency is the dot: the light for normal, grey for low, red for critical.
 // A critical entry also takes the red into its sender line, and nothing else.
 Item {
     id: root
@@ -38,8 +39,14 @@ Item {
 
     implicitHeight: layout.implicitHeight + Theme.padM * 2
 
+    // Hover wash. Inset by padS and rounded by radiusL, which is the frame's
+    // radius less that inset: an entry in the bottom corner of the drawer gets
+    // a corner concentric with the drawer's own, instead of a square one that
+    // ran out past the drawer's curve.
     Rectangle {
         anchors.fill: parent
+        anchors.margins: Theme.padS / 2
+        radius: Theme.radiusL
         color: root.hovered ? Theme.treatmentHoverFill : "transparent"
 
         Behavior on color {
@@ -66,6 +73,7 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 width: Theme.marker
                 height: Theme.marker
+                radius: width / 2
                 color: root.tone
             }
 
@@ -162,12 +170,13 @@ Item {
             renderType: Text.NativeRendering
         }
 
-        // Inline image, when the sender supplied one, in a hairline frame.
-        Rectangle {
+        // Inline image, when the sender supplied one, rounded in a hairline frame.
+        ClippingRectangle {
             x: Theme.marker + Theme.padS
             visible: inline.source != "" && inline.status === Image.Ready
             width: inline.width + 2
             height: inline.height + 2
+            radius: Theme.radiusM
             color: "transparent"
             border.width: 1
             border.color: Theme.overlay
@@ -192,8 +201,7 @@ Item {
             Repeater {
                 model: root.notif?.actions ?? []
 
-                // A hairline button with a marker, the P5Button pattern at a
-                // smaller size. Hover lifts and lights it; it never inverts.
+                // A hairline pill. Hover lifts and lights it; it never inverts.
                 Item {
                     id: actionChip
                     required property var modelData
@@ -203,6 +211,7 @@ Item {
 
                     Rectangle {
                         anchors.fill: parent
+                        radius: height / 2
                         color: actionHover.hovered ? Theme.treatmentHoverFill : "transparent"
                         border.width: 1
                         border.color: actionHover.hovered ? Theme.treatmentHoverMark : Theme.overlay
@@ -221,6 +230,7 @@ Item {
                             anchors.verticalCenter: parent.verticalCenter
                             width: 4
                             height: 4
+                            radius: 2
                             color: actionLabel.color
                             opacity: actionHover.hovered ? 1 : 0.4
                         }

@@ -135,6 +135,7 @@ Item {
         anchors.leftMargin: root.wipeInset
         anchors.verticalCenter: parent.verticalCenter
         width: 2
+        radius: 1
         height: root.hovered ? Theme.marker * 2 : 0
         color: Theme.glow
 

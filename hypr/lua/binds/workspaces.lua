@@ -1,4 +1,4 @@
--- Workspaces, including the two scratchpads.
+-- Workspaces, including the scratchpad.
 
 local mod = "SUPER"
 
@@ -13,10 +13,6 @@ end
 hl.bind(mod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
 
--- Scratchpads: S holds anything virtual, D holds chat.
-local special = { S = "virtual", D = "discord" }
-
-for key, name in pairs(special) do
-    hl.bind(mod .. " + " .. key, hl.dsp.workspace.toggle_special(name))
-    hl.bind(mod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = "special:" .. name }))
-end
+-- Scratchpad: S holds anything virtual. Chat opens wherever it is launched.
+hl.bind(mod .. " + S", hl.dsp.workspace.toggle_special("virtual"))
+hl.bind(mod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:virtual" }))

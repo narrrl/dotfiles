@@ -90,6 +90,7 @@ FocusScope {
                 anchors.verticalCenter: parent.verticalCenter
                 width: Theme.marker
                 height: Theme.marker
+                radius: width / 2
                 color: label.color
                 opacity: root.highlighted ? 1.0 : 0.35
 
