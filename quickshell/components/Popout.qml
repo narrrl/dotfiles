@@ -92,15 +92,25 @@ PopupWindow {
     // 0 = tucked behind the frame, 1 = fully out.
     property real reveal: 0
 
-    // Placement, in the trigger's own coordinates. Worked out once per open
+    // Placement, in the trigger window's coordinates. Worked out once per open
     // in place(): item positions are not bindable, and a popout should not
     // drift while it is up anyway.
     property real placeX: 0
     property real placeY: 0
 
+    // The popout anchors to the trigger's window, not to the trigger. Rail
+    // icons scale up on hover, and an anchor rect given in an item's own
+    // coordinates is mapped through that item's transform: a panel placed
+    // 360px left of a 1.08-scaled icon landed 29px further left still, off
+    // the rail — by however far the hover scale had got when the popout
+    // opened. The window's content item never transforms.
+    readonly property Item anchorFrame: anchorItem?.Window.contentItem ?? null
+
     function place() {
         if (!anchorItem) return;
-        const p = anchorItem.mapToItem(null, 0, 0);
+        // The trigger's centre. A transform about the centre leaves it where
+        // it is, so this is the same whatever the hover scale is doing.
+        const c = anchorItem.mapToItem(null, anchorItem.width / 2, anchorItem.height / 2);
         const winW = anchorItem.Window.width;
         const winH = anchorItem.Window.height;
         const f = root.fillet, R = Theme.frameRadius;
@@ -110,40 +120,40 @@ PopupWindow {
             // edge, so its x = 0 is that edge and its y = 0 is the bar's
             // underside.
             const h = root.contentHeight + f * 2;
-            const y = p.y + anchorItem.height / 2 - h / 2;
+            const y = c.y - h / 2;
             const lo = R, hi = winH - Theme.frame - R - h;
 
             if (y < lo + root.dockReach) {
                 root.dock = "topRight";
-                root.placeY = -root.seam - p.y;
+                root.placeY = -root.seam;
             } else if (y > hi - root.dockReach) {
                 root.dock = "bottomRight";
-                root.placeY = winH - Theme.frame + root.seam - root.windowHeight - p.y;
+                root.placeY = winH - Theme.frame + root.seam - root.windowHeight;
             } else {
                 root.dock = "right";
-                root.placeY = y - p.y;
+                root.placeY = y;
             }
-            root.placeX = root.seam - root.windowWidth - p.x;
+            root.placeX = root.seam - root.windowWidth;
         } else {
             // The bar's window is the full screen width, so the opening runs
             // from `frame` to `width - railWidth`.
             const w = root.contentWidth + f * 2;
-            const x = p.x + anchorItem.width / 2 - w / 2;
+            const x = c.x - w / 2;
             const lo = Theme.frame + R - f;
             const hi = winW - Theme.railWidth - R + f - w;
 
             if (x > hi - root.dockReach) {
                 root.dock = "topRight";
-                root.placeX = winW - Theme.railWidth + root.seam - root.windowWidth - p.x;
+                root.placeX = winW - Theme.railWidth + root.seam - root.windowWidth;
             } else {
                 root.dock = "top";
-                root.placeX = Math.max(lo, x) - p.x;
+                root.placeX = Math.max(lo, x);
             }
-            root.placeY = winH - root.seam - p.y;
+            root.placeY = winH - root.seam;
         }
     }
 
-    anchor.item: anchorItem
+    anchor.item: anchorFrame
     anchor.rect.x: root.placeX
     anchor.rect.y: root.placeY
     anchor.rect.w: 1
