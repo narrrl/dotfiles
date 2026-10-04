@@ -252,7 +252,8 @@ session.
 
 It is the wallpaper, barely softened, with the face set in the dark of the
 porthole: the mark, the time in light display type, the date, "Take your
-time.", a status log
+time." glowing faintly with the odd flicker (`components/GlowText.qml`), a
+status log
 (battery, network, what is playing, unread notices), and a rounded field that
 fills with dots as you type. The dots breathe while PAM checks; a wrong
 password turns them and the field's rim to rust and nudges the field once.

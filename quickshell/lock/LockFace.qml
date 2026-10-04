@@ -132,15 +132,14 @@ Item {
         }
 
         // The one line the face says to you. Nothing here is in a hurry.
-        Text {
-            topPadding: Math.round(Theme.padL * surface.uiScale)
-            leftPadding: Math.round(4 * surface.uiScale)
+        Item { width: 1; height: Math.round(Theme.padL * surface.uiScale) }
+
+        GlowText {
+            x: Math.round(4 * surface.uiScale)
             text: "Take your time."
             color: Theme.subtext
-            font.family: Theme.fontDisplay
-            font.pixelSize: Math.round(Theme.fsLarge * surface.uiScale)
-            font.weight: Font.Light
-            renderType: Text.NativeRendering
+            glowColor: Theme.accent
+            pixelSize: Math.round(Theme.fsLarge * surface.uiScale)
         }
 
         Item { width: 1; height: Math.round(Theme.padXL * surface.uiScale) }

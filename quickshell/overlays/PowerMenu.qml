@@ -98,15 +98,13 @@ PanelWindow {
             size: 26
         }
 
-        Text {
-            topPadding: Theme.padM
+        Item { width: 1; height: Theme.padM }
+
+        GlowText {
             text: "Take your time."
-            color: Theme.accent
-            font.family: Theme.fontDisplay
-            font.pixelSize: Theme.fsHuge
-            font.weight: Font.Light
-            font.letterSpacing: 1
-            renderType: Text.NativeRendering
+            pixelSize: Theme.fsHuge
+            letterSpacing: 1
+            active: root.open
         }
 
         Text {
