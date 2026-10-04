@@ -405,6 +405,10 @@ network and bluetooth, but keep running as the secret and pairing agents.
   Selection is the light slab with ink text; only destructive actions are red.
   The theme name is also in `xsettingsd/xsettingsd.conf` and has to be set with
   `gsettings` for portal-aware apps.
+- **Type** — one sans and one mono everywhere: Noto Sans for interface text
+  and JetBrainsMono Nerd Font for figures and code, in the shell
+  (`Theme.fontDisplay` / `fontMono`), GTK (`settings.ini` and the gsettings
+  `font-name` / `monospace-font-name`), qt6ct and Hyprland's own text.
 - **Qt** — qt6ct with `qt6ct/colors/yorha.conf`, the same palette in
   `QPalette` roles, drawn with the Darkly style (package `darkly-bin`) for
   rounded controls. Fusion is the fallback if Darkly is missing.

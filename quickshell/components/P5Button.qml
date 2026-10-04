@@ -142,8 +142,11 @@ FocusScope {
         }
     }
 
+    // A press sinks the button one whole pixel instead of shrinking it, so
+    // its label stays on the pixel grid.
     transform: Translate {
         x: root.pressed ? 0 : (root.highlighted ? root.lunge : 0)
+        y: root.pressed ? 1 : 0
 
         Behavior on x {
             NumberAnimation {
@@ -153,10 +156,6 @@ FocusScope {
         }
     }
 
-    scale: root.pressed ? 0.97 : 1.0
-    Behavior on scale {
-        NumberAnimation { duration: Theme.durFast; easing.type: Easing.OutExpo }
-    }
 
     HoverHandler {
         id: hover

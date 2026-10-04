@@ -79,7 +79,6 @@ PopupWindow {
         closeAnim.stop();
         shown = false;
         holder.opacity = 0;
-        holder.scale = 0.94;
         holder.x = root.bleed;
         PopupCoordinator.release(root);
     }
@@ -106,9 +105,9 @@ PopupWindow {
         width: root.contentWidth
         height: root.contentHeight
 
+        // It slides in from the tray and fades, and never scales: scaling
+        // stretches the menu's text while it moves.
         opacity: 0
-        scale: 0.94
-        transformOrigin: Item.Right
 
         PopoutSurface {
             anchors.fill: parent
@@ -137,10 +136,6 @@ PopupWindow {
             to: 1.0; duration: Theme.durBase; easing.type: Easing.OutExpo
         }
         NumberAnimation {
-            target: holder; property: "scale"
-            to: 1.0; duration: Theme.durSlow; easing.type: Easing.OutCubic
-        }
-        NumberAnimation {
             target: holder; property: "x"
             from: root.bleed + 14; to: root.bleed
             duration: Theme.durSlow; easing.type: Easing.OutCubic
@@ -152,10 +147,6 @@ PopupWindow {
         NumberAnimation {
             target: holder; property: "opacity"
             to: 0.0; duration: Theme.durFast; easing.type: Easing.InQuad
-        }
-        NumberAnimation {
-            target: holder; property: "scale"
-            to: 0.96; duration: Theme.durFast; easing.type: Easing.InQuad
         }
         onFinished: {
             root.shown = false;
