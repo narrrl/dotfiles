@@ -3,7 +3,10 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// Polygon maths for the Persona 5 panel language: everything leans, and corners
+// Polygon maths for panel shapes. Under the YoRHa theme nothing leans and
+// nothing is chopped (Theme.skew and Theme.cut are 0), so these collapse to
+// plain rectangles; they are kept so a shape can be brought back on purpose.
+// Originally the Persona 5 panel language: everything leans, and corners
 // get chopped rather than rounded.
 Singleton {
     id: root

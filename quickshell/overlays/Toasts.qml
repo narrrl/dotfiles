@@ -23,8 +23,8 @@ PanelWindow {
 
     anchors { top: true; right: true }
     margins {
-        top: Theme.barHeight + Theme.barMargin * 2
-        right: Theme.barMargin
+        top: Theme.barHeight + Theme.frame
+        right: Theme.railWidth + Theme.frame
     }
 
     implicitWidth: 400
@@ -115,7 +115,7 @@ PanelWindow {
                     onFinished: root.retire(toast.modelData)
                 }
 
-                // Slide in from the right, Persona-style.
+                // Slide in from the right.
                 opacity: 0
                 transform: Translate { id: shove; x: 60 }
 
@@ -135,7 +135,7 @@ PanelWindow {
                         target: shove; property: "x"
                         from: 60; to: 0
                         duration: Theme.durSlow
-                        easing.type: Easing.OutBack
+                        easing.type: Easing.OutCubic
                     }
                 }
 

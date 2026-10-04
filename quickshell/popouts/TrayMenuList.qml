@@ -84,19 +84,12 @@ Column {
             width: root.width
 
             // ------------------------------------------------------ separator
-            //
-            // A horizontal rule slants by a fraction of its own width, so at
-            // menu width the house lean turns a hairline into a 30px diagonal
-            // gash straight across the entries above and below it. The rise is
-            // pinned in pixels instead, matching the rail's dividers.
-            Skew {
+            Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 visible: row.entry.isSeparator
                 width: parent.width - Theme.padM * 2
                 x: Theme.padM
                 height: 1
-                vertical: true
-                lean: width > 0 ? 5 / width : 0
                 color: Theme.alpha(Theme.outline, 0.9)
             }
 
@@ -226,20 +219,12 @@ Column {
                     NumberAnimation { duration: Theme.durFast; easing.type: Easing.OutExpo }
                 }
 
-                // The guide rule down the side of an expanded submenu.
-                //
-                // Same trap the separators hit, from the other direction: the
-                // house lean is a fraction of *height*, and this rule is as tall
-                // as the submenu. A Wi-Fi list of thirty networks made it 600px
-                // tall, which sheared a 1px hairline into a 150px crimson wedge
-                // lying across every entry in the list. The rise is pinned in
-                // pixels, and it is declared before the entries so it can never
-                // paint over them again.
-                Skew {
+                // The guide rule down the side of an expanded submenu,
+                // declared before the entries so it can never paint over them.
+                Rectangle {
                     x: Theme.padS
                     width: 1
                     height: parent.height
-                    lean: height > 0 ? 5 / height : 0
                     visible: row.expanded
                     color: Theme.alpha(Theme.accent, 0.8)
                 }

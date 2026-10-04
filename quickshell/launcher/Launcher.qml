@@ -527,7 +527,7 @@ PanelWindow {
         }
         NumberAnimation {
             target: rise; property: "y"
-            from: 24; to: 0; duration: Theme.durSlow; easing.type: Easing.OutBack
+            from: 24; to: 0; duration: Theme.durSlow; easing.type: Easing.OutCubic
         }
     }
 

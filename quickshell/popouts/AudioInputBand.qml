@@ -36,7 +36,6 @@ Item {
                 font.family: Theme.fontDisplay
                 font.pixelSize: Theme.fsSmall
                 font.weight: Font.DemiBold
-                font.italic: true
                 renderType: Text.NativeRendering
             }
 

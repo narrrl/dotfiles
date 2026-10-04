@@ -8,9 +8,10 @@ import "root:/ask"
 import "root:/overlays"
 import "root:/lock"
 
-// Takemi — a Persona 5 flavoured Quickshell desktop.
+// Takemi — a YoRHa-dark Quickshell desktop: NieR:Automata's interface
+// language, lit like the wallpaper.
 //
-//   bar/       the top bar and its modules
+//   bar/       the hull, the top bar, the rail and their modules
 //   popouts/   hover panels hanging off bar modules
 //   launcher/  the application launcher
 //   ask/       the question panel, dropped from the top edge
@@ -33,6 +34,12 @@ ShellRoot {
         void Bt.available;
         void Actions.powerMenuOpen;
         void Apps.index;
+    }
+
+    Variants {
+        model: Quickshell.screens
+
+        Frame {}
     }
 
     Variants {

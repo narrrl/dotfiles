@@ -1,0 +1,64 @@
+# YoRHa dark — matched to ~/.config/quickshell/config/Theme.qml.
+#
+# The ground and the text are the space-1 wallpaper's void and sage grey. The
+# eight hues are the same few steps of earth NieR's world is painted in —
+# rust, moss, sand, dusk — pulled down to sit in that void without glowing.
+# Selection and search invert, the way NieR's cursor does.
+
+[colors.primary]
+background = "#0f110e"
+foreground = "#ccd2cb"
+dim_foreground = "#79847a"
+bright_foreground = "#eef1ea"
+
+[colors.cursor]
+text = "#0f110e"
+cursor = "#eef1ea"
+
+[colors.vi_mode_cursor]
+text = "#0f110e"
+cursor = "#bcc1bf"
+
+[colors.search.matches]
+foreground = "#0f110e"
+background = "#9fa7a2"
+
+[colors.search.focused_match]
+foreground = "#0f110e"
+background = "#eef1ea"
+
+[colors.footer_bar]
+foreground = "#0f110e"
+background = "#9fa7a2"
+
+[colors.hints.start]
+foreground = "#0f110e"
+background = "#c9b27c"
+
+[colors.hints.end]
+foreground = "#0f110e"
+background = "#9fa7a2"
+
+[colors.selection]
+text = "#0f110e"
+background = "#bcc1bf"
+
+[colors.normal]
+black = "#20241f"
+red = "#c8684f"
+green = "#8fa37e"
+yellow = "#c9b27c"
+blue = "#7f9aa8"
+magenta = "#a48ba0"
+cyan = "#86a8a0"
+white = "#bcc1bf"
+
+[colors.bright]
+black = "#545c52"
+red = "#d98068"
+green = "#a5b893"
+yellow = "#d8c491"
+blue = "#96afbc"
+magenta = "#b8a0b4"
+cyan = "#9cbdb4"
+white = "#eef1ea"

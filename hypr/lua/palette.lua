@@ -1,6 +1,7 @@
--- Mocha palette — kept in step with ~/.config/quickshell/config/Theme.qml.
+-- YoRHa dark palette — kept in step with ~/.config/quickshell/config/Theme.qml.
 --
--- Catppuccin Mocha ground, blue accent, mauve alarm. Nothing else carries hue.
+-- The wallpaper's grey-green void for the ground, its planet light as the
+-- accent, the hull's red indicator as the alarm. Nothing else carries hue.
 --
 -- Returned as a table, so every module that paints something does
 --   local c = require("lua/palette")
@@ -9,44 +10,45 @@
 local c = {}
 
 -- ---------------------------------------------------------------- THE KNOBS
--- Two colours in this setup: blue for anything live (window borders, group
--- indicators, focus), mauve for anything wrong. Change these lines and every
+-- Two colours in this setup: the planet light for anything live (window
+-- borders, group indicators, focus), the hull red for anything wrong. Change these lines and every
 -- painted edge recolours with them.
 --
 -- Keep them in step with `accent` / `alarm` in
 -- ~/.config/quickshell/config/Theme.qml, which is what colours the shell.
 -- Those are the only places the colours are written.
-c.accent = "rgb(89b4fa)"
-c.alarm = "rgb(cba6f7)"
+c.accent = "rgb(eef1ea)"
+c.alarm = "rgb(c8684f)"
 
-c.accentDim = "rgb(5a7dc0)"
-c.accentSoft = "rgb(b4befe)"
+c.accentDim = "rgb(8e978d)"
+c.accentSoft = "rgb(bcc1bf)"
 
 -- ------------------------------------------------------------------ neutrals
-c.ink = "rgb(11111b)"
+c.ink = "rgb(090a08)"
 
-c.base = "rgb(1e1e2e)"
-c.mantle = "rgb(181825)"
-c.surface = "rgb(313244)"
-c.surfaceAlt = "rgb(45475a)"
-c.overlay = "rgb(585b70)"
-c.outline = "rgb(6c7086)"
+c.base = "rgb(0f110e)"
+c.mantle = "rgb(0c0d0b)"
+c.surface = "rgb(161915)"
+c.surfaceAlt = "rgb(20241f)"
+c.overlay = "rgb(383e35)"
+c.outline = "rgb(545c52)"
 
-c.text = "rgb(cdd6f4)"
-c.subtext = "rgb(a6adc8)"
-c.muted = "rgb(7f849c)"
+c.text = "rgb(ccd2cb)"
+c.subtext = "rgb(9fa7a2)"
+c.muted = "rgb(79847a)"
 
 -- Semantic aliases, so existing references resolve without inventing hues.
 c.primary = c.text
-c.primaryDim = "rgb(9399b2)"
+c.primaryDim = "rgb(8e978d)"
 c.glow = c.accent
 c.blue = c.accent
 c.deep = c.surfaceAlt
 c.warn = c.alarm
 c.ok = c.text
 
--- Blue into lavender, on the diagonal. Both ends are the accent's own family,
--- so the border never reads as two colours arguing.
-c.activeBorder = { colors = { c.accent, c.accentSoft }, angle = 135 }
+-- The focused window is lit by the planet: full light at the top-left, the
+-- suit's grey at the far corner. One family, so it reads as light falling
+-- across the frame rather than as two colours.
+c.activeBorder = { colors = { c.accent, c.accentDim }, angle = 135 }
 
 return c

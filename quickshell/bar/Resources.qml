@@ -121,7 +121,6 @@ BarPill {
                 font.family: Theme.fontDisplay
                 font.pixelSize: Theme.fsBody
                 font.weight: Theme.weightDisplay
-                font.italic: true
                 font.letterSpacing: 0.5
                 renderType: Text.NativeRendering
 

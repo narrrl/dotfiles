@@ -21,8 +21,8 @@ Item {
     // The card's own geometry, published so anything drawn along its edges —
     // the toast countdown rule — can stay inside the chopped corners instead of
     // running out past them.
-    readonly property real lean: 0.05
-    readonly property real chop: 12
+    readonly property real lean: Theme.skew
+    readonly property real chop: Theme.cut
 
     implicitHeight: panel.height
 
@@ -84,8 +84,7 @@ Item {
                 wrapMode: Text.WordWrap
                 font.family: Theme.fontDisplay
                 font.pixelSize: Theme.fsBody
-                font.weight: Font.Black
-                font.italic: true
+                font.weight: Font.DemiBold
                 renderType: Text.NativeRendering
             }
 
@@ -141,7 +140,6 @@ Item {
                             color: actionHover.hovered ? Theme.ink : Theme.text
                             font.family: Theme.fontDisplay
                             font.pixelSize: Theme.fsMicro
-                            font.italic: true
                             font.weight: Font.DemiBold
                             renderType: Text.NativeRendering
                         }

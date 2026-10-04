@@ -145,8 +145,7 @@ Popout {
                         }
                         font.family: Theme.fontDisplay
                         font.pixelSize: Theme.fsSmall
-                        font.italic: true
-                        font.weight: cell.modelData.today ? Font.Black : Font.Medium
+                        font.weight: cell.modelData.today ? Font.DemiBold : Font.Medium
                         renderType: Text.NativeRendering
                     }
                 }

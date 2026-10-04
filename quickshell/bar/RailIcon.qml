@@ -147,7 +147,7 @@ Item {
 
     scale: root.hovered ? 1.08 : 1.0
     Behavior on scale {
-        NumberAnimation { duration: Theme.durBase; easing.type: Easing.OutBack }
+        NumberAnimation { duration: Theme.durBase; easing.type: Easing.OutCubic }
     }
 
     onAlarmChanged: if (alarm) glyph.bump()

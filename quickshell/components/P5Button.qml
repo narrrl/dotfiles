@@ -1,7 +1,8 @@
 import QtQuick
 import "root:/config"
 
-// Chopped, leaning button with one activation path for pointer and keyboard.
+// NieR menu button: a hairline box with a square marker that lights when the
+// button is pointed at or chosen. One activation path for pointer and keyboard.
 FocusScope {
     id: root
 
@@ -11,7 +12,7 @@ FocusScope {
     property bool destructive: false
     property bool selected: false
     property real lean: Theme.skew
-    property real lunge: 6
+    property real lunge: 4
     property bool wide: false
 
     signal clicked()
@@ -24,7 +25,7 @@ FocusScope {
     // Keyboard focus and roving selection invert the slab to solid accent.
     // Pointer hover stays a keyline change, so the two never look alike and a
     // mouse user never sees the "selected" treatment by accident. Destructive
-    // buttons keep their own mauve inversion for both.
+    // buttons keep their own red inversion for both.
     readonly property bool inverted: root.enabled && !root.destructive && root.focusedOrSelected
 
     // Pointer activation must not turn a transient action into the black/white
@@ -70,8 +71,6 @@ FocusScope {
             return Theme.alpha(root.accent, 0.55);
         }
         borderWidth: Theme.stroke
-        slash: !root.highlighted
-        slashColor: root.destructive ? Theme.alarm : root.accent
 
         Behavior on fillOpacity {
             NumberAnimation { duration: Theme.durFast }
@@ -82,6 +81,20 @@ FocusScope {
             anchors.verticalCenter: parent.verticalCenter
             anchors.left: parent.left
             spacing: Theme.padM
+
+            // The marker. Dim at rest, full strength under the pointer or the
+            // cursor, in whatever colour the label is wearing.
+            Rectangle {
+                anchors.verticalCenter: parent.verticalCenter
+                width: Theme.marker
+                height: Theme.marker
+                color: label.color
+                opacity: root.highlighted ? 1.0 : 0.35
+
+                Behavior on opacity {
+                    NumberAnimation { duration: Theme.durFast }
+                }
+            }
 
             Icon {
                 anchors.verticalCenter: parent.verticalCenter
@@ -100,6 +113,7 @@ FocusScope {
             }
 
             Text {
+                id: label
                 anchors.verticalCenter: parent.verticalCenter
                 text: root.text
                 color: {
@@ -114,8 +128,7 @@ FocusScope {
                 font.family: Theme.fontDisplay
                 font.pixelSize: Theme.fsBody
                 font.weight: Theme.weightDisplay
-                font.italic: true
-                font.letterSpacing: 1.5
+                font.letterSpacing: Theme.tracking
                 font.capitalization: Font.AllUppercase
                 renderType: Text.NativeRendering
 
@@ -132,7 +145,7 @@ FocusScope {
         Behavior on x {
             NumberAnimation {
                 duration: Theme.durBase
-                easing.type: Easing.OutBack
+                easing.type: Easing.OutCubic
             }
         }
     }

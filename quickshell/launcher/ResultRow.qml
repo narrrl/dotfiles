@@ -46,7 +46,7 @@ Item {
         color: Theme.accent
 
         Behavior on height {
-            NumberAnimation { duration: Theme.durFast; easing.type: Easing.OutBack }
+            NumberAnimation { duration: Theme.durFast; easing.type: Easing.OutCubic }
         }
     }
 

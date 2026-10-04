@@ -75,7 +75,7 @@ Item {
                 Behavior on width {
                     NumberAnimation {
                         duration: Theme.durSlow
-                        easing.type: Easing.OutBack
+                        easing.type: Easing.OutCubic
                         easing.overshoot: 1.6
                     }
                 }
@@ -122,7 +122,6 @@ Item {
                     font.family: Theme.fontDisplay
                     font.pixelSize: Theme.fsSmall
                     font.weight: Theme.weightDisplay
-                    font.italic: true
                     renderType: Text.NativeRendering
 
                     Behavior on opacity {

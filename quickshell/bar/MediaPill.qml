@@ -109,7 +109,6 @@ BarPill {
                 font.pixelSize: Theme.fsSmall
                 font.family: Theme.fontDisplay
                 font.weight: Font.DemiBold
-                font.italic: true
                 renderType: Text.NativeRendering
             }
 
@@ -217,7 +216,7 @@ BarPill {
         id: titleGlitch
         NumberAnimation {
             target: artFrame; property: "rotation"
-            from: -8; to: 0; duration: Theme.durSlow; easing.type: Easing.OutBack
+            from: -8; to: 0; duration: Theme.durSlow; easing.type: Easing.OutCubic
         }
     }
 

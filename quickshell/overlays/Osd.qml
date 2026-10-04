@@ -111,8 +111,6 @@ PanelWindow {
         slash: true
         slashColor: root.tone
         slashWidth: 5
-        lean: 0.09
-        chop: 14
         padding: Theme.padM
 
         opacity: root.shown ? 1 : 0
@@ -122,7 +120,7 @@ PanelWindow {
             NumberAnimation { id: fade; duration: Theme.durBase }
         }
         Behavior on scale {
-            NumberAnimation { duration: Theme.durSlow; easing.type: Easing.OutBack }
+            NumberAnimation { duration: Theme.durSlow; easing.type: Easing.OutCubic }
         }
 
         Icon {

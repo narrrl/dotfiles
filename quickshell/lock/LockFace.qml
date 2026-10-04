@@ -75,7 +75,7 @@ Item {
         reveal: 0
         wedgeSpan: 0.30
         wedgeOpacity: 0.30
-        stripeOpacity: 0.07
+        stripeOpacity: 0.04
     }
 
     // ------------------------------------------------------------ clock
@@ -84,17 +84,14 @@ Item {
         precision: SystemClock.Minutes
     }
 
-    // The house mark, same wordmark the bar carries far left. Small, above the
-    // clock — the lock's hero is the time, not the branding.
-    SplitText {
+    // The house mark, the same porthole the bar carries far left. Small, above
+    // the clock — the lock's hero is the time, not the branding.
+    Porthole {
         id: mark
         anchors.left: timeBlock.left
         anchors.bottom: timeBlock.top
-        anchors.bottomMargin: 6
-        text: "P5"
-        pixelSize: Theme.fsTitle
-        split: 2
-        letterSpacing: 0
+        anchors.bottomMargin: 10
+        size: 28
         opacity: timeBlock.opacity
     }
 
@@ -110,7 +107,6 @@ Item {
             text: Qt.formatDateTime(clock.date, "HH")
             pixelSize: Theme.fsMega * 1.7
             split: 5
-            splitOpacity: 0.85
         }
 
         SplitText {
@@ -118,7 +114,6 @@ Item {
             pixelSize: Theme.fsMega * 1.7
             color: Theme.primary
             split: 5
-            splitOpacity: 0.6
         }
 
         Text {
@@ -214,8 +209,6 @@ Item {
             anchors.topMargin: Theme.padL
             width: Math.min(380, authBlock.width - Theme.padL * 2)
             height: 56
-            lean: 0.12
-            chop: 16
             fill: Theme.mantle
             fillOpacity: 0.94
             border: surface.failed
@@ -251,7 +244,7 @@ Item {
                             property: "scale"
                             from: 0.2; to: 1
                             duration: Theme.durBase
-                            easing.type: Easing.OutBack
+                            easing.type: Easing.OutCubic
                         }
                     }
                 }
@@ -399,7 +392,7 @@ Item {
         }
         NumberAnimation {
             target: shakeShift; property: "x"
-            to: 0; duration: 90; easing.type: Easing.OutBack
+            to: 0; duration: 90; easing.type: Easing.OutCubic
         }
     }
 
@@ -424,7 +417,7 @@ Item {
         }
         NumberAnimation {
             target: shakeShift; property: "y"
-            from: 40; to: 0; duration: Theme.durLazy; easing.type: Easing.OutBack
+            from: 40; to: 0; duration: Theme.durLazy; easing.type: Easing.OutCubic
         }
     }
 }

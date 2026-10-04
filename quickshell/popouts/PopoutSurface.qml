@@ -10,20 +10,14 @@ P5Panel {
 
     fill: Theme.mantle
     fillOpacity: 0.97
-    // A neutral keyline. `tone` used to colour the whole border at 75%, and
-    // since most panels pass the resting text colour that put a pale 2px frame
-    // around every popout — the loudest thing on screen for no reason. The
-    // tone lives in the slash now; the frame is structure.
+    // The frame is structure: a neutral hairline. The tone goes into the
+    // corner ticks, which is where NieR puts the one bright mark on a panel.
     border: Theme.surfaceAlt
     borderWidth: Theme.stroke
     halftone: textured
     halftoneColor: tone
     halftoneOpacity: 0.06
-    sheen: true
-    slash: true
-    slashColor: tone
-    slashWidth: 5
-    lean: 0.06
-    chop: 16
+    ticks: true
+    tickColor: tone
     padding: Theme.padM
 }

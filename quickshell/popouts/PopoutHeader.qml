@@ -2,8 +2,8 @@ import QtQuick
 import "root:/config"
 import "root:/components"
 
-// Title bar for a popout: glyph, print-shadowed heading, right-aligned status
-// text, and a rule with a chopped accent tail.
+// Title bar for a popout, in the NieR header pattern: glyph, tracked heading,
+// right-aligned status text, and a hairline rule that ends in a square.
 Item {
     id: root
 
@@ -31,7 +31,6 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             text: root.title.toUpperCase()
             pixelSize: Theme.fsLarge
-            letterSpacing: 1.5
         }
     }
 
@@ -50,19 +49,19 @@ Item {
 
     Rectangle {
         anchors.bottom: parent.bottom
+        anchors.bottomMargin: (Theme.marker - 1) / 2
         anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.rightMargin: 22
-        height: 2
-        color: Theme.alpha(root.accent, 0.8)
+        anchors.right: endMark.left
+        height: 1
+        color: Theme.alpha(root.accent, 0.6)
     }
 
-    Skew {
+    Rectangle {
+        id: endMark
         anchors.bottom: parent.bottom
         anchors.right: parent.right
-        width: 16
-        height: 2
+        width: Theme.marker
+        height: Theme.marker
         color: Theme.accent
-        lean: 1.4
     }
 }

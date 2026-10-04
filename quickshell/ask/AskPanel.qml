@@ -394,7 +394,7 @@ PanelWindow {
         NumberAnimation {
             target: drop; property: "y"
             from: -shell.height; to: 0
-            duration: Theme.durSlow; easing.type: Easing.OutBack
+            duration: Theme.durSlow; easing.type: Easing.OutCubic
         }
     }
 

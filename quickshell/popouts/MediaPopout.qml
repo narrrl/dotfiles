@@ -123,8 +123,7 @@ Popout {
                 color: Theme.text
                 pixelSize: Theme.fsLarge
                 family: Theme.fontDisplay
-                weight: Font.Black
-                italic: true
+                weight: Font.DemiBold
             }
 
             Marquee {
@@ -134,7 +133,6 @@ Popout {
                 color: Theme.primary
                 pixelSize: Theme.fsSmall
                 family: Theme.fontDisplay
-                italic: true
                 weight: Font.DemiBold
             }
 
@@ -359,7 +357,7 @@ Popout {
             color: {
                 if (!tb.enabled) return Theme.alpha(Theme.muted, 0.5);
                 if (tb.activeFocus) return Theme.treatmentFocusText;
-                // Ink on the accent slab. White on light blue was barely 2:1.
+                // Ink on the accent slab, for contrast.
                 if (tbHover.hovered && tb.primary) return Theme.ink;
                 return Theme.text;
             }
@@ -367,7 +365,7 @@ Popout {
 
         scale: tbHover.hovered && tb.enabled ? 1.12 : 1.0
         Behavior on scale {
-            NumberAnimation { duration: Theme.durBase; easing.type: Easing.OutBack }
+            NumberAnimation { duration: Theme.durBase; easing.type: Easing.OutCubic }
         }
 
         HoverHandler {

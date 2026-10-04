@@ -1,5 +1,5 @@
--- Persona × Mocha — Persona 5 shapes on the Catppuccin Mocha palette, matched
--- to ~/.config/quickshell.
+-- YoRHa dark — NieR:Automata's interface language on the space-1 wallpaper's
+-- palette, matched to ~/.config/quickshell.
 --
 -- Everything static about how the desktop is painted. Motion lives next door
 -- in lua/animations.lua.
@@ -9,17 +9,20 @@ local c = require("lua/palette")
 hl.config({
     -- https://wiki.hypr.land/Configuring/Basics/Variables/
     general = {
+        -- Measured from the quickshell hull's opening, not the screen edge: the
+        -- hull reserves its own exclusive zones. 10px clears the opening's 18px
+        -- corner radius, so a tiled window never touches the rim.
         gaps_in = 5,
-        gaps_out = { top = 6, right = 8, bottom = 8, left = 8 },
+        gaps_out = 10,
 
-        border_size = 2,
+        border_size = 1,
 
         col = {
             active_border = c.activeBorder,
-            -- Surface-level, not outline: an idle window's frame is structure,
+            -- Overlay, not outline: an idle window's frame is structure,
             -- and the outline grey was bright enough to compete with the
             -- focused border.
-            inactive_border = c.surfaceAlt,
+            inactive_border = c.overlay,
         },
 
         resize_on_border = false,
@@ -32,29 +35,29 @@ hl.config({
     },
 
     decoration = {
-        -- Persona 5 has no rounded corners. Neither do we.
+        -- NieR panels are plain rectangles. The only curve on screen is the
+        -- porthole the quickshell hull cuts round the desktop.
         rounding = 0,
 
         -- Fully opaque, both states. Flat ink on flat ground.
         active_opacity = 1.0,
         inactive_opacity = 1.0,
 
-        -- A hard crust offset, the same printed drop the shell's panels
-        -- carry, rather than a soft blur. Sharp with a 1px range leaves a
-        -- clean band down the right and bottom edges only.
+        -- A soft, wide shadow: windows float in the opening rather than
+        -- being printed onto it. Dark against the planet light, invisible
+        -- against the void, which is how a shadow behaves out there.
         shadow = {
             enabled = true,
-            sharp = true,
-            range = 1,
-            offset = { 4, 4 },
-            color = c.ink,
-            color_inactive = c.ink,
+            sharp = false,
+            range = 24,
+            render_power = 3,
+            offset = { 0, 6 },
+            color = "rgba(000000aa)",
+            color_inactive = "rgba(00000066)",
         },
 
-        -- Off. Blur is the signature of the glass-and-frost look, which is the
-        -- opposite of what this theme is doing — every surface here is opaque,
-        -- flat and hard-edged. With nothing translucent left to blur it also
-        -- costs three render passes for no visible result.
+        -- Off. Every surface here is opaque, so there is nothing to blur, and
+        -- blur would cost three render passes for no visible result.
         blur = {
             enabled = false,
         },

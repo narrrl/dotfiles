@@ -16,7 +16,6 @@ Item {
         font.family: Theme.fontDisplay
         font.pixelSize: Theme.fsHuge
         font.weight: Theme.weightDisplay
-        font.italic: true
         renderType: Text.NativeRendering
     }
 
@@ -45,7 +44,6 @@ Item {
             font.family: Theme.fontDisplay
             font.pixelSize: Theme.fsSmall
             font.weight: Font.DemiBold
-            font.italic: true
             renderType: Text.NativeRendering
         }
 

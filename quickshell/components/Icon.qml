@@ -39,7 +39,7 @@ Text {
         }
         NumberAnimation {
             target: root; property: "scale"
-            to: 1.0; duration: Theme.durSlow; easing.type: Easing.OutBack
+            to: 1.0; duration: Theme.durSlow; easing.type: Easing.OutCubic
         }
     }
 }

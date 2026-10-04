@@ -2,7 +2,7 @@ import QtQuick
 import "root:/config"
 import "root:/components"
 
-// A segmented load meter — slanted ticks that light up left to right. Reads as
+// A segmented load meter — upright ticks that light up left to right. Reads as
 // a gauge at a glance and keeps the panel language consistent.
 Item {
     id: root

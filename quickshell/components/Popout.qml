@@ -226,12 +226,12 @@ PopupWindow {
         }
         NumberAnimation {
             target: contentHolder; property: "scale"
-            to: 1.0; duration: Theme.durSlow; easing.type: Easing.OutBack
+            to: 1.0; duration: Theme.durSlow; easing.type: Easing.OutCubic
         }
         NumberAnimation {
             target: contentHolder; property: root.slideProperty
             from: root.slideOrigin; to: root.bleed
-            duration: Theme.durSlow; easing.type: Easing.OutBack
+            duration: Theme.durSlow; easing.type: Easing.OutCubic
         }
     }
 

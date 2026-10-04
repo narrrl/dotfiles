@@ -1,10 +1,12 @@
-# Takemi — Persona × Mocha
+# Takemi — YoRHa dark
 
-A Persona 5 flavoured Quickshell desktop for Hyprland, painted in Catppuccin
-Mocha. Blue for anything live, mauve for anything wrong, the Mocha greys for
-everything else, and no gradients anywhere. Everything leans by the same 14°,
-corners are chopped rather than rounded, and every surface is one continuous
-slab divided by hairlines rather than a cluster of floating cards.
+A NieR:Automata flavoured Quickshell desktop for Hyprland, kept dark and lit
+like its wallpaper: a lone figure at a porthole, the void outside, one planet's
+light. The planet white for anything live, the hull red for anything wrong,
+grey-green for everything else. Hairlines, square markers, corner ticks,
+letter-spaced capitals, and selection shown by inverting the row. The bar, the
+rail and a thin border are one hull around the desktop, and the desktop is the
+porthole cut out of it.
 
 Replaces Waybar, dunst and hyprlock.
 
@@ -25,29 +27,30 @@ costs 2.5% of the width, where another 48px strip along the bottom would have
 cost 4.4% of the height on top of what the bar already takes.
 
 ```
-┌────────────────────────────────────────────┐
-│ ◆ │ 1 2 3 │ window title  ♪ TRACK │ 42% │ 00:09 │  bar  — 48px exclusive
-├────────────────────────────────────────────┤
-│                                         ▐█▌│  rail — 48px exclusive
-│                windows                  ▐ ▌│
-│                                         ▐ ▌│
-│                                         ▐ ▌│
-└────────────────────────────────────────────┘
+████████████████████████████████████████████████
+█ ◉ │ 1 2 3 │ window title  ♪ TRACK │ CPU │ 20:04 █  bar   — 40px, part of the hull
+█╭──────────────────────────────────────────╮ ▐▌█
+█│                                          │ ▐▌█  rail  — 48px, part of the hull
+█│                 windows                  │ ▐▌█
+█│                                          │ ▐▌█
+█╰──────────────────────────────────────────╯   █  frame — 8px left and bottom
+████████████████████████████████████████████████
 ```
 
-- **bar** — one slab: identity and workspaces on the left; the focused window,
-  the player, the CPU/MEM/GPU readout and the clock on the right.
-- **rail** — one slab: network, bluetooth, audio, mic, backlight, battery, tray,
+- **hull** — `bar/Frame.qml`: one surface round the whole screen, with the
+  desktop as a rounded opening. The bar and the rail sit on it.
+- **bar** — identity and workspaces on the left; the focused window, the
+  player, the CPU/MEM/GPU readout and the clock on the right.
+- **rail** — network, bluetooth, audio, mic, backlight, battery, tray,
   notifications, power. Popouts open leftward, into the screen.
 
-Each permanent surface is a single continuous `ChromeSurface` with modules
-divided by sheared hairlines. `BarPill` is chromeless by default — a module is
-*content inside* a surface, not a surface of its own — and marks hover with an
-accent underline. Pass `standalone: true` for the rare thing that really is its
-own panel.
+Modules are divided by hairlines. `BarPill` is chromeless by default — a module
+is *content inside* the hull, not a surface of its own — and marks hover with
+an accent underline. Pass `standalone: true` for the rare thing that really is
+its own panel.
 
-The shell uses three deliberate surface tiers. **Chrome** (`ChromeSurface`) is
-the calm, texture-free bar, rail, and tooltip layer. **Transient**
+The shell uses three deliberate surface tiers. **Chrome** (the hull and
+`ChromeSurface`) is the calm, texture-free bar, rail, and tooltip layer. **Transient**
 (`PopoutSurface`) is reserved for expressive menus and detail panels, with one
 clear composition and stronger separation from the desktop. **Cinematic**
 (`P5Backdrop`) belongs only to scene-scale experiences such as power and lock;
@@ -56,7 +59,7 @@ it is never used as decoration inside ordinary chrome or popouts.
 ```
 shell.qml        entrypoint — bar, rail, power menu, toasts, OSD per screen
 config/          palette, type scale, geometry, motion curves
-components/      the P5 primitives: panels, sliders, list rows, print-shadowed text
+components/      the primitives: panels, sliders, list rows, display text
 services/        data sources, all singletons
 bar/             the two surfaces and their modules
 popouts/         hover panels hanging off rail and bar modules
@@ -204,39 +207,45 @@ means restarting Hyprland from a TTY.
 `power-profiles-daemon` is not installed (TLP is), so the power-profile
 switching in `services/Battery.qml` stays dormant. Nothing else depends on it.
 
-The display face is Archivo Black, set italic almost everywhere. Change
-`Theme.fontDisplay` and everything follows.
+The display face is Noto Sans, upright and widely tracked — the nearest free
+face to NieR's FOT-Rodin that is already installed. Change `Theme.fontDisplay`
+and everything follows.
 
 ## Palette discipline
 
-Catppuccin Mocha, spent on two hues. **Hue is meaning**; nothing gets a colour
-for decoration.
+YoRHa dark: NieR:Automata's interface language, painted from the wallpaper
+(`~/.wallpapers/space-1.jpg`) rather than from the game's beige. Two hues, and
+**hue is meaning**; nothing gets a colour for decoration.
 
-- **Blue (`accent`, Mocha blue)** means live: the focused workspace, the
-  selected row, the hovered control, a channel that is on, an unread badge.
-- **Mauve (`alarm`, Mocha mauve)** means wrong or destructive: critical battery,
-  an urgent workspace, a critical notification, reboot and shut down.
-- **Grey** is everything else, and that includes *off*. A muted speaker, a
-  muted mic and Do Not Disturb drop to `muted` grey with their off glyph. They
-  used to be painted in the accent, which made a silenced channel look the most
-  alive thing on the rail.
-- **Crust (`ink`)** is structure: the hard keyline, the offset under display
-  type and panels, the text on an accent slab.
+- **Light (`accent`, `#eef1ea`)** means live: the focused workspace, the
+  selected row, the hovered control, a channel that is on, an unread badge. It
+  is the planet's white, barely a colour at all — NieR marks attention with
+  brightness and inversion, not with hue.
+- **Red (`alarm`, `#c8684f`)** means wrong or destructive: critical battery, an
+  urgent workspace, a critical notification, reboot and shut down. It is the
+  hull's indicator lights, the only warm thing in the wallpaper.
+- **Grey-green** is everything else, and that includes *off*. A muted speaker,
+  a muted mic and Do Not Disturb drop to `muted` grey with their off glyph.
+- **Ink** is the text on an inverted slab and the faint drop under display
+  type.
 
-**Selection is an inverted slab.** Focus and selection fill with the accent and
-print their text in crust (about 9:1). Hover stays on the surface tone with an
-accent mark. Destructive-active is the same slab in mauve. The `treatment*`
-tokens in `Theme.qml` encode all of this; use them rather than picking colours
-per widget.
+**Selection is the NieR cursor.** Focus and selection invert the row: a slab of
+the light with ink punched out of it. Hover lifts the surface one step and
+brings the marker up to full light, but never inverts. Destructive-active is
+the same slab in red. The `treatment*` tokens in `Theme.qml` encode all of
+this; use them rather than picking colours per widget.
 
-**Print, not blur.** Display text (`SplitText`) carries one hard crust offset.
-The blue and mauve ghosts appear only while `glitch()` runs. Drawn permanently
-1.6px off the body, they read as a focus problem on Mocha's pastels rather than
-as misregistered print. The lock screen and the power menu are the exceptions;
-they are the cinematic surfaces and keep their split.
+**Markers, not slashes.** The current row, a button under the pointer and the
+end of a header rule carry a small square (`Theme.marker`). Popouts are framed
+by corner ticks (`Theme.tick`) in their tone colour; the border itself is
+structure and stays neutral.
+
+**Flicker, not print.** Display text (`SplitText`) is upright, tracked by
+`Theme.tracking`, on a one-pixel soft drop. The two ghosts either side of it
+appear only while `glitch()` runs — NieR's brief data-corruption flicker.
 
 **Texture is tiered.** Chrome (bar, rail, tooltips) and transient panels
-(popouts, OSD, toasts) are flat. Stripes and halftone live only in
+(popouts, OSD, toasts) are flat. The hairline grid and the dot wash live only in
 `P5Backdrop`, behind the lock screen and the power menu.
 
 **Type has a floor.** Nothing renders below `Theme.fsMicro` (10px).
@@ -245,60 +254,60 @@ they are the cinematic surfaces and keep their split.
 
 | File | Covers |
 |---|---|
-| `quickshell/config/Theme.qml` | the shell: `accent`, `alarm` and the neutral ramp |
-| `hypr/lua/palette.lua` | window borders, groups, shadows |
-| `alacritty/catppuccin-mocha.toml` | the terminal (stock Mocha, cursor in the accent) |
+| `quickshell/config/Theme.qml` | the shell: `accent`, `alarm`, the neutral ramp, the hull |
+| `hypr/lua/palette.lua` | window borders, groups |
+| `alacritty/yorha.toml` | the terminal |
+| `fish/conf.d/yorha_theme.fish` | the prompt and pager |
 
-Everything else derives. `accentDim` and `accentSoft` come off `accent`, `glow`
-*is* `accent`, and `primary` is plain `text`. `Theme.heat()` is a continuous
-text → blue → mauve ramp, so a CPU figure that has gone mauve means the same
-thing as a battery that has gone mauve. Tray icons are flattened to one colour
-(subtext, the accent on hover) for the same reason: app brand colours wreck the
-palette faster than anything else in the shell. nm-applet and blueman are
-hidden from the tray, since the rail already shows network and bluetooth, but
-keep running as the secret and pairing agents.
+Everything else derives. `glow` *is* `accent`, and `primary` is plain `text`.
+`Theme.heat()` is a continuous text → light → red ramp, so a CPU figure that
+has gone red means the same thing as a battery that has gone red. Tray icons
+are flattened to one colour (subtext, the accent on hover) for the same reason:
+app brand colours wreck the palette faster than anything else in the shell.
+nm-applet and blueman are hidden from the tray, since the rail already shows
+network and bluetooth, but keep running as the secret and pairing agents.
 
 ## The rest of the desktop
 
 - **Hyprland** — `hypr/lua/look.lua`. No rounding, no blur, both opacities at
-  `1.0`. The active border runs blue into lavender and the inactive border is
-  `surfaceAlt`. The window shadow is a sharp 4px crust offset, the same printed
-  drop the shell's panels carry, not a soft glow.
-- **Alacritty** — `alacritty/catppuccin-mocha.toml`, selected by the `import`
-  in `alacritty.toml`. Stock Mocha except for the cursor, which is the accent.
-  `takemi.toml` is left in place, unreferenced.
-- **Neovim** — the `catppuccin` plugin, flavour mocha, configured in
-  `nvim/lua/plugins/ui.lua`. Blue is the accent there too. `colors/takemi.lua`
-  is left in place, unused.
-- **Fish** — `fish/conf.d/takemi_theme.fish` is Catppuccin Mocha's fish theme
-  with the Takemi selection rows: a solid accent block with crust punched out.
+  `1.0`, 1px borders. The active border runs from the light into the suit's
+  grey; the inactive border is `overlay`. The shadow is soft and wide, so
+  windows float in the opening rather than being printed onto it. `gaps_out`
+  is measured from the hull's opening, since the hull reserves its own zones.
+- **Alacritty** — `alacritty/yorha.toml`, selected by the `import` in
+  `alacritty.toml`. Muted earth hues on the void; selection inverts.
+  The Catppuccin and `takemi.toml` files are left in place, unreferenced.
+- **Neovim** — still the `catppuccin` plugin, flavour mocha, configured in
+  `nvim/lua/plugins/ui.lua`. Not yet moved to the YoRHa palette.
+- **GTK and Qt** — still `catppuccin-mocha-blue`. Not yet moved either.
+- **Fish** — `fish/conf.d/yorha_theme.fish`.
 - **The launcher** — no external theming to keep in step, because it is part of
   this shell (`launcher/`). Fuzzel is gone; `takemi-dmenu` stands in for
   `fuzzel --dmenu` where a script needs a picker.
 - **No glass anywhere.** Alacritty is `opacity = 1.0, blur = false`, and
-  Hyprland's `decoration:blur` is disabled. Blur is the signature of the
-  frosted-glass look, which is the opposite of flat ink on flat ground — and
-  with nothing translucent left it was costing three render passes for no
-  visible result.
+  Hyprland's `decoration:blur` is disabled.
 
-There are **no gradients in this shell**; every fill is flat. `Theme.sheen`
-still exists as a no-op property because a teal-to-transparent wash on every
-panel was once the biggest source of murk in the design.
+There are **no gradients in the chrome**; every fill is flat. `Theme.sheen`
+still exists as a no-op property so old call sites need not be chased down.
 
 ## Geometry discipline
 
-**One angle, one chamfer, everywhere.** `Theme.skew` is `tan(14°)` and every
-edge in the shell leans by exactly that, in the same direction; every corner is
-chopped by exactly `Theme.cut`. A vertical panel (the rail) leans its horizontal
-edges by a fraction of its *width*, which works out to the same 14°.
+**The hull.** Borrowed from caelestia's screen border: the bar, the rail and a
+thin band down the left and along the bottom (`Theme.frame`) are one surface,
+drawn by `bar/Frame.qml` on the bottom layer, and the desktop is a rounded
+opening cut out of it (`Theme.frameRadius`). Read against the wallpaper, you are
+inside the ship and the windows sit in the porthole. The bar and the rail draw
+no surface of their own and ignore exclusive zones; Frame reserves all four
+zones itself, so every piece is placed from the screen edge.
 
-This is deliberate and was learned the hard way. An earlier pass gave every
-module a different lean, chamfer and height from per-index variance tables, on
-the theory that Persona geometry is "chaotic". It isn't — Persona UI is
-meticulously clean, and the chaos lives in composition and motion, not in each
-element being a different shape. Randomised geometry just reads as noise. If you
-find yourself adding a variance table, don't.
+**Rectangles, everywhere else.** NieR panels are plain boxes. `Theme.skew` and
+`Theme.cut` are both `0`, so `P5Panel`, `Skew` and `Geom` all collapse to
+rectangles; the knobs are kept so a shape can be brought back on purpose. The
+porthole's curve is the only one on screen, which is what lets it read.
 
-Each surface is **one continuous slab**, with modules divided by sheared
-hairline rules rather than by gaps. A row of separate floating cards reads as
-clutter; that is what the dividers exist to avoid.
+**Motion glides.** No overshoot anywhere: things ease in on `OutCubic` or
+`OutExpo` and settle. NieR's interface is calm and mechanical.
+
+Each surface is **one continuous slab**, with modules divided by hairline rules
+rather than by gaps. A row of separate floating cards reads as clutter; that is
+what the dividers exist to avoid.

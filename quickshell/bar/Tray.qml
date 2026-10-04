@@ -79,7 +79,7 @@ Column {
 
             scale: itemHover.hovered ? 1.18 : 1.0
             Behavior on scale {
-                NumberAnimation { duration: Theme.durBase; easing.type: Easing.OutBack }
+                NumberAnimation { duration: Theme.durBase; easing.type: Easing.OutCubic }
             }
 
             HoverHandler {

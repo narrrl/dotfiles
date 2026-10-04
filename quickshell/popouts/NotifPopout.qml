@@ -56,8 +56,7 @@ Popout {
             color: Theme.muted
             font.family: Theme.fontDisplay
             font.pixelSize: Theme.fsBody
-            font.italic: true
-            font.weight: Font.Black
+            font.weight: Font.DemiBold
             font.letterSpacing: 3
             renderType: Text.NativeRendering
         }
@@ -84,7 +83,7 @@ Popout {
                     properties: "x"
                     from: 40
                     duration: Theme.durSlow
-                    easing.type: Easing.OutBack
+                    easing.type: Easing.OutCubic
                 }
                 NumberAnimation {
                     property: "opacity"

@@ -70,7 +70,6 @@ BarPill {
             font.family: Theme.fontDisplay
             font.pixelSize: Theme.fsTitle
             font.weight: Theme.weightDisplay
-            font.italic: true
             font.letterSpacing: 0.5
         }
 

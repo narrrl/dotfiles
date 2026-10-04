@@ -51,13 +51,12 @@ Item {
             elide: Text.ElideRight
             font.pixelSize: Theme.fsSmall
             font.family: Theme.fontDisplay
-            font.italic: true
             font.weight: Font.DemiBold
             renderType: Text.NativeRendering
         }
 
         // Accent duplicate: visible only during the landing transition. The
-        // small opposing offset gives the title Persona's rough print snap
+        // small opposing offset gives the title NieR's brief corruption flicker
         // without leaving permanent motion in the bar.
         Text {
             id: ghost
@@ -144,7 +143,7 @@ Item {
             NumberAnimation {
                 target: label; property: "x"
                 from: -10; to: 0
-                duration: Theme.durBase; easing.type: Easing.OutBack
+                duration: Theme.durBase; easing.type: Easing.OutCubic
             }
             NumberAnimation {
                 target: label; property: "opacity"

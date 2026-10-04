@@ -4,8 +4,13 @@ import QtQuick.Effects
 import "root:/config"
 import "root:/components"
 
-// The base surface for everything in this shell: a leaning, corner-chopped slab
-// with an optional halftone wash and a accent slash along its leading edge.
+// The base surface for everything in this shell. Under the YoRHa theme it is a
+// plain rectangle with a hairline border, an optional dot wash, an optional
+// accent bar down its leading edge, and optional corner ticks — the brackets
+// NieR frames its panels with.
+//
+// The lean and chop knobs still exist and still work, so a caller can bring a
+// shape back on purpose, but Theme.skew and Theme.cut are both zero.
 Item {
     id: root
 
@@ -29,12 +34,12 @@ Item {
     property real chop: Theme.cut
     property var chopCorners: [1, 3]
 
-    // Tone slash down the leading edge — the Persona 5 tell.
+    // Accent bar down the leading edge.
     property bool slash: false
     property color slashColor: Theme.accent
     property real slashWidth: 4
 
-    // Screen-printed dot wash.
+    // Dot-grid wash.
     property bool halftone: false
     property color halftoneColor: Theme.primary
     property real halftoneOpacity: 0.07
@@ -45,15 +50,19 @@ Item {
     // call sites that still set it don't have to be chased down.
     property bool sheen: false
 
-    // The screen-print stack. A pure-black copy of the silhouette sits behind
-    // the fill, offset down-and-right, and the fill carries a black keyline
-    // outside its coloured border. Together these are what stop the panel from
-    // reading as a flat clip-path.
-    property bool drop: true
+    // Optional print stack: an ink copy of the silhouette offset behind the
+    // fill, and an ink keyline outside the border. Both off by default — on a
+    // dark ground they only thicken the edge.
+    property bool drop: false
     property real dropOffset: Theme.dropOffset
     property color dropColor: Theme.ink
-    property bool keyline: true
+    property bool keyline: false
     property real keylineWidth: Theme.keylineWidth
+
+    // Corner ticks: a short L at each corner, just outside the border.
+    property bool ticks: false
+    property color tickColor: Theme.outline
+    property real tickLength: Theme.tick
 
     readonly property real leanInset:
         (vertical ? width : height) * Math.abs(lean)
@@ -165,7 +174,7 @@ Item {
         asynchronous: true
         sourceComponent: Image {
             anchors.fill: parent
-            source: Theme.texHalftone
+            source: Theme.texDots
             fillMode: Image.Tile
             opacity: root.halftoneOpacity
             smooth: false
@@ -233,6 +242,44 @@ Item {
                 source: slashShape
                 maskEnabled: true
                 maskSource: silhouette
+            }
+        }
+    }
+
+    // Corner ticks. Two hairlines per corner, sitting 3px outside the panel so
+    // they read as a frame around it rather than as part of its border.
+    Loader {
+        anchors.fill: parent
+        anchors.margins: -3
+        active: root.ticks
+        sourceComponent: Item {
+            Repeater {
+                model: 4
+
+                Item {
+                    required property int index
+                    readonly property bool atRight: index === 1 || index === 2
+                    readonly property bool atBottom: index >= 2
+
+                    x: atRight ? parent.width - width : 0
+                    y: atBottom ? parent.height - height : 0
+                    width: root.tickLength
+                    height: root.tickLength
+
+                    Rectangle {
+                        y: parent.atBottom ? parent.height - 1 : 0
+                        width: parent.width
+                        height: 1
+                        color: root.tickColor
+                    }
+
+                    Rectangle {
+                        x: parent.atRight ? parent.width - 1 : 0
+                        width: 1
+                        height: parent.height
+                        color: root.tickColor
+                    }
+                }
             }
         }
     }

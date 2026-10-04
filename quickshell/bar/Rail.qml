@@ -30,30 +30,14 @@ PanelWindow {
         right: true
     }
 
-    margins {
-        top: Theme.barHeight + Theme.barMargin * 2
-        bottom: Theme.barMargin
-        right: Theme.barMargin
-    }
-
+    // Hangs from the underside of the bar, flush with the screen edge. Like
+    // the bar it draws no surface of its own; see Frame.
+    margins.top: Theme.barHeight
+    exclusionMode: ExclusionMode.Ignore
     implicitWidth: Theme.railWidth
-    exclusiveZone: Theme.railWidth + Theme.barMargin
     color: "transparent"
 
-    // The same calm permanent-chrome preset used by the top bar.
-    ChromeSurface {
-        id: slab
-        anchors.fill: parent
-        vertical: true
-        lean: Theme.skew
-        chop: Theme.cut
-        chopCorners: [1, 3]
-        padding: 0
-        active: true
-        slashWidth: 5
-    }
-
-    readonly property real edgeInset: Theme.railWidth * Theme.skew + Theme.padM
+    readonly property real edgeInset: Theme.padM
 
     // ------------------------------------------------------------------- top
     Column {
@@ -183,25 +167,16 @@ PanelWindow {
         }
     }
 
-    // The rail's counterpart to the bar's divider: a horizontal hairline,
-    // sheared to the same angle the rail's own edges lean at.
+    // The rail's counterpart to the bar's divider: a horizontal hairline.
     component Divider: Item {
         implicitWidth: Theme.railWidth
         implicitHeight: Theme.padM + 4
 
-        // Same correction as the bar's divider, on the other axis: a 22px rule
-        // rises 22 * skew ≈ 5px across its run, so the box has to be that tall
-        // plus the weight of the stroke. At height 1 the polygon inverted and
-        // the rule rendered as a stubby wedge sitting left of centre.
-        readonly property real ruleWeight: 1.5
-        readonly property real ruleWidth: 22
-
-        Skew {
+        Rectangle {
             anchors.centerIn: parent
-            width: parent.ruleWidth
-            height: parent.ruleWidth * Theme.skew + parent.ruleWeight
-            vertical: true
-            color: Theme.alpha(Theme.outline, 0.5)
+            width: 16
+            height: 1
+            color: Theme.alpha(Theme.outline, 0.6)
         }
     }
 

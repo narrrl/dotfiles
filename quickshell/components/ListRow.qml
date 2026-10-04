@@ -7,8 +7,8 @@ import "root:/config"
 // came out as a faint milky film. This is the one row they share now.
 //
 // Rest is bare. Hover lifts the row onto the surface tone. The current item —
-// connected, in use — carries an accent tick down its leading edge and an
-// accent glyph, and its label goes to full weight.
+// connected, in use — carries the NieR square marker at its leading edge and
+// an accent glyph, and its label goes to full weight.
 Item {
     id: root
 
@@ -40,12 +40,13 @@ Item {
     Rectangle {
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
-        width: 3
-        height: root.current ? root.height - 10 : 0
+        anchors.leftMargin: 2
+        width: root.current ? Theme.marker : 0
+        height: width
         color: Theme.accent
 
-        Behavior on height {
-            NumberAnimation { duration: Theme.durBase; easing.type: Easing.OutBack }
+        Behavior on width {
+            NumberAnimation { duration: Theme.durBase; easing.type: Easing.OutCubic }
         }
     }
 
@@ -76,8 +77,7 @@ Item {
             color: root.current || root.hovered ? Theme.text : Theme.subtext
             font.family: Theme.fontDisplay
             font.pixelSize: Theme.fsSmall
-            font.italic: true
-            font.weight: root.current ? Font.Black : Font.Medium
+            font.weight: root.current ? Font.DemiBold : Font.Medium
             renderType: Text.NativeRendering
         }
 

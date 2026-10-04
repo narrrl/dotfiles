@@ -45,7 +45,6 @@ Item {
                 elide: Text.ElideRight
                 font.family: Theme.fontDisplay
                 font.pixelSize: Theme.fsSmall
-                font.italic: true
                 font.weight: Font.DemiBold
                 renderType: Text.NativeRendering
             }

@@ -1,54 +1,46 @@
 import QtQuick
-import QtQuick.Shapes
 import "root:/config"
 import "root:/components"
 
-// The shared ground for the two full-screen surfaces: an accent wedge leaning
-// at the house angle, a tiled stripe field that sweeps in from the left, and a
-// halftone dot wash over the top.
+// The shared ground for the two full-screen surfaces, in the NieR menu
+// pattern: a hairline grid that sweeps in from the left, a darker column down
+// the left-hand side for the menu or the clock to stand in, and a dot wash
+// over the top.
 //
-// The lock screen and the power menu each used to draw their own version of
-// this. They disagreed — the power menu had a wedge and a full stripe field,
-// the lock had a 42px stripe band and no wedge, and the wedge leaned at 0.32
-// where every panel in the shell leans at Theme.skew. Building both on one
-// component is what makes them read as the same object seen twice rather than
-// as two guesses at the same brief.
+// The lock screen and the power menu both stand on this one component, which
+// is what makes them read as the same object seen twice rather than as two
+// guesses at the same brief.
 Item {
     id: root
 
-    // 0 = withdrawn, 1 = fully present. Drives the stripe slide, the stripe
-    // opacity and the wedge together, so a caller animates one number instead
+    // 0 = withdrawn, 1 = fully present. Drives the grid slide, the grid
+    // opacity and the column together, so a caller animates one number instead
     // of keeping three in sync. The power menu runs it both ways on open and
     // close; the lock runs it once on entry.
     property real reveal: 1
 
     property color tone: Theme.accent
 
+    // The column: a band of the void, edged by a hairline of the light.
+    // `wedge*` names are kept from the Persona layout so callers did not have
+    // to move; there is nothing wedge-shaped left.
     property bool wedge: true
     property real wedgeOpacity: 0.35
-    // Bottom-left corner of the wedge and its span, as fractions of width. The
-    // wedge leans right going up, like every other edge in the shell, so its
-    // top edge sits `leanOffset` further right than its bottom.
     property real wedgeLeft: 0
     property real wedgeSpan: 0.34
 
     property bool stripes: true
-    // Tuned down from 0.10 for Mocha. Crust stripes on the blue-grey base read
-    // far heavier than they did on black, and buzzed against the text.
-    property real stripeOpacity: 0.07
+    property real stripeOpacity: 0.05
 
     property bool halftone: true
     property real halftoneOpacity: 0.05
     property color halftoneColor: Theme.primary
 
-    // ONE angle, everywhere — the same rule the panels follow.
-    readonly property real leanOffset: root.height * Theme.skew
-
-    // Diagonal stripe field, sliding in from off-screen left.
+    // Hairline grid, sliding in from off-screen left.
     Image {
         anchors.fill: parent
         visible: root.stripes && root.reveal > 0
-        source: Theme.texStripes
+        source: Theme.texGrid
         fillMode: Image.Tile
         opacity: root.stripeOpacity * root.reveal
         smooth: false
@@ -63,39 +55,33 @@ Item {
         }
     }
 
-    // The wedge. Drawn after the stripes so it reads as a slab laid over them.
-    Shape {
-        anchors.fill: parent
+    // The column. Drawn after the grid so it reads as a panel laid over it.
+    Item {
+        x: root.wedgeLeft * root.width
+        width: root.wedgeSpan * root.width
+        height: root.height
         visible: root.wedge && root.reveal > 0
         opacity: root.reveal
-        preferredRendererType: Shape.CurveRenderer
 
-        ShapePath {
-            fillColor: Theme.alpha(Theme.accentDim, root.wedgeOpacity)
-            strokeColor: "transparent"
-            joinStyle: ShapePath.MiterJoin
+        Rectangle {
+            anchors.fill: parent
+            color: Theme.alpha(Theme.ink, root.wedgeOpacity)
+        }
 
-            PathPolyline {
-                path: {
-                    const x = root.wedgeLeft * root.width;
-                    const span = root.wedgeSpan * root.width;
-                    const off = root.leanOffset;
-                    return Geom.closed([
-                        Qt.point(x + off, 0),
-                        Qt.point(x + off + span, 0),
-                        Qt.point(x + span, root.height),
-                        Qt.point(x, root.height)
-                    ]);
-                }
-            }
+        // Its edge, drawn top-down as the column arrives.
+        Rectangle {
+            anchors.right: parent.right
+            width: 1
+            height: parent.height * root.reveal
+            color: Theme.alpha(root.tone, 0.35)
         }
     }
 
-    // Screen-printed dot wash over the whole thing.
+    // Dot wash over the whole thing.
     Image {
         anchors.fill: parent
         visible: root.halftone
-        source: Theme.texHalftone
+        source: Theme.texDots
         fillMode: Image.Tile
         opacity: root.halftoneOpacity
         smooth: false

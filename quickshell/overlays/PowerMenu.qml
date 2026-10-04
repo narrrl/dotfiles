@@ -75,14 +75,12 @@ PanelWindow {
         }
     }
 
-    // Stripes and wedge, shared with the lock screen. The wedge used to lean at
-    // 0.32 here, which was its own angle and nothing else's; P5Backdrop leans
-    // it at Theme.skew like every other edge in the shell.
+    // Grid and column, shared with the lock screen.
     P5Backdrop {
         id: ground
         anchors.fill: parent
         reveal: 0
-        stripeOpacity: 0.10
+        stripeOpacity: 0.05
         wedgeOpacity: 0.35
         wedgeSpan: 0.34
         // The live desktop is still visible behind this, so a dot wash would be
@@ -102,29 +100,26 @@ PanelWindow {
         opacity: 0
 
         SplitText {
-            text: "TAKE"
+            text: "GLORY"
             pixelSize: Theme.fsMega
             split: 4
-            splitOpacity: 0.9
         }
 
         SplitText {
-            text: "YOUR"
+            text: "TO"
             pixelSize: Theme.fsMega
             color: Theme.accent
             split: 4
-            splitOpacity: 0.5
         }
 
         SplitText {
-            text: "TIME."
+            text: "MANKIND."
             pixelSize: Theme.fsMega
             split: 4
-            splitOpacity: 0.9
         }
 
         Text {
-            text: "— TAE TAKEMI"
+            text: "— YORHA"
             color: Theme.primary
             font.family: Theme.fontMono
             font.pixelSize: Theme.fsSmall
@@ -212,7 +207,7 @@ PanelWindow {
                             target: slide; property: "x"
                             from: 90; to: 0
                             duration: Theme.durSlow
-                            easing.type: Easing.OutBack
+                            easing.type: Easing.OutCubic
                         }
                         // Slabs land out of true and snap square. Sliding alone
                         // reads like a slide deck; the tilt is what makes it
@@ -223,7 +218,7 @@ PanelWindow {
                             target: tilt; property: "angle"
                             from: -3; to: 0
                             duration: Theme.durSlow
-                            easing.type: Easing.OutBack
+                            easing.type: Easing.OutCubic
                             easing.overshoot: 2.2
                         }
                     }

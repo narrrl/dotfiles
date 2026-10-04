@@ -27,29 +27,16 @@ PanelWindow {
         right: true
     }
 
-    margins {
-        top: Theme.barMargin
-        left: Theme.barMargin
-        right: Theme.barMargin
-    }
-
+    // Flush with the screen edge and drawn on nothing: the hull behind it is
+    // painted by Frame, which is what joins the bar, the rail and the border
+    // into one surface. Exclusive zones are Frame's job too, so every piece
+    // of the hull is placed from the screen edge rather than from whichever
+    // piece the compositor happened to arrange first.
+    exclusionMode: ExclusionMode.Ignore
     implicitHeight: Theme.barHeight
-    exclusiveZone: Theme.barHeight + Theme.barMargin
     color: "transparent"
 
-    // Calm permanent chrome: one opaque slab with no texture or offset copy.
-    ChromeSurface {
-        id: slab
-        anchors.fill: parent
-        lean: Theme.skew
-        chop: Theme.cut
-        chopCorners: [1, 3]
-        padding: 0
-        active: true
-        slashWidth: 5
-    }
-
-    readonly property real edgeInset: Theme.barHeight * Theme.skew + Theme.padM
+    readonly property real edgeInset: Theme.padM
 
     // ------------------------------------------------------------------ left
     Row {
@@ -108,25 +95,18 @@ PanelWindow {
         }
     }
 
-    // A hairline rule between modules, sheared to the house angle. This is what
-    // divides the bar now — gaps between cards are what made it look scattered.
+    // A hairline rule between modules. This is what divides the bar — gaps
+    // between cards are what made it look scattered.
     component Divider: Item {
         anchors.verticalCenter: parent.verticalCenter
         implicitWidth: Theme.padM * 2
         implicitHeight: Theme.barHeight
 
-        // A leaning hairline needs a box wide enough to hold the lean: at 20px
-        // tall the top edge sits 20 * skew ≈ 5px right of the bottom one, so a
-        // 1px-wide Skew folded into a bowtie instead. Width is the lean plus the
-        // stroke the rule should actually read as.
-        readonly property real ruleWeight: 1.5
-        readonly property real ruleHeight: 20
-
-        Skew {
+        Rectangle {
             anchors.centerIn: parent
-            width: parent.ruleHeight * Theme.skew + parent.ruleWeight
-            height: parent.ruleHeight
-            color: Theme.alpha(Theme.outline, 0.5)
+            width: 1
+            height: 16
+            color: Theme.alpha(Theme.outline, 0.6)
         }
     }
 }

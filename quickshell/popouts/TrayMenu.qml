@@ -29,7 +29,7 @@ PopupWindow {
     // The slab's own lean and padding, which the entries sit inside. Sizing the
     // window to the entry widths alone left every label short by that inset and
     // elided perfectly ordinary items.
-    readonly property real slabLean: 0.06
+    readonly property real slabLean: Theme.skew
     readonly property real slabPad: Theme.padS
 
     readonly property real contentHeight: list.implicitHeight + slabPad * 2
@@ -114,7 +114,6 @@ PopupWindow {
             anchors.fill: parent
             tone: Theme.accent
             padding: root.slabPad
-            chop: 12
             lean: root.slabLean
 
             TrayMenuList {
@@ -139,12 +138,12 @@ PopupWindow {
         }
         NumberAnimation {
             target: holder; property: "scale"
-            to: 1.0; duration: Theme.durSlow; easing.type: Easing.OutBack
+            to: 1.0; duration: Theme.durSlow; easing.type: Easing.OutCubic
         }
         NumberAnimation {
             target: holder; property: "x"
             from: root.bleed + 14; to: root.bleed
-            duration: Theme.durSlow; easing.type: Easing.OutBack
+            duration: Theme.durSlow; easing.type: Easing.OutCubic
         }
     }
 

@@ -69,7 +69,6 @@ PopupWindow {
     ChromeSurface {
         anchors.fill: parent
         padding: root.pad
-        lean: 0.06
 
         Column {
             id: textColumn
@@ -84,7 +83,6 @@ PopupWindow {
                 font.family: Theme.fontDisplay
                 font.pixelSize: Theme.fsSmall
                 font.weight: Theme.weightDisplay
-                font.italic: true
                 renderType: Text.NativeRendering
             }
 

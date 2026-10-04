@@ -2,7 +2,8 @@ import QtQuick
 import "root:/config"
 import "root:/components"
 
-// Leaning slider with a chopped handle. Drag or click anywhere on the rail.
+// Hairline slider with a square handle, the NieR settings-menu slider. Drag or
+// click anywhere on the rail.
 Item {
     id: root
 
@@ -30,7 +31,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
         anchors.right: parent.right
-        height: root.activeFocus ? 10 : 6
+        height: root.activeFocus ? 4 : 2
         // Focus widens the rail and rings it in the accent rather than filling
         // it: the level fill is often the accent itself, and a solid accent
         // rail swallowed it.
@@ -50,7 +51,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
         width: Math.max(0, Math.min(1, root.value)) * root.width
-        height: 6
+        height: root.activeFocus ? 4 : 2
         color: root.enabled ? root.accent : Theme.treatmentDisabledText
 
         Behavior on width {
@@ -66,14 +67,14 @@ Item {
     // Handle
     Skew {
         id: handle
-        width: 6
-        height: root.activeFocus || hover.hovered || drag.active ? 18 : 14
+        width: height
+        height: root.activeFocus || hover.hovered || drag.active ? 12 : 10
         color: root.enabled ? Theme.text : Theme.treatmentDisabledText
         anchors.verticalCenter: parent.verticalCenter
         x: Math.max(0, Math.min(1, root.value)) * root.width - width / 2
 
         Behavior on height {
-            NumberAnimation { duration: Theme.durFast; easing.type: Easing.OutBack }
+            NumberAnimation { duration: Theme.durFast; easing.type: Easing.OutCubic }
         }
         Behavior on x {
             enabled: !drag.active
