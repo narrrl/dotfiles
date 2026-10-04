@@ -71,7 +71,7 @@ overlays/        power menu, notification toasts, the volume/brightness/keyboard
 lock/            session lock
 overview/        every monitor, workspace and window at once
 backdrop/        the wallpaper, drawn by the shell
-assets/          halftone and stripe tiles, generated with ImageMagick
+assets/          the dot and scanline tiles, generated with ImageMagick
 ```
 
 `Panel` is the base surface everything sits on. It does not auto-size —
