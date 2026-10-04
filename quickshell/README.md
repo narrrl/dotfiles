@@ -310,8 +310,11 @@ network and bluetooth, but keep running as the secret and pairing agents.
   borders running from the light into the suit's grey. The shadow is soft and
   wide, so windows float in the opening. Group tabs are solid hull slabs, the
   current one lifted a step with its title in the light. Motion
-  (`hypr/lua/animations.lua`) glides and settles with no overshoot; layers only
-  fade, since quickshell animates its own surfaces.
+  (`hypr/lua/animations.lua`) glides and settles with no overshoot: windows
+  resolve in from a hair smaller, workspaces drift a short way vertically and
+  fade (sliding behind the hull), the `SUPER+S` scratchpad lowers out from
+  under the bar like the dashboard, and layers only fade, since quickshell
+  animates its own surfaces.
 - **Alacritty** — `alacritty/yorha.toml`, selected by the `import` in
   `alacritty.toml`. Muted earth hues on the void; selection inverts.
   Alacritty only live-reloads when `alacritty.toml` itself changes, so touch
@@ -337,9 +340,13 @@ still exists as a no-op property so old call sites need not be chased down.
 
 **The hull.** Borrowed from caelestia's screen border: the bar, the rail and a
 thin band down the left and along the bottom (`Theme.frame`) are one surface,
-drawn by `bar/Frame.qml` on the bottom layer, and the desktop is a rounded
-opening cut out of it (`Theme.frameRadius`). Read against the wallpaper, you are
-inside the ship and the windows sit in the porthole. The bar and the rail draw
+drawn by `bar/Frame.qml`, and the desktop is a rounded opening cut out of it
+(`Theme.frameRadius`). Read against the wallpaper, you are inside the ship and
+the windows sit in the porthole. The hull is on the top layer, over the
+windows, with a transparent opening and no input region, so a window moving
+past the opening's edge — a workspace switch, the scratchpad drawer — passes
+behind the frame rather than over the bar. `hypr/lua/rules/layers.lua` orders
+the bar and the rail above it. The bar and the rail draw
 no surface of their own and ignore exclusive zones; Frame reserves all four
 zones itself, so every piece is placed from the screen edge.
 

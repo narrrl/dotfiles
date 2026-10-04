@@ -9,10 +9,13 @@ import "root:/config"
 // The idea is caelestia's screen border; the reading is the wallpaper's — you
 // are inside the ship, and the windows sit in the porthole.
 //
-// The hull lives on the bottom layer, under every window. Hyprland's gaps keep
-// tiled windows inside the opening, so nothing ever has to be drawn over a
-// window; a floating window dragged onto the frame simply covers it, and a
-// fullscreen one hides it, which is what should happen in both cases.
+// The hull lives on the top layer, over every window, and its opening is
+// transparent with no input region, so it covers nothing inside the opening
+// and catches no clicks. Being above the windows is the point: a workspace
+// switch slides windows *behind* the frame, the way things pass behind the
+// rim of a porthole, instead of drawing over the bar. A fullscreen window
+// still covers it, since Hyprland draws fullscreen above the top layer.
+// hypr/lua/rules/layers.lua orders it under the bar and the rail.
 //
 // The bar and the rail draw no surface of their own and ignore exclusive
 // zones, so every piece is placed from the screen edge. The four zones are
@@ -29,7 +32,7 @@ Scope {
 
         screen: root.modelData
 
-        WlrLayershell.layer: WlrLayer.Bottom
+        WlrLayershell.layer: WlrLayer.Top
         WlrLayershell.namespace: "takemi-frame"
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
         exclusionMode: ExclusionMode.Ignore

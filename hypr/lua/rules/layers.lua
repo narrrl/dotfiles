@@ -11,3 +11,13 @@ for _, namespace in ipairs({ "bottom", "top", "takemi-launcher" }) do
         ignore_alpha = 0.5,
     })
 end
+
+-- The hull shares the top layer with the bar and the rail, which draw on it,
+-- so they are ordered above it whatever order they map in. See
+-- quickshell/bar/Frame.qml.
+for _, namespace in ipairs({ "takemi-bar", "takemi-rail" }) do
+    hl.layer_rule({
+        match = { namespace = namespace },
+        order = -1,
+    })
+end
