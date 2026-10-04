@@ -295,6 +295,7 @@ dark, the rim hairline and the wallpaper, not from patterns.
 | `btop/themes/yorha.theme` | the resource monitor |
 | `gtk-3.0/gtk.css`, `gtk-4.0/gtk.css` | GTK and libadwaita apps |
 | `qt6ct/colors/yorha.conf` | Qt apps |
+| `zathura/yorha` | the document viewer |
 
 Everything else derives. `glow` *is* `accent`, and `primary` is plain `text`.
 `Theme.heat()` is a continuous text → light → red ramp, so a CPU figure that
@@ -335,6 +336,9 @@ network and bluetooth, but keep running as the secret and pairing agents.
   `gsettings` for portal-aware apps.
 - **Qt** — qt6ct with `qt6ct/colors/yorha.conf`, the same palette in
   `QPalette` roles. The style is Fusion unless Darkly is installed.
+- **zathura** — `zathura/yorha`, included from `zathurarc`. Pages are
+  recoloured onto the hull with text in bone; images keep their colours.
+  Search hits are a soft bone wash, and the current hit is sand.
 - **Fish** — `fish/conf.d/yorha_theme.fish`.
 - **The launcher** — no external theming to keep in step, because it is part of
   this shell (`launcher/`). Fuzzel is gone; `takemi-dmenu` stands in for
