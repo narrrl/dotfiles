@@ -185,7 +185,14 @@ Item {
                 id: inline
                 x: 1
                 y: 1
-                source: root.notif?.image || ""
+                // A path given as an image hint (notify-send -h image-path:…)
+                // comes back routed through the icon provider, which treats
+                // it as an icon name and returns a placeholder. Load the file.
+                source: {
+                    const img = root.notif?.image || "";
+                    if (img.startsWith("image://icon//")) return "file://" + img.slice("image://icon/".length);
+                    return img.startsWith("/") ? "file://" + img : img;
+                }
                 sourceSize.height: 90
                 fillMode: Image.PreserveAspectFit
                 asynchronous: true
