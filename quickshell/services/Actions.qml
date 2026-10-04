@@ -18,6 +18,7 @@ Singleton {
     property bool sidebarOpen: false
     property bool launcherOpen: false
     property bool askOpen: false
+    property bool dashboardOpen: false
 
     // Seed text for the next launcher open. Lets a keybind or a script hand the
     // launcher a query it did not have to type — `qs ipc call shell prompt
@@ -35,6 +36,15 @@ Singleton {
 
     // …and for the ask panel, which also takes the keyboard.
     property string askScreen: ""
+
+    // …and for the dashboard drawer.
+    property string dashboardScreen: ""
+
+    // When the dashboard was last closed from outside. A click on the bar's
+    // clock first clears the drawer's focus grab, which closes it, and then
+    // lands on the clock, which would toggle it straight back open. A toggle
+    // that arrives within a moment of a grab-close is that same click.
+    property real dashboardClosedAt: 0
 
     // Seed text for the next ask open. A seeded open asks straight away, so
     // `qs ipc call shell askAbout "$(wl-paste)"` is a one-shot question.
@@ -64,6 +74,19 @@ Singleton {
         root.launcherOpen = !root.launcherOpen;
     }
     function closeLauncher() { root.launcherOpen = false; }
+
+    function toggleDashboard() {
+        if (!root.dashboardOpen && Date.now() - root.dashboardClosedAt < 250)
+            return;
+        if (!root.dashboardOpen)
+            root.dashboardScreen = root.focusedScreenName();
+        root.dashboardOpen = !root.dashboardOpen;
+    }
+    function closeDashboard() {
+        if (!root.dashboardOpen) return;
+        root.dashboardOpen = false;
+        root.dashboardClosedAt = Date.now();
+    }
 
     function toggleAsk() {
         if (!root.askOpen) {
@@ -131,6 +154,7 @@ Singleton {
         function power(): void { root.togglePowerMenu(); }
         function launcher(): void { root.toggleLauncher(); }
         function ask(): void { root.toggleAsk(); }
+        function dashboard(): void { root.toggleDashboard(); }
         function askAbout(question: string): void { root.askAbout(question); }
         function prompt(seed: string): void { root.promptLauncher(seed); }
         function dmenu(inPath: string, outPath: string, prompt: string): void {

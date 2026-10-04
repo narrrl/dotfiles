@@ -4,6 +4,7 @@ import "root:/config"
 import "root:/services"
 import "root:/bar"
 import "root:/launcher"
+import "root:/dashboard"
 import "root:/ask"
 import "root:/overlays"
 import "root:/lock"
@@ -14,6 +15,7 @@ import "root:/lock"
 //   bar/       the hull, the top bar, the rail and their modules
 //   popouts/   hover panels hanging off bar modules
 //   launcher/  the application launcher
+//   dashboard/ the drawer that drops from the bar
 //   ask/       the question panel, dropped from the top edge
 //   overlays/  power menu, notification toasts, OSD
 //   lock/      session lock
@@ -58,6 +60,12 @@ ShellRoot {
         model: Quickshell.screens
 
         Launcher {}
+    }
+
+    Variants {
+        model: Quickshell.screens
+
+        Dashboard {}
     }
 
     Variants {

@@ -57,7 +57,7 @@ clear composition and stronger separation from the desktop. **Cinematic**
 it is never used as decoration inside ordinary chrome or popouts.
 
 ```
-shell.qml        entrypoint — bar, rail, power menu, toasts, OSD per screen
+shell.qml        entrypoint — hull, bar, rail, dashboard, power menu, toasts, OSD per screen
 config/          palette, type scale, geometry, motion curves
 components/      the primitives: panels, sliders, list rows, display text
 services/        data sources, all singletons
@@ -72,13 +72,24 @@ assets/          halftone and stripe tiles, generated with ImageMagick
 callers set implicit sizes from their own layout (`row.implicitWidth +
 contentPad * 2`), which keeps the shape maths out of binding loops.
 
+## Dashboard
+
+`dashboard/Dashboard.qml` is a drawer that slides down out of the underside of
+the bar — clock click, `SUPER + I`, or `qs ipc call shell dashboard`. It is
+painted in the hull colour and joins the bar through two concave fillets, so it
+reads as more of the hull rather than as a floating card (caelestia's idea).
+Four columns divided by hairlines: operator and time, the month, the system
+meters, and what is playing. Escape or focusing anything else puts it away; a
+`HyprlandFocusGrab` handles the latter, and `Actions.dashboardClosedAt` stops
+the clock click that cleared the grab from opening it straight back up.
+
 ## Modules
 
 | Module | Where | Left click | Right click | Middle | Scroll | Hover |
 |---|---|---|---|---|---|---|
 | Sigil | bar | app menu | reload shell | | | |
 | Workspaces | bar | switch | | | | |
-| Clock | bar | pin calendar | | | | calendar |
+| Clock | bar | dashboard | | | | calendar |
 | Network | rail | pin details | | | | state + networks |
 | Bluetooth | rail | pin details | | | | state + devices |
 | Volume | rail | pin audio | | | volume | state + scroll hint + audio |

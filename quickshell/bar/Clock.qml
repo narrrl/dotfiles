@@ -3,8 +3,10 @@ import Quickshell
 import "root:/config"
 import "root:/components"
 import "root:/popouts"
+import "root:/services"
 
-// Centre-stage clock. Hovering drops the calendar.
+// Centre-stage clock. Hovering drops the calendar; clicking drops the
+// dashboard, which carries the calendar too.
 BarPill {
     id: root
 
@@ -20,7 +22,7 @@ BarPill {
         precision: SystemClock.Minutes
     }
 
-    onClicked: calendar.pinned = !calendar.pinned
+    onClicked: Actions.toggleDashboard()
 
     Row {
         id: layout
@@ -116,7 +118,8 @@ BarPill {
     CalendarPopout {
         id: calendar
         anchorItem: root
-        triggerHovered: root.hovered
+        // Not while the dashboard is down: it already shows the month.
+        triggerHovered: root.hovered && !Actions.dashboardOpen
         clockDate: clock.date
     }
 }

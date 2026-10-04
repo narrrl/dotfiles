@@ -9,6 +9,7 @@ end
 shell("lock", { key = mod .. " + CTRL + L", description = "lock screen" })
 shell("power", { key = mod .. " + P", description = "power menu" })
 shell("ask", { key = mod .. " + A", description = "ask claude" })
+shell("dashboard", { key = mod .. " + I", description = "dashboard" })
 shell("toggleDnd", { key = mod .. " + SHIFT + N", description = "toggle do not disturb" })
 shell("clearNotifications", { key = mod .. " + CTRL + SHIFT + N", description = "clear notifications" })
 shell("reloadConfig", { key = mod .. " + SHIFT + R", description = "reload shell config" })
