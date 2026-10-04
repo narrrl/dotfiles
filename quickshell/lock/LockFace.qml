@@ -92,11 +92,12 @@ Item {
 
     Column {
         id: face
-        x: parent.width * 0.14
-        y: parent.height * 0.2
-        width: 380
-        scale: surface.uiScale
-        transformOrigin: Item.TopLeft
+        // Sized by uiScale rather than drawn small and stretched with `scale`:
+        // a scale transform blurs native text, and every label here is native.
+        // Whole pixels, too, or the glyphs land between them.
+        x: Math.round(parent.width * 0.14)
+        y: Math.round(parent.height * 0.2)
+        width: Math.round(380 * surface.uiScale)
         opacity: 0
         spacing: 0
 
@@ -104,42 +105,42 @@ Item {
 
         // The house mark, the same porthole the bar carries far left.
         Porthole {
-            size: 26
+            size: Math.round(26 * surface.uiScale)
         }
 
         Text {
-            topPadding: Theme.padM
+            topPadding: Math.round(Theme.padM * surface.uiScale)
             text: Qt.formatDateTime(clock.date, "HH:mm")
             color: Theme.accent
             font.family: Theme.fontDisplay
-            font.pixelSize: Theme.fsMega * 1.35
+            font.pixelSize: Math.round(Theme.fsMega * 1.35 * surface.uiScale)
             font.weight: Font.Light
-            font.letterSpacing: 2
-            // Scaled with the face, so distance-field glyphs: native hinting
-            // at this size under a scale transform comes out stepped.
-            renderType: Text.QtRendering
+            font.letterSpacing: 2 * surface.uiScale
+            // Display size, where curves beat hinted bitmaps.
+            renderType: Text.CurveRendering
         }
 
         Text {
-            leftPadding: 4
+            leftPadding: Math.round(4 * surface.uiScale)
             text: Qt.formatDateTime(clock.date, "dddd  ·  dd MMMM").toUpperCase()
             color: Theme.subtext
             font.family: Theme.fontDisplay
-            font.pixelSize: Theme.fsBody
+            font.pixelSize: Math.round(Theme.fsBody * surface.uiScale)
             font.weight: Theme.weightDisplay
-            font.letterSpacing: 5
+            font.letterSpacing: 5 * surface.uiScale
             renderType: Text.NativeRendering
         }
 
-        Item { width: 1; height: Theme.padXL }
+        Item { width: 1; height: Math.round(Theme.padXL * surface.uiScale) }
 
         // ------------------------------------------------------ status log
         Column {
             width: parent.width
-            leftPadding: 4
+            leftPadding: Math.round(4 * surface.uiScale)
 
             StatusRow {
-                width: parent.width - 4
+                width: parent.width - parent.leftPadding
+                uiScale: surface.uiScale
                 visible: Battery.available
                 label: "Battery"
                 detail: Math.round(Battery.percent) + "%"
@@ -148,14 +149,16 @@ Item {
             }
 
             StatusRow {
-                width: parent.width - 4
+                width: parent.width - parent.leftPadding
+                uiScale: surface.uiScale
                 label: "Network"
                 detail: Sys.netUp ? Net.label : "no link"
                 tone: Sys.netUp ? Theme.accentSoft : Theme.overlay
             }
 
             StatusRow {
-                width: parent.width - 4
+                width: parent.width - parent.leftPadding
+                uiScale: surface.uiScale
                 visible: Media.hasPlayer
                 label: Media.playing ? "Playing" : "Paused"
                 detail: Media.artist ? Media.title + " — " + Media.artist : Media.title
@@ -163,7 +166,8 @@ Item {
             }
 
             StatusRow {
-                width: parent.width - 4
+                width: parent.width - parent.leftPadding
+                uiScale: surface.uiScale
                 visible: Notifs.count > 0
                 label: "Notices"
                 detail: Notifs.count + (Notifs.count === 1 ? " message" : " messages")
@@ -171,20 +175,20 @@ Item {
             }
         }
 
-        Item { width: 1; height: Theme.padXL }
+        Item { width: 1; height: Math.round(Theme.padXL * surface.uiScale) }
 
         // ------------------------------------------------------ the field
         Item {
             id: authBlock
             width: parent.width
-            height: field.height + hint.height + Theme.padS
+            height: field.height + hint.height + hint.anchors.topMargin
 
             transform: Translate { id: nudge }
 
             Rectangle {
                 id: field
                 width: parent.width
-                height: 48
+                height: Math.round(48 * surface.uiScale)
                 radius: height / 2
                 color: Theme.alpha(Theme.hull, 0.86)
                 border.width: 1
@@ -199,23 +203,23 @@ Item {
                 Icon {
                     id: lockGlyph
                     anchors.left: parent.left
-                    anchors.leftMargin: Theme.padL
+                    anchors.leftMargin: Math.round(Theme.padL * surface.uiScale)
                     anchors.verticalCenter: parent.verticalCenter
                     text: "󰌾"
                     color: surface.failed ? Theme.alarm : Theme.muted
-                    font.pixelSize: Theme.fsLarge
+                    font.pixelSize: Math.round(Theme.fsLarge * surface.uiScale)
                 }
 
                 Text {
                     anchors.left: lockGlyph.right
-                    anchors.leftMargin: Theme.padM
+                    anchors.leftMargin: Math.round(Theme.padM * surface.uiScale)
                     anchors.verticalCenter: parent.verticalCenter
                     visible: surface.entry.length === 0
                     text: "PASSWORD"
                     color: Theme.muted
                     font.family: Theme.fontDisplay
-                    font.pixelSize: Theme.fsSmall
-                    font.letterSpacing: Theme.tracking * 2
+                    font.pixelSize: Math.round(Theme.fsSmall * surface.uiScale)
+                    font.letterSpacing: Theme.tracking * 2 * surface.uiScale
                     renderType: Text.NativeRendering
                 }
 
@@ -224,11 +228,11 @@ Item {
                 Row {
                     id: dots
                     anchors.left: lockGlyph.right
-                    anchors.leftMargin: Theme.padM
+                    anchors.leftMargin: Math.round(Theme.padM * surface.uiScale)
                     anchors.right: enter.left
-                    anchors.rightMargin: Theme.padM
+                    anchors.rightMargin: Math.round(Theme.padM * surface.uiScale)
                     anchors.verticalCenter: parent.verticalCenter
-                    spacing: 7
+                    spacing: Math.round(7 * surface.uiScale)
                     clip: true
 
                     Repeater {
@@ -238,8 +242,8 @@ Item {
                             id: pip
                             required property int index
                             anchors.verticalCenter: parent.verticalCenter
-                            width: 7
-                            height: 7
+                            width: Math.round(7 * surface.uiScale)
+                            height: width
                             radius: width / 2
                             color: surface.failed ? Theme.alarm : Theme.accent
                             opacity: 0
@@ -276,10 +280,10 @@ Item {
                     id: enter
                     readonly property bool ready: surface.entry.length > 0 && !surface.busy
                     anchors.right: parent.right
-                    anchors.rightMargin: 8
+                    anchors.rightMargin: Math.round(8 * surface.uiScale)
                     anchors.verticalCenter: parent.verticalCenter
-                    width: 32
-                    height: 32
+                    width: Math.round(32 * surface.uiScale)
+                    height: width
                     radius: width / 2
                     color: enter.ready ? Theme.accent : "transparent"
                     border.width: enter.ready ? 0 : 1
@@ -293,7 +297,7 @@ Item {
                         anchors.centerIn: parent
                         text: "󰁔"
                         color: enter.ready ? Theme.ink : Theme.overlay
-                        font.pixelSize: Theme.fsLarge
+                        font.pixelSize: Math.round(Theme.fsLarge * surface.uiScale)
                     }
 
                     TapHandler {
@@ -330,16 +334,16 @@ Item {
             Row {
                 id: hint
                 anchors.top: field.bottom
-                anchors.topMargin: Theme.padS
+                anchors.topMargin: Math.round(Theme.padS * surface.uiScale)
                 anchors.left: parent.left
-                anchors.leftMargin: Theme.padL
-                spacing: Theme.padS
+                anchors.leftMargin: Math.round(Theme.padL * surface.uiScale)
+                spacing: Math.round(Theme.padS * surface.uiScale)
 
                 Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
-                    width: 4
-                    height: 4
-                    radius: 2
+                    width: Math.round(4 * surface.uiScale)
+                    height: width
+                    radius: width / 2
                     color: surface.failed ? Theme.alarm : Theme.overlay
                 }
 
@@ -350,8 +354,8 @@ Item {
                         : (surface.busy ? "VERIFYING" : (Quickshell.env("USER") || "user"))
                     color: surface.failed ? Theme.alarm : Theme.muted
                     font.family: Theme.fontMono
-                    font.pixelSize: Theme.fsMicro
-                    font.letterSpacing: 2
+                    font.pixelSize: Math.round(Theme.fsMicro * surface.uiScale)
+                    font.letterSpacing: 2 * surface.uiScale
                     renderType: Text.NativeRendering
                 }
             }

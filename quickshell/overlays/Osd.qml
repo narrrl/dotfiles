@@ -113,16 +113,20 @@ PanelWindow {
         slashWidth: 5
         padding: Theme.padM
 
+        // It rises a few pixels into place instead of growing: a scale would
+        // stretch the native text in the panel while it moves.
         opacity: root.shown ? 1 : 0
-        scale: root.shown ? 1 : 0.9
+        transform: Translate {
+            y: root.shown ? 0 : 8
+
+            Behavior on y {
+                NumberAnimation { duration: Theme.durSlow; easing.type: Easing.OutCubic }
+            }
+        }
 
         Behavior on opacity {
             NumberAnimation { id: fade; duration: Theme.durBase }
         }
-        Behavior on scale {
-            NumberAnimation { duration: Theme.durSlow; easing.type: Easing.OutCubic }
-        }
-
         Icon {
             id: glyphIcon
             anchors.left: parent.left

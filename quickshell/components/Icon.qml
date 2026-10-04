@@ -13,7 +13,11 @@ Text {
     color: Theme.primary
     verticalAlignment: Text.AlignVCenter
     horizontalAlignment: Text.AlignHCenter
-    renderType: Text.NativeRendering
+    // Curve glyphs, not native ones. Native glyphs are rasterised once at rest
+    // size and the bitmap is stretched when `scale` moves, so every pulse and
+    // bump came out blurred and stepped. Curves are drawn from the outline at
+    // whatever size the icon is at that frame.
+    renderType: Text.CurveRendering
 
     Behavior on color {
         ColorAnimation { duration: Theme.durBase }
