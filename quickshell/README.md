@@ -94,6 +94,15 @@ corner instead, attached to the bar and the rail at once (`dock` is `top`,
 `right`, `topRight` or `bottomRight`). Without docking, a panel near the rail
 left a thin strip of opening between itself and the rail.
 
+## Notifications
+
+The shell is the notification server (`services/Notifs.qml`). New ones arrive
+as toasts in a corner drawer (`overlays/Toasts.qml`); the bell on the rail
+opens the log (`popouts/NotifPopout.qml`), which is grouped by sender. A
+sender with one notification is just that entry. A sender with several gets a
+header — its name, a count, a mark to clear only that sender — over its
+newest entry and a `+ 2 more` line; a click on either opens the rest.
+
 ## Dashboard
 
 `dashboard/Dashboard.qml` is a drawer that slides down out of the underside of

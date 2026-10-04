@@ -17,6 +17,19 @@ Singleton {
     property int maxHistory: 60
 
     readonly property int count: history.length
+
+    // The history by sender, for the log: one entry per app, newest first
+    // inside each, the apps ordered by their newest notification.
+    readonly property var groups: {
+        const byApp = {};
+        const order = [];
+        for (const n of root.history) {
+            const app = n.appName || "System";
+            if (!(app in byApp)) { byApp[app] = []; order.push(app); }
+            byApp[app].push(n);
+        }
+        return order.map(app => ({ app: app, items: byApp[app] }));
+    }
     readonly property bool hasUnread: unread > 0
     property int unread: 0
 
@@ -55,6 +68,12 @@ Singleton {
             root.history = next;
         }
         notif.dismiss();
+    }
+
+    function dismissApp(app: string) {
+        const gone = root.history.filter(n => (n.appName || "System") === app);
+        root.history = root.history.filter(n => (n.appName || "System") !== app);
+        for (const n of gone) n.dismiss();
     }
 
     function clearAll() {

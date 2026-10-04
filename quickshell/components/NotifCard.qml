@@ -22,6 +22,9 @@ Item {
 
     required property var notif
     property bool showActions: true
+    // Off inside a group in the log, whose header already names the sender:
+    // the entry keeps only its urgency dot, the hairline and the close mark.
+    property bool showSender: true
 
     readonly property bool critical: root.notif?.urgency === NotificationUrgency.Critical
     readonly property color tone: root.notif
@@ -79,7 +82,7 @@ Item {
 
             Icon {
                 id: glyph
-                visible: text !== ""
+                visible: root.showSender && text !== ""
                 anchors.left: marker.right
                 anchors.leftMargin: Theme.padS
                 anchors.verticalCenter: parent.verticalCenter
@@ -91,8 +94,10 @@ Item {
             Text {
                 id: sender
                 anchors.left: glyph.visible ? glyph.right : marker.right
-                anchors.leftMargin: Theme.padS
+                anchors.leftMargin: root.showSender ? Theme.padS : 0
                 anchors.verticalCenter: parent.verticalCenter
+                width: root.showSender ? implicitWidth : 0
+                visible: root.showSender
                 text: (root.notif?.appName || "System").toUpperCase()
                 color: root.critical ? Theme.alarm : Theme.muted
                 font.family: Theme.fontMono
