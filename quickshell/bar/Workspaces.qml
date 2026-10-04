@@ -155,5 +155,58 @@ Item {
                 }
             }
         }
+
+        // The Super+S scratchpad, after a gap: a ring while it holds windows,
+        // filled with the light while it is open on this monitor. Absent when
+        // it is empty, which is most of the time.
+        Item {
+            id: scratch
+            readonly property var ws: {
+                for (const w of (Hyprland.workspaces?.values ?? []))
+                    if (w.name === "special:virtual") return w;
+                return null;
+            }
+            readonly property int count: scratch.ws?.toplevels?.values?.length ?? 0
+            readonly property bool shown: (root.monitor?.lastIpcObject?.specialWorkspace?.name ?? "")
+                === "special:virtual"
+
+            visible: scratch.count > 0
+            width: 8 + 10
+            height: 14
+
+            Rectangle {
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                width: 10
+                height: 10
+                radius: 5
+                color: scratch.shown ? Theme.accent : "transparent"
+                border.width: scratch.shown ? 0 : 1
+                border.color: scratchHover.hovered ? Theme.text : Theme.subtext
+
+                Behavior on color {
+                    ColorAnimation { duration: Theme.durBase }
+                }
+            }
+
+            HoverHandler {
+                id: scratchHover
+                cursorShape: Qt.PointingHandCursor
+            }
+
+            TapHandler {
+                onTapped: Hyprland.dispatch("hl.dsp.workspace.toggle_special(\"virtual\")")
+            }
+        }
+    }
+
+    // The monitor snapshot carries which special workspace is open; it is only
+    // refreshed on request.
+    Connections {
+        target: Hyprland
+        function onRawEvent(event) {
+            if (event.name === "activespecial" || event.name === "activespecialv2")
+                Hyprland.refreshMonitors();
+        }
     }
 }

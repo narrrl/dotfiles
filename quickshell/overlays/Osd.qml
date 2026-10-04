@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Wayland
 import "root:/config"
 import "root:/components"
@@ -44,6 +45,7 @@ PanelWindow {
         switch (root.kind) {
         case "mic": return Audio.micIcon;
         case "brightness": return Brightness.icon;
+        case "layout": return "󰌌";
         default: return Audio.icon;
         }
     }
@@ -52,6 +54,7 @@ PanelWindow {
         switch (root.kind) {
         case "mic": return Audio.micMuted ? "Mic muted" : "Microphone";
         case "brightness": return "Brightness";
+        case "layout": return "Keyboard";
         default: return Audio.muted ? "Muted" : "Volume";
         }
     }
@@ -71,6 +74,7 @@ PanelWindow {
         // silenced speaker flashed the same colour as a live one.
         case "mic": return Audio.micMuted ? Theme.treatmentOffText : Theme.accent;
         case "brightness": return Theme.accent;
+        case "layout": return Theme.accent;
         default: return Audio.muted ? Theme.treatmentOffText : Theme.accent;
         }
     }
@@ -98,6 +102,26 @@ PanelWindow {
     Connections {
         target: Brightness
         function onBumped() { root.flash("brightness"); }
+    }
+
+    // The keymap Hyprland just switched to, e.g. "English (Dvorak, intl.,
+    // with dead keys)", and a short name for the readout: the variant in the
+    // brackets if there is one, otherwise the language.
+    property string keymap: ""
+    readonly property string keymapShort: {
+        const m = /\(([^,)]+)/.exec(root.keymap);
+        return (m ? m[1] : root.keymap).trim();
+    }
+
+    Connections {
+        target: Hyprland
+        function onRawEvent(event) {
+            if (event.name !== "activelayout") return;
+            // "keyboard-name,Layout name" — the layout name may hold commas.
+            const at = event.data.indexOf(",");
+            root.keymap = at < 0 ? event.data : event.data.slice(at + 1);
+            root.flash("layout");
+        }
     }
 
     P5Panel {
@@ -178,12 +202,26 @@ PanelWindow {
                     // width and right-aligning the text would flatten the
                     // glitch flicker away. The title's left edge is anchored, so a
                     // widening readout only moves its own left edge.
-                    text: Math.round(root.level * 100) + "%"
+                    text: root.kind === "layout" ? root.keymapShort : Math.round(root.level * 100) + "%"
                     pixelSize: Theme.fsBody
                 }
             }
 
+            // The layout has no level; its full name stands where the meter
+            // would be.
+            Text {
+                visible: root.kind === "layout"
+                width: parent.width
+                text: root.keymap
+                color: Theme.muted
+                elide: Text.ElideRight
+                font.family: Theme.fontMono
+                font.pixelSize: Theme.fsMicro
+                renderType: Text.NativeRendering
+            }
+
             MeterBar {
+                visible: root.kind !== "layout"
                 width: parent.width
                 height: 4
                 segments: 20

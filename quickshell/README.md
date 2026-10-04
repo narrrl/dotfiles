@@ -39,7 +39,8 @@ cost 4.4% of the height on top of what the bar already takes.
 
 - **hull** — `bar/Frame.qml`: one surface round the whole screen, with the
   desktop as a rounded opening. The bar and the rail sit on it.
-- **bar** — identity and workspaces on the left; the focused window, the
+- **bar** — identity and workspaces on the left (a ring after them while the
+  `Super+S` scratchpad holds windows, filled while it is open); the focused window, the
   player, the CPU/MEM/GPU readout and the clock on the right.
 - **rail** — network, bluetooth, audio, mic, backlight, battery, tray,
   notifications, power. Popouts grow leftward out of it, into the screen.
@@ -64,7 +65,7 @@ components/      the primitives: panels, sliders, list rows, display text
 services/        data sources, all singletons
 bar/             the two surfaces and their modules
 popouts/         hover panels hanging off rail and bar modules
-overlays/        power menu, notification toasts, volume/brightness OSD
+overlays/        power menu, notification toasts, the volume/brightness/keyboard OSD, idle dim
 lock/            session lock
 overview/        every monitor, workspace and window at once
 backdrop/        the wallpaper, drawn by the shell
