@@ -10,7 +10,8 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("uwsm app -- qs")
 
     hl.exec_cmd("uwsm app -- nm-applet --indicator")
-    hl.exec_cmd("uwsm app -- hyprpaper")
+    -- hyprpaper is not started here: its systemd unit is enabled for
+    -- graphical-session.target, and a second copy here ran alongside it.
 
     -- clipboard history, text and images
     hl.exec_cmd("wl-paste --type text --watch cliphist store")

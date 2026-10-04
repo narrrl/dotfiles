@@ -79,9 +79,6 @@ local function reconcile(ignore)
         return
     end
 
-    -- First decision of the session, and it agrees with what lua/monitors.lua
-    -- already applied: nothing actually moved, so no daemon needs poking.
-    local settled = panel_off == nil and not want_off
     panel_off = want_off
 
     if want_off then
@@ -91,11 +88,7 @@ local function reconcile(ignore)
     end
     monitors.apply_external()
 
-    -- Quickshell follows monitor hotplug by itself; only the wallpaper daemon
-    -- needs a kick.
-    if not settled then
-        hl.exec_cmd("systemctl restart --user hyprpaper")
-    end
+    -- Quickshell follows monitor hotplug by itself, wallpaper included.
 end
 
 -- ------------------------------------------------------------------ triggers

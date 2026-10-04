@@ -3,6 +3,7 @@ aalib
 abseil-cpp
 acl
 acpi
+adw-gtk-theme
 adwaita-cursors
 adwaita-fonts
 adwaita-icon-theme
@@ -87,7 +88,6 @@ calibre
 cargo-audit
 catppuccin-gtk-theme-mocha
 catppuccin-qt5ct-git
-catppuccinifier-cli-git
 cbindgen
 cblas
 cdparanoia
@@ -111,6 +111,7 @@ cups-pk-helper
 curl
 cxxbridge
 cython
+darkly-bin
 dav1d
 db5.3
 dbus

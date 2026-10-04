@@ -74,6 +74,10 @@ hl.config({
         font_family = "FiraCode Nerd Font",
         background_color = c.base,
         focus_on_activate = true,
+        -- The shell powers displays down after idle (quickshell/services/Idle.qml)
+        -- and back up when idle ends; these wake them even if it is not running.
+        key_press_enables_dpms = true,
+        mouse_move_enables_dpms = true,
     },
 
     group = {
@@ -82,37 +86,29 @@ hl.config({
             border_inactive = c.overlay,
         },
 
-        -- Tabs are solid slabs of the hull, not titles painted over the
-        -- wallpaper. Hyprland paints a tab's fill and its indicator from the
-        -- same colour, so the current tab is told apart by being lifted a step
-        -- and by its title taking the light, not by an accent fill — a light
-        -- fill would swallow its own title.
+        -- Tabs are thin rounded lines, not titled slabs. The bar already
+        -- writes the focused title and its place in the group ("2/3", in
+        -- quickshell/bar/ActiveWindow.qml), so titles here only repeated it in
+        -- a second font. Hyprland paints a tab's indicator in the same colour
+        -- as its fill, so with no fill the current tab is simply the light one.
         groupbar = {
-            font_family = "Noto Sans",
-            font_size = 10,
-            font_weight_active = "medium",
-            font_weight_inactive = "normal",
+            render_titles = false,
+            gradients = false,
 
-            height = 22,
-            indicator_height = 1,
+            indicator_height = 3,
             indicator_gap = 0,
-            gradients = true,
-            rounding = 6,
-            gradient_rounding = 6,
-            round_only_edges = true,
-            gradient_round_only_edges = true,
+            rounding = 2,
+            round_only_edges = false,
             keep_upper_gap = false,
-            gaps_in = 2,
+            gaps_in = 4,
             gaps_out = 0,
 
             col = {
-                active = c.overlay,
-                inactive = c.surface,
+                active = c.accent,
+                inactive = c.overlay,
                 locked_active = c.alarm,
-                locked_inactive = c.surface,
+                locked_inactive = c.overlay,
             },
-            text_color = c.accent,
-            text_color_inactive = c.muted,
         },
     },
 

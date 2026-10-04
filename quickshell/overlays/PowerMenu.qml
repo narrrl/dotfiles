@@ -100,19 +100,19 @@ PanelWindow {
 
         Text {
             topPadding: Theme.padM
-            text: "GLORY TO MANKIND."
+            text: "Take your time."
             color: Theme.accent
             font.family: Theme.fontDisplay
             font.pixelSize: Theme.fsHuge
             font.weight: Font.Light
-            font.letterSpacing: 6
+            font.letterSpacing: 1
             renderType: Text.NativeRendering
         }
 
         Text {
             topPadding: Theme.padS
             leftPadding: 2
-            text: ["YORHA", (Quickshell.env("USER") || "user") + "@" + hostFile.text().trim(),
+            text: [(Quickshell.env("USER") || "user") + "@" + hostFile.text().trim(),
                    Sys.uptime ? "UP " + Sys.uptime : ""].filter(t => t !== "").join("  ·  ")
             color: Theme.muted
             font.family: Theme.fontMono

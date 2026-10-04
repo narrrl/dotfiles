@@ -20,6 +20,31 @@ Item {
             || toplevel.monitor.id === root.monitor.id)
 
     readonly property string incomingTitle: mine && toplevel.title ? toplevel.title : "—"
+
+    // Where the focused window sits in its group, as "2/3", or "" when it is
+    // not grouped. Hyprland's group bar draws only indicator lines (see
+    // hypr/lua/look.lua), so the bar is the one place the title is written.
+    readonly property string groupLabel: {
+        const ipc = root.mine ? root.toplevel.lastIpcObject : null;
+        const members = ipc?.grouped ?? [];
+        if (members.length < 2) return "";
+        const bare = a => String(a).replace(/^0x/, "");
+        const at = members.findIndex(m => bare(m) === bare(root.toplevel.address));
+        return (at < 0 ? "?" : at + 1) + "/" + members.length;
+    }
+
+    // lastIpcObject is a snapshot, refreshed only on request. Ask again
+    // whenever focus or group membership may have changed.
+    Connections {
+        target: Hyprland
+        function onRawEvent(event) {
+            const n = event.name;
+            if (n === "activewindowv2" || n === "togglegroup"
+                    || n === "moveintogroup" || n === "moveoutofgroup"
+                    || n === "closewindow" || n === "openwindow")
+                Hyprland.refreshToplevels();
+        }
+    }
     property string displayedTitle: "—"
 
     // Which toplevel the landing transition last played for. The landing is a
@@ -30,7 +55,8 @@ Item {
     // The bar shrinks this when the three clusters would otherwise collide.
     property real maxWidth: 240
 
-    implicitWidth: Math.min(maxWidth, Math.max(70, label.implicitWidth + 4))
+    implicitWidth: Math.min(maxWidth,
+        Math.max(70, label.implicitWidth + 4 + (groupTag.visible ? groupTag.width + Theme.padS : 0)))
     implicitHeight: 20
 
     Behavior on implicitWidth {
@@ -45,7 +71,7 @@ Item {
         Text {
             id: label
             anchors.verticalCenter: parent.verticalCenter
-            width: parent.width
+            width: parent.width - (groupTag.visible ? groupTag.width + Theme.padS : 0)
             text: root.displayedTitle
             color: root.mine ? Theme.subtext : Theme.muted
             elide: Text.ElideRight
@@ -61,12 +87,24 @@ Item {
         Text {
             id: ghost
             anchors.verticalCenter: parent.verticalCenter
-            width: parent.width
+            width: label.width
             text: root.displayedTitle
             color: Theme.accent
             opacity: 0
             elide: Text.ElideRight
             font: label.font
+            renderType: Text.NativeRendering
+        }
+
+        Text {
+            id: groupTag
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            visible: root.groupLabel !== ""
+            text: root.groupLabel
+            color: Theme.muted
+            font.family: Theme.fontMono
+            font.pixelSize: Theme.fsMicro
             renderType: Text.NativeRendering
         }
     }

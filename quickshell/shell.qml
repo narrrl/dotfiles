@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import "root:/config"
 import "root:/services"
+import "root:/backdrop"
 import "root:/bar"
 import "root:/launcher"
 import "root:/dashboard"
@@ -12,6 +13,7 @@ import "root:/lock"
 // Takemi — a YoRHa-dark Quickshell desktop: NieR:Automata's interface
 // language, lit like the wallpaper.
 //
+//   backdrop/  the wallpaper, drifting with the workspace
 //   bar/       the hull, the top bar, the rail and their modules
 //   popouts/   hover panels hanging off bar modules
 //   launcher/  the application launcher
@@ -36,6 +38,14 @@ ShellRoot {
         void Bt.available;
         void Actions.powerMenuOpen;
         void Apps.index;
+        void Idle.stayAwake;
+        void Wallpaper.path;
+    }
+
+    Variants {
+        model: Quickshell.screens
+
+        Backdrop {}
     }
 
     Variants {
@@ -90,6 +100,12 @@ ShellRoot {
         model: Quickshell.screens
 
         Osd {}
+    }
+
+    Variants {
+        model: Quickshell.screens
+
+        IdleDim {}
     }
 
     Lock {}

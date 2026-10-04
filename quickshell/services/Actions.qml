@@ -163,5 +163,7 @@ Singleton {
         function reloadConfig(): void { root.reloadShell(); }
         function toggleDnd(): void { Notifs.toggleDnd(); }
         function clearNotifications(): void { Notifs.clearAll(); }
+        function toggleStayAwake(): void { Idle.toggleStayAwake(); }
+        function wallpaper(path: string): void { Wallpaper.set(path); }
     }
 }

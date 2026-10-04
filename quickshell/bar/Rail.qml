@@ -137,6 +137,19 @@ PanelWindow {
 
         Divider { visible: tray.visible }
 
+        // Only there while the idle chain is held off by hand, so it is
+        // obvious why the screen never locked.
+        RailIcon {
+            id: awakeIcon
+            visible: Idle.stayAwake
+            icon: "󰅶"
+            label: "Stay awake"
+            statusText: "Screen will not dim or lock"
+            hint: "Click to allow sleep"
+            live: true
+            onClicked: Idle.toggleStayAwake()
+        }
+
         RailIcon {
             id: bellIcon
             icon: Notifs.icon

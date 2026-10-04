@@ -49,10 +49,9 @@ local function mirror_all(panel)
     end
 end
 
--- The bar and popouts stay on the outputs they were created for, so
--- respawn the shell the same way lua/autostart.lua starts it.
+-- The bar, popouts and wallpaper stay on the outputs they were created for,
+-- so respawn the shell the same way lua/autostart.lua starts it.
 local function restart_clients()
-    hl.exec_cmd("systemctl restart --user hyprpaper")
     hl.exec_cmd("sh -c 'qs kill; exec uwsm app -- qs'")
 end
 

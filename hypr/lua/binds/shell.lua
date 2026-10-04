@@ -11,6 +11,7 @@ shell("power", { key = mod .. " + P", description = "power menu" })
 shell("ask", { key = mod .. " + A", description = "ask claude" })
 shell("dashboard", { key = mod .. " + D", description = "dashboard" })
 shell("toggleDnd", { key = mod .. " + SHIFT + N", description = "toggle do not disturb" })
+shell("toggleStayAwake", { key = mod .. " + SHIFT + I", description = "keep the screen awake" })
 shell("clearNotifications", { key = mod .. " + CTRL + SHIFT + N", description = "clear notifications" })
 shell("reloadConfig", { key = mod .. " + SHIFT + R", description = "reload shell config" })
 

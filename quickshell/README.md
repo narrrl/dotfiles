@@ -66,6 +66,7 @@ bar/             the two surfaces and their modules
 popouts/         hover panels hanging off rail and bar modules
 overlays/        power menu, notification toasts, volume/brightness OSD
 lock/            session lock
+backdrop/        the wallpaper, drawn by the shell
 assets/          halftone and stripe tiles, generated with ImageMagick
 ```
 
@@ -143,6 +144,7 @@ Set in `~/.config/hypr/lua/binds/shell.lua`:
 - `Super+Ctrl+L` — lock
 - `Super+P` — power menu
 - `Super+Shift+N` — toggle do not disturb
+- `Super+Shift+I` — stay awake (no dim, lock or screen-off until toggled back)
 - `Super+Ctrl+Shift+N` — clear notifications
 - `Super+A` — ask panel
 - `Super+Shift+R` — reload the shell
@@ -153,6 +155,8 @@ All of these go through Quickshell's IPC, so they work from any script:
 qs ipc call shell lock
 qs ipc call shell power
 qs ipc call shell toggleDnd
+qs ipc call shell toggleStayAwake
+qs ipc call shell wallpaper ~/.wallpapers/space-1.jpg
 qs ipc call shell ask
 qs ipc call shell askAbout "why is the sky blue"
 qs ipc call shell clearNotifications
@@ -211,6 +215,34 @@ NetworkManager for Wi-Fi, UPower for battery, MPRIS for media, and Quickshell's
 own notification server. These are event-driven, so the bar and OSD react the
 instant a volume key is pressed instead of on the next poll.
 
+## Wallpaper
+
+`backdrop/Backdrop.qml` draws it on the background layer; there is no
+hyprpaper. The picture is drawn 8% larger than the screen and drifts with the
+workspace: 1 sits at the top of it and each step down moves it a fixed
+distance, a little slower than Hyprland's own slide, so the windows arrive
+first and the scene behind catches up. It never moves on its own, so an idle
+desktop costs the compositor nothing. While the workspace holds windows it
+settles a shade darker.
+
+The choice is one line in `quickshell/wallpaper` (`~` allowed), watched live.
+`qs ipc call shell wallpaper <path>` rewrites it.
+
+## Idle
+
+`services/Idle.qml`, on Wayland's idle-notify protocol instead of hypridle:
+
+| After | Does |
+|---|---|
+| 4 min | the screen dims slowly (`overlays/IdleDim.qml`); any input lifts it |
+| 5 min | lock |
+| 6 min | displays off; any input wakes them |
+| 15 min | suspend, on battery only |
+
+Every stage respects idle inhibitors, so a fullscreen video holds them all
+off. `Super+Shift+I` does the same by hand and puts a cup on the rail while it
+is on.
+
 ## Lock screen
 
 Authenticates through `/etc/pam.d/hyprlock`, which on this box is just
@@ -219,7 +251,8 @@ styled in an ordinary window (`qs -p lockpreview.qml`) without locking the
 session.
 
 It is the wallpaper, barely softened, with the face set in the dark of the
-porthole: the mark, the time in light display type, the date, a status log
+porthole: the mark, the time in light display type, the date, "Take your
+time.", a status log
 (battery, network, what is playing, unread notices), and a rounded field that
 fills with dots as you type. The dots breathe while PAM checks; a wrong
 password turns them and the field's rim to rust and nudges the field once.
@@ -231,6 +264,9 @@ means restarting Hyprland from a TTY.
 ## What was retired
 
 - `waybar.service` — disabled. Its config is still in `~/.config/waybar`.
+- `hyprpaper` — replaced by `backdrop/`. Turn its unit off with
+  `systemctl --user disable --now hyprpaper`.
+- `hypridle` — never installed; `services/Idle.qml` does the job.
 - `dunst.service` — masked, so it cannot be D-Bus activated and steal
   `org.freedesktop.Notifications`. Undo with
   `systemctl --user unmask dunst.service`.
@@ -311,8 +347,9 @@ network and bluetooth, but keep running as the secret and pairing agents.
   the opening's 18px corners at a 10px gap (`Theme.frameRadius - gaps_out`);
   change one and the others follow. No blur, both opacities at `1.0`, 1px
   borders running from the light into the suit's grey. The shadow is soft and
-  wide, so windows float in the opening. Group tabs are solid hull slabs, the
-  current one lifted a step with its title in the light. Motion
+  wide, so windows float in the opening. Group tabs are thin rounded lines with
+  no titles, the current one in the light; the bar writes the title once and
+  adds the window's place in the group (`2/3`). Motion
   (`hypr/lua/animations.lua`) glides and settles with no overshoot: windows
   resolve in from a hair smaller, workspaces drift a short way vertically and
   fade (sliding behind the hull), the `SUPER+S` scratchpad lowers out from
@@ -335,7 +372,8 @@ network and bluetooth, but keep running as the secret and pairing agents.
   The theme name is also in `xsettingsd/xsettingsd.conf` and has to be set with
   `gsettings` for portal-aware apps.
 - **Qt** — qt6ct with `qt6ct/colors/yorha.conf`, the same palette in
-  `QPalette` roles. The style is Fusion unless Darkly is installed.
+  `QPalette` roles, drawn with the Darkly style (package `darkly-bin`) for
+  rounded controls. Fusion is the fallback if Darkly is missing.
 - **zathura** — `zathura/yorha`, included from `zathurarc`. Pages are
   recoloured onto the hull with text in bone; images keep their colours.
   Search hits are a soft bone wash, and the current hit is sand.

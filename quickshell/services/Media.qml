@@ -10,6 +10,9 @@ Singleton {
     id: root
 
     property string preferredId: ""
+    // The player that was playing most recently, so pausing it keeps it in
+    // the bar instead of handing the slot to whichever player is listed first.
+    property string lastPlayingId: ""
 
     readonly property var players: Mpris.players?.values ?? []
     readonly property bool hasPlayer: active !== null
@@ -22,8 +25,22 @@ Singleton {
             for (const p of players) if (p.dbusName === root.preferredId) return p;
         }
         for (const p of players) if (p.isPlaying) return p;
+        if (root.lastPlayingId !== "") {
+            for (const p of players) if (p.dbusName === root.lastPlayingId) return p;
+        }
+        // Browsers register a player for every tab with a media element, most
+        // of them with no track at all. Prefer one that has something to show.
+        for (const p of players) if (p.trackTitle) return p;
         return players[0];
     }
+
+    // Remember whichever player was playing last. Bound through the active
+    // player, so it updates whenever playback starts anywhere.
+    readonly property string playingId: {
+        for (const p of players) if (p.isPlaying) return p.dbusName;
+        return "";
+    }
+    onPlayingIdChanged: if (root.playingId !== "") root.lastPlayingId = root.playingId
 
     readonly property string title: active?.trackTitle || ""
     readonly property string artist: active?.trackArtist || ""
