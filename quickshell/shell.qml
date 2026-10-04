@@ -7,6 +7,7 @@ import "root:/bar"
 import "root:/launcher"
 import "root:/dashboard"
 import "root:/ask"
+import "root:/overview"
 import "root:/overlays"
 import "root:/lock"
 
@@ -18,6 +19,7 @@ import "root:/lock"
 //   popouts/   hover panels hanging off bar modules
 //   launcher/  the application launcher
 //   dashboard/ the drawer that drops from the bar
+//   overview/  every monitor, workspace and window at once (Alt+Tab)
 //   ask/       the question panel, dropped from the top edge
 //   overlays/  power menu, notification toasts, OSD
 //   lock/      session lock
@@ -82,6 +84,12 @@ ShellRoot {
         model: Quickshell.screens
 
         AskPanel {}
+    }
+
+    Variants {
+        model: Quickshell.screens
+
+        Overview {}
     }
 
     Variants {

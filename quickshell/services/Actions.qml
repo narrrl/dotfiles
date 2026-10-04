@@ -19,6 +19,9 @@ Singleton {
     property bool launcherOpen: false
     property bool askOpen: false
     property bool dashboardOpen: false
+    property bool overviewOpen: false
+    // Opened by Alt+Tab, so letting go of Alt picks the window.
+    property bool overviewHold: false
 
     // Seed text for the next launcher open. Lets a keybind or a script hand the
     // launcher a query it did not have to type — `qs ipc call shell prompt
@@ -40,6 +43,9 @@ Singleton {
     // …and for the dashboard drawer.
     property string dashboardScreen: ""
 
+    // …and for the overview.
+    property string overviewScreen: ""
+
     // When the dashboard was last closed from outside. A click on the bar's
     // clock first clears the drawer's focus grab, which closes it, and then
     // lands on the clock, which would toggle it straight back open. A toggle
@@ -51,6 +57,8 @@ Singleton {
     property string askSeed: ""
 
     signal osdRequested(string kind)
+    signal overviewStepped(int delta)
+    signal overviewCommitted()
 
     function togglePowerMenu() {
         if (!root.powerMenuOpen)
@@ -86,6 +94,29 @@ Singleton {
         if (!root.dashboardOpen) return;
         root.dashboardOpen = false;
         root.dashboardClosedAt = Date.now();
+    }
+
+    function toggleOverview() {
+        if (!root.overviewOpen) {
+            root.overviewHold = false;
+            root.overviewScreen = root.focusedScreenName();
+        }
+        root.overviewOpen = !root.overviewOpen;
+    }
+    function closeOverview() { root.overviewOpen = false; }
+
+    // Alt+Tab and Alt+Shift+Tab. The first press opens the overview with the
+    // previous window picked; Hyprland keeps the bind while it is open, so
+    // later presses arrive here too and walk the focus history.
+    function overviewStep(delta: int) {
+        if (!root.overviewOpen) {
+            root.overviewHold = true;
+            root.overviewScreen = root.focusedScreenName();
+            root.overviewOpen = true;
+            if (delta < 0) root.overviewStepped(-2);
+            return;
+        }
+        root.overviewStepped(delta);
     }
 
     function toggleAsk() {
@@ -164,6 +195,10 @@ Singleton {
         function toggleDnd(): void { Notifs.toggleDnd(); }
         function clearNotifications(): void { Notifs.clearAll(); }
         function toggleStayAwake(): void { Idle.toggleStayAwake(); }
+        function overview(): void { root.toggleOverview(); }
+        function overviewNext(): void { root.overviewStep(1); }
+        function overviewPrev(): void { root.overviewStep(-1); }
+        function overviewCommit(): void { if (root.overviewHold) root.overviewCommitted(); }
         function wallpaper(path: string): void { Wallpaper.set(path); }
     }
 }

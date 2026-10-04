@@ -66,6 +66,7 @@ bar/             the two surfaces and their modules
 popouts/         hover panels hanging off rail and bar modules
 overlays/        power menu, notification toasts, volume/brightness OSD
 lock/            session lock
+overview/        every monitor, workspace and window at once
 backdrop/        the wallpaper, drawn by the shell
 assets/          halftone and stripe tiles, generated with ImageMagick
 ```
@@ -144,6 +145,9 @@ Set in `~/.config/hypr/lua/binds/shell.lua`:
 - `Super+Ctrl+L` — lock
 - `Super+P` — power menu
 - `Super+Shift+N` — toggle do not disturb
+- `Alt+Tab` / `Alt+Shift+Tab` — overview, walking focus history; let go of Alt to switch
+- `Super+W` — overview, without the hold
+- `Super+Tab` / `Super+Shift+Tab` — next / previous window in a group
 - `Super+Shift+I` — stay awake (no dim, lock or screen-off until toggled back)
 - `Super+Ctrl+Shift+N` — clear notifications
 - `Super+A` — ask panel
@@ -214,6 +218,27 @@ Everything else is native: PipeWire for audio, BlueZ for bluetooth,
 NetworkManager for Wi-Fi, UPower for battery, MPRIS for media, and Quickshell's
 own notification server. These are event-driven, so the bar and OSD react the
 instant a volume key is pressed instead of on the next poll.
+
+## Overview
+
+`overview/Overview.qml`. Each monitor is a row of small portholes, one per
+workspace at that monitor's aspect ratio, with live captures of the windows
+where they sit (`ScreencopyView`, so windows on hidden workspaces show too).
+The monitor's name heads its row once there is more than one. A group shows
+the member in front with a `1/3` tag; picking a hidden member puts it in
+front.
+
+`Alt+Tab` opens it with the previous window picked, more Tabs walk back
+through focus history, and letting go of Alt switches. Hyprland keeps the
+Alt+Tab bind while the overview has the keyboard, so those presses arrive
+over IPC (`overviewNext` / `overviewPrev`); the Alt release comes to the
+overview itself, with a release bind on `ALT_L` as a backstop. Hover picks
+only once the pointer moves, so a resting pointer cannot override the
+keyboard. Enter, a click, or `1`–`9` for a workspace also go; Escape or a
+click on the dark cancels.
+
+Focus is dispatched a moment after the overview lets go of the keyboard:
+Hyprland ignores focus changes while a layer holds it exclusively.
 
 ## Wallpaper
 

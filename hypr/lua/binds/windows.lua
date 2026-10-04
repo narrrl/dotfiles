@@ -18,8 +18,10 @@ end
 
 -- ------------------------------------------------------------------- groups
 hl.bind(mod .. " + n", hl.dsp.group.toggle())
-hl.bind("ALT + Tab", hl.dsp.group.next())
--- hl.bind("ALT + Tab", hl.dsp.group.prev())
+-- Alt+Tab belongs to the overview (lua/binds/shell.lua), so tabs in a group
+-- cycle on Super+Tab.
+hl.bind(mod .. " + Tab", hl.dsp.group.next(), { description = "next window in group" })
+hl.bind(mod .. " + SHIFT + Tab", hl.dsp.group.prev(), { description = "previous window in group" })
 
 -- -------------------------------------------------------------------- mouse
 hl.bind(mod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
