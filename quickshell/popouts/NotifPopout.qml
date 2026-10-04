@@ -68,7 +68,8 @@ Popout {
             anchors.right: parent.right
             anchors.bottom: parent.bottom
             clip: true
-            spacing: Theme.padS
+            // Entries carry their own header hairline, so they sit flush.
+            spacing: 0
             model: Notifs.history
 
             delegate: NotifCard {
@@ -79,12 +80,6 @@ Popout {
             }
 
             add: Transition {
-                NumberAnimation {
-                    properties: "x"
-                    from: 40
-                    duration: Theme.durSlow
-                    easing.type: Easing.OutCubic
-                }
                 NumberAnimation {
                     property: "opacity"
                     from: 0; to: 1

@@ -5,177 +5,250 @@ import "root:/config"
 import "root:/components"
 import "root:/services"
 
-// One notification, used both in the history list and as a floating toast.
+// One notification, used both in the history list and in the toast drawer.
+//
+// Laid out like an entry in NieR's message log rather than as a card: a square
+// marker and the sender's name running into a hairline, the summary, the body,
+// and hairline buttons for any actions. There is no panel of its own — both
+// places it appears are already hull surfaces — so rest is bare, hover lifts
+// the row onto the surface tone, and entries are divided by the hairline in
+// their own header.
+//
+// Urgency is the marker: the light for normal, grey for low, red for critical.
+// A critical entry also takes the red into its sender line, and nothing else.
 Item {
     id: root
 
     required property var notif
     property bool showActions: true
 
+    readonly property bool critical: root.notif?.urgency === NotificationUrgency.Critical
     readonly property color tone: root.notif
         ? Notifs.urgencyColor(root.notif.urgency)
         : Theme.primary
 
+    // Kept for callers that size things to the card's edges; there is no lean
+    // or chop under the YoRHa theme.
+    readonly property real lean: 0
+    readonly property real chop: 0
+
+    readonly property bool hovered: hover.hovered
+
     signal dismissed()
 
-    // The card's own geometry, published so anything drawn along its edges —
-    // the toast countdown rule — can stay inside the chopped corners instead of
-    // running out past them.
-    readonly property real lean: Theme.skew
-    readonly property real chop: Theme.cut
+    implicitHeight: layout.implicitHeight + Theme.padM * 2
 
-    implicitHeight: panel.height
+    Rectangle {
+        anchors.fill: parent
+        color: root.hovered ? Theme.treatmentHoverFill : "transparent"
 
-    P5Panel {
-        id: panel
-        width: parent.width
-        height: layout.implicitHeight + Theme.padM * 2
-        lean: root.lean
-        chop: root.chop
-        fill: Theme.surface
-        fillOpacity: 0.97
-        // Urgency lives in the slash, and in the frame only when critical. A
-        // tone-tinted frame on every card drew a pale outline round ordinary
-        // notifications, and the critical halftone was painted in the accent,
-        // so the most urgent card wore the colour that means "live".
-        border: root.notif?.urgency === NotificationUrgency.Critical
-            ? root.tone
-            : (hover.hovered ? Theme.treatmentHoverMark : Theme.surfaceAlt)
-        slash: true
-        slashColor: root.tone
-        slashWidth: 4
-        padding: Theme.padM
+        Behavior on color {
+            ColorAnimation { duration: Theme.durFast }
+        }
+    }
 
-        Column {
-            id: layout
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.verticalCenter: parent.verticalCenter
-            spacing: 3
+    Column {
+        id: layout
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.margins: Theme.padM
+        spacing: 4
 
-            // App line
-            Row {
-                spacing: Theme.padS
+        // Sender: marker, glyph, name, then the hairline to the edge.
+        Item {
+            width: parent.width
+            height: 16
 
-                Icon {
-                    anchors.verticalCenter: parent.verticalCenter
-                    text: Notifs.appIconFor(root.notif)
-                    color: root.tone
-                    font.pixelSize: Theme.fsBody
-                }
-
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    text: (root.notif?.appName || "System").toUpperCase()
-                    color: root.tone
-                    font.family: Theme.fontMono
-                    font.pixelSize: Theme.fsMicro
-                    font.letterSpacing: 2
-                    renderType: Text.NativeRendering
-                }
+            Rectangle {
+                id: marker
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                width: Theme.marker
+                height: Theme.marker
+                color: root.tone
             }
 
-            Text {
-                width: parent.width
-                text: root.notif?.summary || ""
-                color: Theme.text
-                elide: Text.ElideRight
-                maximumLineCount: 2
-                wrapMode: Text.WordWrap
-                font.family: Theme.fontDisplay
-                font.pixelSize: Theme.fsBody
-                font.weight: Font.DemiBold
-                renderType: Text.NativeRendering
-            }
-
-            Text {
-                width: parent.width
+            Icon {
+                id: glyph
                 visible: text !== ""
-                text: root.notif?.body || ""
-                color: Theme.subtext
-                elide: Text.ElideRight
-                maximumLineCount: 4
-                wrapMode: Text.WordWrap
-                textFormat: Text.StyledText
-                font.family: Theme.fontDisplay
-                font.pixelSize: Theme.fsSmall
+                anchors.left: marker.right
+                anchors.leftMargin: Theme.padS
+                anchors.verticalCenter: parent.verticalCenter
+                text: Notifs.appIconFor(root.notif)
+                color: root.critical ? Theme.alarm : Theme.muted
+                font.pixelSize: Theme.fsBody
+            }
+
+            Text {
+                id: sender
+                anchors.left: glyph.visible ? glyph.right : marker.right
+                anchors.leftMargin: Theme.padS
+                anchors.verticalCenter: parent.verticalCenter
+                text: (root.notif?.appName || "System").toUpperCase()
+                color: root.critical ? Theme.alarm : Theme.muted
+                font.family: Theme.fontMono
+                font.pixelSize: Theme.fsMicro
+                font.letterSpacing: 2
                 renderType: Text.NativeRendering
             }
 
-            // Inline image, when the sender supplied one.
+            Rectangle {
+                anchors.left: sender.right
+                anchors.leftMargin: Theme.padS
+                anchors.right: close.left
+                anchors.rightMargin: Theme.padS
+                anchors.verticalCenter: parent.verticalCenter
+                height: 1
+                color: Theme.alpha(Theme.outline, 0.5)
+            }
+
+            // Close affordance: always there, quiet until the row is hovered.
+            Icon {
+                id: close
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                text: "󰅖"
+                opacity: root.hovered ? 1 : 0.0
+                color: closeHover.hovered ? Theme.accent : Theme.muted
+                font.pixelSize: Theme.fsBody
+
+                Behavior on opacity {
+                    NumberAnimation { duration: Theme.durFast }
+                }
+
+                HoverHandler {
+                    id: closeHover
+                    cursorShape: Qt.PointingHandCursor
+                }
+
+                TapHandler {
+                    onTapped: root.dismissed()
+                }
+            }
+        }
+
+        Text {
+            width: parent.width
+            leftPadding: Theme.marker + Theme.padS
+            text: root.notif?.summary || ""
+            color: root.hovered ? Theme.accent : Theme.text
+            elide: Text.ElideRight
+            maximumLineCount: 2
+            wrapMode: Text.WordWrap
+            font.family: Theme.fontDisplay
+            font.pixelSize: Theme.fsBody
+            font.weight: Theme.weightDisplay
+            renderType: Text.NativeRendering
+
+            Behavior on color {
+                ColorAnimation { duration: Theme.durFast }
+            }
+        }
+
+        Text {
+            width: parent.width
+            leftPadding: Theme.marker + Theme.padS
+            visible: text !== ""
+            text: root.notif?.body || ""
+            color: Theme.subtext
+            elide: Text.ElideRight
+            maximumLineCount: 4
+            wrapMode: Text.WordWrap
+            textFormat: Text.StyledText
+            font.family: Theme.fontDisplay
+            font.pixelSize: Theme.fsSmall
+            lineHeight: 1.1
+            renderType: Text.NativeRendering
+        }
+
+        // Inline image, when the sender supplied one, in a hairline frame.
+        Rectangle {
+            x: Theme.marker + Theme.padS
+            visible: inline.source != "" && inline.status === Image.Ready
+            width: inline.width + 2
+            height: inline.height + 2
+            color: "transparent"
+            border.width: 1
+            border.color: Theme.overlay
+
             Image {
-                visible: source != "" && status === Image.Ready
+                id: inline
+                x: 1
+                y: 1
                 source: root.notif?.image || ""
                 sourceSize.height: 90
                 fillMode: Image.PreserveAspectFit
                 asynchronous: true
             }
+        }
 
-            Row {
-                visible: root.showActions && (root.notif?.actions?.length ?? 0) > 0
-                spacing: Theme.padS
-                topPadding: Theme.padS
+        Row {
+            x: Theme.marker + Theme.padS
+            visible: root.showActions && (root.notif?.actions?.length ?? 0) > 0
+            spacing: Theme.padS
+            topPadding: 4
 
-                Repeater {
-                    model: root.notif?.actions ?? []
+            Repeater {
+                model: root.notif?.actions ?? []
 
-                    Item {
-                        id: actionChip
-                        required property var modelData
+                // A hairline button with a marker, the P5Button pattern at a
+                // smaller size. Hover lifts and lights it; it never inverts.
+                Item {
+                    id: actionChip
+                    required property var modelData
 
-                        implicitWidth: actionLabel.implicitWidth + Theme.padM
-                        implicitHeight: 22
+                    implicitWidth: chipRow.implicitWidth + Theme.padM * 2
+                    implicitHeight: 24
 
-                        Skew {
-                            anchors.fill: parent
-                            color: actionHover.hovered ? Theme.accent : Theme.surfaceAlt
-                            borderWidth: 1
-                            borderColor: actionHover.hovered ? Theme.accent : Theme.overlay
+                    Rectangle {
+                        anchors.fill: parent
+                        color: actionHover.hovered ? Theme.treatmentHoverFill : "transparent"
+                        border.width: 1
+                        border.color: actionHover.hovered ? Theme.treatmentHoverMark : Theme.overlay
+
+                        Behavior on color {
+                            ColorAnimation { duration: Theme.durFast }
+                        }
+                    }
+
+                    Row {
+                        id: chipRow
+                        anchors.centerIn: parent
+                        spacing: Theme.padS
+
+                        Rectangle {
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 4
+                            height: 4
+                            color: actionLabel.color
+                            opacity: actionHover.hovered ? 1 : 0.4
                         }
 
                         Text {
                             id: actionLabel
-                            anchors.centerIn: parent
-                            text: actionChip.modelData.text
-                            color: actionHover.hovered ? Theme.ink : Theme.text
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: actionChip.modelData.text.toUpperCase()
+                            color: actionHover.hovered ? Theme.accent : Theme.text
                             font.family: Theme.fontDisplay
                             font.pixelSize: Theme.fsMicro
-                            font.weight: Font.DemiBold
+                            font.letterSpacing: Theme.tracking
                             renderType: Text.NativeRendering
                         }
+                    }
 
-                        HoverHandler {
-                            id: actionHover
-                            cursorShape: Qt.PointingHandCursor
-                        }
+                    HoverHandler {
+                        id: actionHover
+                        cursorShape: Qt.PointingHandCursor
+                    }
 
-                        TapHandler {
-                            onTapped: {
-                                actionChip.modelData.invoke();
-                                root.dismissed();
-                            }
+                    TapHandler {
+                        onTapped: {
+                            actionChip.modelData.invoke();
+                            root.dismissed();
                         }
                     }
                 }
-            }
-        }
-
-        // Close affordance.
-        Icon {
-            anchors.right: parent.right
-            anchors.top: parent.top
-            visible: hover.hovered
-            text: "󰅖"
-            color: closeHover.hovered ? Theme.accent : Theme.muted
-            font.pixelSize: Theme.fsBody
-
-            HoverHandler {
-                id: closeHover
-                cursorShape: Qt.PointingHandCursor
-            }
-
-            TapHandler {
-                onTapped: root.dismissed()
             }
         }
     }
