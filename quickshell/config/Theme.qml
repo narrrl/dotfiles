@@ -240,10 +240,8 @@ Singleton {
     readonly property var easeIn: [0.55, 0.0, 0.9, 0.35, 1, 1]
 
     // -------------------------------------------------------------- textures
-    // A 1px dot every 8px, and a 32px hairline grid — the two backgrounds the
-    // NieR menus are printed on.
+    // A 1px dot every 8px, the ground NieR's menus are printed on.
     readonly property url texDots: "root:/assets/dots.png"
-    readonly property url texGrid: "root:/assets/grid.png"
     readonly property url texScanline: "root:/assets/scanline.png"
 
     // Last resort only. The live wallpaper comes from the Wallpaper singleton,

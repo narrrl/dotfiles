@@ -10,6 +10,13 @@ import "root:/lock"
 // The lock screen's whole face, kept separate from WlSessionLockSurface so it
 // can be instantiated in an ordinary window for development without actually
 // locking the session.
+//
+// Quiet on purpose. The wallpaper stays almost whole — the porthole, the
+// planet, the girl looking out — and the face is one small group of type set
+// in the dark of the porthole: the mark, the time, the date, a short status
+// log, and a rounded field to type into. Nothing sweeps, splits or shakes;
+// the group resolves in, and a wrong password nudges it once and turns its
+// dots to rust.
 Item {
     id: surface
 
@@ -20,12 +27,12 @@ Item {
     property string status: ""
     property bool failed: false
     property bool busy: pam.active
-    readonly property real uiScale: Math.max(0.72, Math.min(1.15,
+    readonly property real uiScale: Math.max(0.72, Math.min(1.3,
         Math.min(width / 1920, height / 1080)))
 
     Rectangle {
         anchors.fill: parent
-        color: Theme.base
+        color: Theme.ink
     }
 
     // ------------------------------------------------------- background
@@ -43,288 +50,310 @@ Item {
         fillMode: Image.PreserveAspectCrop
         asynchronous: false
         cache: true
+        opacity: 0
 
+        // Barely softened: enough that the scene steps back behind the type,
+        // not so much that it stops being a place.
         layer.enabled: true
         layer.effect: MultiEffect {
             blurEnabled: true
-            blur: 0.55
-            blurMax: 48
-            saturation: -0.15
-            brightness: -0.35
+            blur: 0.2
+            blurMax: 32
+            saturation: -0.1
+            brightness: -0.18
         }
     }
 
-    // Wash pulling the photo down toward the shell's ground. Was described as
-    // a teal wash back when the UI was teal; the colours it actually uses are
-    // the neutral surfaces, which is what it should have been all along.
+    // Shade deepening toward the left, where the type sits in the porthole's
+    // dark, and a breath of it along the foot.
     Rectangle {
         anchors.fill: parent
         gradient: Gradient {
-            GradientStop { position: 0.0; color: Theme.alpha(Theme.deep, 0.55) }
-            GradientStop { position: 0.6; color: Theme.alpha(Theme.base, 0.75) }
-            GradientStop { position: 1.0; color: Theme.alpha(Theme.base, 0.92) }
+            orientation: Gradient.Horizontal
+            GradientStop { position: 0.0; color: Theme.alpha(Theme.ink, 0.72) }
+            GradientStop { position: 0.45; color: Theme.alpha(Theme.ink, 0.28) }
+            GradientStop { position: 1.0; color: Theme.alpha(Theme.ink, 0.18) }
         }
     }
 
-    // The same wedge-and-stripes ground the power menu stands on. The wedge
-    // sits under the clock, which is where the power menu puts it under the
-    // title — so the two screens land the accent mass in the same place.
-    P5Backdrop {
-        id: backdrop
+    Rectangle {
         anchors.fill: parent
-        reveal: 0
-        wedgeSpan: 0.30
-        wedgeOpacity: 0.30
-        stripeOpacity: 0.04
+        gradient: Gradient {
+            GradientStop { position: 0.6; color: "transparent" }
+            GradientStop { position: 1.0; color: Theme.alpha(Theme.ink, 0.5) }
+        }
     }
 
-    // ------------------------------------------------------------ clock
+    // ------------------------------------------------------------- face
     SystemClock {
         id: clock
         precision: SystemClock.Minutes
     }
 
-    // The house mark, the same porthole the bar carries far left. Small, above
-    // the clock — the lock's hero is the time, not the branding.
-    Porthole {
-        id: mark
-        anchors.left: timeBlock.left
-        anchors.bottom: timeBlock.top
-        anchors.bottomMargin: 10
-        size: 28
-        opacity: timeBlock.opacity
-    }
-
     Column {
-        id: timeBlock
-        anchors.left: parent.left
-        anchors.leftMargin: parent.width * 0.1
-        anchors.top: parent.top
-        anchors.topMargin: parent.height * 0.18
-        spacing: -18
+        id: face
+        x: parent.width * 0.14
+        y: parent.height * 0.2
+        width: 380
+        scale: surface.uiScale
+        transformOrigin: Item.TopLeft
+        opacity: 0
+        spacing: 0
 
-        SplitText {
-            text: Qt.formatDateTime(clock.date, "HH")
-            pixelSize: Theme.fsMega * 1.7
-            split: 5
-        }
+        transform: Translate { id: drift }
 
-        SplitText {
-            text: Qt.formatDateTime(clock.date, "mm")
-            pixelSize: Theme.fsMega * 1.7
-            color: Theme.primary
-            split: 5
+        // The house mark, the same porthole the bar carries far left.
+        Porthole {
+            size: 26
         }
 
         Text {
-            text: Qt.formatDateTime(clock.date, "dddd, dd MMMM").toUpperCase()
+            topPadding: Theme.padM
+            text: Qt.formatDateTime(clock.date, "HH:mm")
+            color: Theme.accent
+            font.family: Theme.fontDisplay
+            font.pixelSize: Theme.fsMega * 1.35
+            font.weight: Font.Light
+            font.letterSpacing: 2
+            // Scaled with the face, so distance-field glyphs: native hinting
+            // at this size under a scale transform comes out stepped.
+            renderType: Text.QtRendering
+        }
+
+        Text {
+            leftPadding: 4
+            text: Qt.formatDateTime(clock.date, "dddd  ·  dd MMMM").toUpperCase()
             color: Theme.subtext
-            font.family: Theme.fontMono
+            font.family: Theme.fontDisplay
             font.pixelSize: Theme.fsBody
-            font.letterSpacing: 6
-            topPadding: 34
+            font.weight: Theme.weightDisplay
+            font.letterSpacing: 5
             renderType: Text.NativeRendering
         }
-    }
 
-    // ------------------------------------------------------ status rail
-    Column {
-        anchors.right: parent.right
-        anchors.rightMargin: parent.width * 0.1
-        anchors.top: parent.top
-        anchors.topMargin: parent.height * 0.2
-        spacing: Theme.padM
-        width: Math.min(300, parent.width * 0.28)
-        scale: surface.uiScale
-        transformOrigin: Item.TopRight
+        Item { width: 1; height: Theme.padXL }
 
-        RailRow {
+        // ------------------------------------------------------ status log
+        Column {
             width: parent.width
-            visible: Battery.available
-            glyph: Battery.icon
-            label: Math.round(Battery.percent) + "%"
-            detail: Battery.timeLabel
-            tone: Battery.tint
+            leftPadding: 4
+
+            StatusRow {
+                width: parent.width - 4
+                visible: Battery.available
+                label: "Battery"
+                detail: Math.round(Battery.percent) + "%"
+                    + (Battery.timeLabel ? "  " + Battery.timeLabel : "")
+                tone: Battery.tint
+            }
+
+            StatusRow {
+                width: parent.width - 4
+                label: "Network"
+                detail: Sys.netUp ? Net.label : "no link"
+                tone: Sys.netUp ? Theme.accentSoft : Theme.overlay
+            }
+
+            StatusRow {
+                width: parent.width - 4
+                visible: Media.hasPlayer
+                label: Media.playing ? "Playing" : "Paused"
+                detail: Media.artist ? Media.title + " — " + Media.artist : Media.title
+                tone: Media.playing ? Theme.accent : Theme.primaryDim
+            }
+
+            StatusRow {
+                width: parent.width - 4
+                visible: Notifs.count > 0
+                label: "Notices"
+                detail: Notifs.count + (Notifs.count === 1 ? " message" : " messages")
+                tone: Theme.accentSoft
+            }
         }
 
-        RailRow {
+        Item { width: 1; height: Theme.padXL }
+
+        // ------------------------------------------------------ the field
+        Item {
+            id: authBlock
             width: parent.width
-            glyph: Net.icon
-            label: Net.label
-            detail: Sys.netUp ? Sys.netIp : "no link"
-            tone: Sys.netUp ? Theme.primary : Theme.muted
-        }
+            height: field.height + hint.height + Theme.padS
 
-        RailRow {
-            width: parent.width
-            visible: Media.hasPlayer
-            glyph: Media.playing ? "󰝚" : "󰏤"
-            label: Media.title
-            detail: Media.artist
-            tone: Theme.primary
-        }
+            transform: Translate { id: nudge }
 
-        RailRow {
-            width: parent.width
-            visible: Notifs.count > 0
-            glyph: "󱅫"
-            label: Notifs.count + " notification" + (Notifs.count === 1 ? "" : "s")
-            detail: Notifs.history.length > 0 ? Notifs.history[0].summary : ""
-            tone: Theme.accent
-        }
-    }
+            Rectangle {
+                id: field
+                width: parent.width
+                height: 48
+                radius: height / 2
+                color: Theme.alpha(Theme.hull, 0.86)
+                border.width: 1
+                border.color: surface.failed
+                    ? Theme.alarm
+                    : (input.activeFocus && surface.entry.length > 0 ? Theme.outline : Theme.rim)
 
-    // ------------------------------------------------------- auth panel
-    Item {
-        id: authBlock
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: parent.height * 0.14
-        width: Math.min(460, parent.width - Theme.padXL * 2)
-        height: 150
-        scale: surface.uiScale
-        transformOrigin: Item.Bottom
+                Behavior on border.color {
+                    ColorAnimation { duration: Theme.durBase }
+                }
 
-        transform: Translate { id: shakeShift }
+                Icon {
+                    id: lockGlyph
+                    anchors.left: parent.left
+                    anchors.leftMargin: Theme.padL
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: "󰌾"
+                    color: surface.failed ? Theme.alarm : Theme.muted
+                    font.pixelSize: Theme.fsLarge
+                }
 
-        SplitText {
-            id: prompt
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            text: surface.failed
-                ? (surface.status || "WRONG").toUpperCase()
-                : (surface.busy ? "CHECKING…" : "WHO GOES THERE")
-            color: surface.failed ? Theme.alarm : Theme.text
-            pixelSize: Theme.fsTitle
-            letterSpacing: 4
-            horizontalAlignment: Text.AlignHCenter
-            split: surface.failed ? 4 : 1.6
-        }
+                Text {
+                    anchors.left: lockGlyph.right
+                    anchors.leftMargin: Theme.padM
+                    anchors.verticalCenter: parent.verticalCenter
+                    visible: surface.entry.length === 0
+                    text: "PASSWORD"
+                    color: Theme.muted
+                    font.family: Theme.fontDisplay
+                    font.pixelSize: Theme.fsSmall
+                    font.letterSpacing: Theme.tracking * 2
+                    renderType: Text.NativeRendering
+                }
 
-        // Password field: one chopped block per character.
-        P5Panel {
-            id: field
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: prompt.bottom
-            anchors.topMargin: Theme.padL
-            width: Math.min(380, authBlock.width - Theme.padL * 2)
-            height: 56
-            fill: Theme.mantle
-            fillOpacity: 0.94
-            border: surface.failed
-                ? Theme.accent
-                : (input.activeFocus ? Theme.primary : Theme.outline)
-            borderWidth: 2
-            slash: true
-            slashColor: surface.failed ? Theme.alarm : Theme.primary
-            slashWidth: 6
-            halftone: true
-            halftoneColor: surface.failed ? Theme.alarm : Theme.primary
-            halftoneOpacity: 0.08
+                // One dot per character, each resolving in as it is typed.
+                // They breathe while PAM is checking.
+                Row {
+                    id: dots
+                    anchors.left: lockGlyph.right
+                    anchors.leftMargin: Theme.padM
+                    anchors.right: enter.left
+                    anchors.rightMargin: Theme.padM
+                    anchors.verticalCenter: parent.verticalCenter
+                    spacing: 7
+                    clip: true
 
-            Row {
-                anchors.centerIn: parent
-                spacing: 6
-                visible: surface.entry.length > 0
+                    Repeater {
+                        model: Math.min(surface.entry.length, 28)
 
-                Repeater {
-                    model: Math.min(surface.entry.length, 22)
+                        Rectangle {
+                            id: pip
+                            required property int index
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 7
+                            height: 7
+                            radius: width / 2
+                            color: surface.failed ? Theme.alarm : Theme.accent
+                            opacity: 0
+                            scale: 0.4
 
-                    Skew {
-                        required property int index
-                        width: 10
-                        height: 20
-                        color: surface.failed ? Theme.alarm : Theme.primary
+                            Component.onCompleted: arrive.start()
 
-                        // Each new block snaps in.
-                        Component.onCompleted: pop.start()
-                        NumberAnimation {
-                            id: pop
-                            target: parent
-                            property: "scale"
-                            from: 0.2; to: 1
-                            duration: Theme.durBase
-                            easing.type: Easing.OutCubic
+                            ParallelAnimation {
+                                id: arrive
+                                NumberAnimation {
+                                    target: pip; property: "opacity"
+                                    to: 1; duration: Theme.durBase; easing.type: Easing.OutCubic
+                                }
+                                NumberAnimation {
+                                    target: pip; property: "scale"
+                                    to: 1; duration: Theme.durBase; easing.type: Easing.OutCubic
+                                }
+                            }
                         }
+                    }
+
+                    SequentialAnimation on opacity {
+                        running: surface.busy
+                        loops: Animation.Infinite
+                        alwaysRunToEnd: true
+                        NumberAnimation { to: 0.35; duration: 520; easing.type: Easing.InOutSine }
+                        NumberAnimation { to: 1; duration: 520; easing.type: Easing.InOutSine }
+                    }
+                }
+
+                // Submit: a disc at the field's end that lights once there is
+                // something to send.
+                Rectangle {
+                    id: enter
+                    readonly property bool ready: surface.entry.length > 0 && !surface.busy
+                    anchors.right: parent.right
+                    anchors.rightMargin: 8
+                    anchors.verticalCenter: parent.verticalCenter
+                    width: 32
+                    height: 32
+                    radius: width / 2
+                    color: enter.ready ? Theme.accent : "transparent"
+                    border.width: enter.ready ? 0 : 1
+                    border.color: Theme.rim
+
+                    Behavior on color {
+                        ColorAnimation { duration: Theme.durBase }
+                    }
+
+                    Icon {
+                        anchors.centerIn: parent
+                        text: "󰁔"
+                        color: enter.ready ? Theme.ink : Theme.overlay
+                        font.pixelSize: Theme.fsLarge
+                    }
+
+                    TapHandler {
+                        onTapped: surface.submit()
+                    }
+                }
+
+                // The real input, invisible but focused.
+                TextInput {
+                    id: input
+                    anchors.fill: parent
+                    opacity: 0
+                    focus: true
+                    echoMode: TextInput.Password
+                    enabled: !surface.busy
+                    activeFocusOnTab: true
+
+                    onTextChanged: {
+                        surface.entry = text;
+                        if (surface.failed && text.length > 0) surface.failed = false;
+                    }
+
+                    onAccepted: surface.submit()
+
+                    Keys.onEscapePressed: {
+                        input.text = "";
+                        surface.failed = false;
                     }
                 }
             }
 
-            Text {
-                anchors.centerIn: parent
-                visible: surface.entry.length === 0 && !surface.busy
-                text: "PASSWORD"
-                color: Theme.muted
-                font.family: Theme.fontMono
-                font.pixelSize: Theme.fsSmall
-                font.letterSpacing: 5
-                renderType: Text.NativeRendering
-            }
+            // Under the field: who is locked, what is happening, or what went
+            // wrong — one line, never more.
+            Row {
+                id: hint
+                anchors.top: field.bottom
+                anchors.topMargin: Theme.padS
+                anchors.left: parent.left
+                anchors.leftMargin: Theme.padL
+                spacing: Theme.padS
 
-            // Busy sweep.
-            Rectangle {
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 6
-                width: 60
-                height: 3
-                color: Theme.primary
-                visible: surface.busy
-
-                XAnimator on x {
-                    running: surface.busy
-                    loops: Animation.Infinite
-                    from: 20
-                    to: field.width - 80
-                    duration: 700
-                    easing.type: Easing.InOutQuad
-                }
-            }
-
-            // The real input, invisible but focused.
-            TextInput {
-                id: input
-                anchors.fill: parent
-                opacity: 0
-                focus: true
-                echoMode: TextInput.Password
-                enabled: !surface.busy
-                activeFocusOnTab: true
-
-                onTextChanged: {
-                    surface.entry = text;
-                    if (surface.failed && text.length === 0) surface.failed = false;
+                Rectangle {
+                    anchors.verticalCenter: parent.verticalCenter
+                    width: 4
+                    height: 4
+                    radius: 2
+                    color: surface.failed ? Theme.alarm : Theme.overlay
                 }
 
-                onAccepted: surface.submit()
-
-                Keys.onEscapePressed: {
-                    input.text = "";
-                    surface.failed = false;
+                Text {
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: surface.failed
+                        ? (surface.status || "Access denied").toUpperCase()
+                        : (surface.busy ? "VERIFYING" : (Quickshell.env("USER") || "user"))
+                    color: surface.failed ? Theme.alarm : Theme.muted
+                    font.family: Theme.fontMono
+                    font.pixelSize: Theme.fsMicro
+                    font.letterSpacing: 2
+                    renderType: Text.NativeRendering
                 }
-            }
-        }
-
-        Row {
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: field.bottom
-            anchors.topMargin: Theme.padM
-            spacing: Theme.padS
-
-            Icon {
-                anchors.verticalCenter: parent.verticalCenter
-                text: "󰌾"
-                color: Theme.muted
-                font.pixelSize: Theme.fsBody
-            }
-
-            Text {
-                anchors.verticalCenter: parent.verticalCenter
-                text: Quickshell.env("USER") || "USER"
-                color: Theme.muted
-                font.family: Theme.fontMono
-                font.pixelSize: Theme.fsSmall
-                font.letterSpacing: 3
-                renderType: Text.NativeRendering
             }
         }
     }
@@ -362,62 +391,60 @@ Item {
                 surface.entry = "";
                 surface.failed = false;
             } else {
-                surface.failed = true;
-                if (surface.status === "") surface.status = "Access denied";
                 input.text = "";
                 surface.entry = "";
-                shake.restart();
+                surface.failed = true;
+                if (surface.status === "") surface.status = "Access denied";
+                refuse.restart();
             }
         }
 
         onError: err => {
-            surface.failed = true;
-            surface.status = "PAM error";
             input.text = "";
             surface.entry = "";
-            shake.restart();
+            surface.failed = true;
+            surface.status = "PAM error";
+            refuse.restart();
         }
     }
 
+    // A wrong password: the field leans away once and comes back, a head
+    // shaken slowly rather than a buzzer.
     SequentialAnimation {
-        id: shake
-        loops: 2
+        id: refuse
         NumberAnimation {
-            target: shakeShift; property: "x"
-            to: -16; duration: 55; easing.type: Easing.OutQuad
+            target: nudge; property: "x"
+            to: -7; duration: 90; easing.type: Easing.OutSine
         }
         NumberAnimation {
-            target: shakeShift; property: "x"
-            to: 16; duration: 55; easing.type: Easing.OutQuad
+            target: nudge; property: "x"
+            to: 5; duration: 140; easing.type: Easing.InOutSine
         }
         NumberAnimation {
-            target: shakeShift; property: "x"
-            to: 0; duration: 90; easing.type: Easing.OutCubic
+            target: nudge; property: "x"
+            to: 0; duration: 220; easing.type: Easing.OutCubic
         }
     }
 
-    // Entry flourish when the lock comes up.
+    // The lock comes up the way the scene would if you opened your eyes: the
+    // picture first, then the type settling a few pixels into place.
     Component.onCompleted: intro.start()
 
-    ParallelAnimation {
+    SequentialAnimation {
         id: intro
-        // The stripes sweep in under everything, the same move the power menu
-        // opens with.
         NumberAnimation {
-            target: backdrop; property: "reveal"
-            from: 0; to: 1; duration: Theme.durLazy; easing.type: Easing.OutExpo
+            target: wall; property: "opacity"
+            from: 0; to: 1; duration: Theme.durLazy; easing.type: Easing.OutCubic
         }
-        NumberAnimation {
-            target: timeBlock; property: "opacity"
-            from: 0; to: 1; duration: Theme.durLazy; easing.type: Easing.OutExpo
-        }
-        NumberAnimation {
-            target: authBlock; property: "opacity"
-            from: 0; to: 1; duration: Theme.durLazy; easing.type: Easing.OutExpo
-        }
-        NumberAnimation {
-            target: shakeShift; property: "y"
-            from: 40; to: 0; duration: Theme.durLazy; easing.type: Easing.OutCubic
+        ParallelAnimation {
+            NumberAnimation {
+                target: face; property: "opacity"
+                from: 0; to: 1; duration: Theme.durLazy; easing.type: Easing.OutCubic
+            }
+            NumberAnimation {
+                target: drift; property: "y"
+                from: 14; to: 0; duration: Theme.durLazy; easing.type: Easing.OutQuint
+            }
         }
     }
 }

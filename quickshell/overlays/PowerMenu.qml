@@ -1,12 +1,16 @@
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
+import Quickshell.Io
 import "root:/config"
 import "root:/components"
 import "root:/services"
 
-// Full-screen power menu. An accent wedge and stripes sweep in behind a stack of leaning
-// buttons; Escape or a click on the backdrop dismisses it.
+// Full-screen power menu, built like the lock screen: the desktop dims to the
+// void, and one small group of type stands in it — the mark, the motto, a
+// line about the session, and a NieR menu of six rows. The selected row is a
+// pill of light with the text punched out of it; the three that end the
+// session light in rust instead. Escape or a click on the dark dismisses it.
 PanelWindow {
     id: root
 
@@ -32,16 +36,9 @@ PanelWindow {
 
     property int selectedAction: 0
 
-    function focusSelectedAction(): void {
-        const entry = buttonRepeater.itemAt(root.selectedAction);
-        if (entry && entry.children.length > 0)
-            entry.children[0].forceActiveFocus(Qt.TabFocusReason);
-    }
-
     function moveSelection(delta: int): void {
         root.selectedAction = (root.selectedAction + delta + root.actionModel.length)
             % root.actionModel.length;
-        root.focusSelectedAction();
     }
 
     readonly property var actionModel: [
@@ -52,6 +49,11 @@ PanelWindow {
         { label: "Reboot",    icon: "󰜉", danger: true,  act: "reboot" },
         { label: "Shut Down", icon: "󰐥", danger: true,  act: "shutdown" }
     ]
+
+    FileView {
+        id: hostFile
+        path: "/etc/hostname"
+    }
 
     onOpenChanged: {
         if (open) {
@@ -64,128 +66,155 @@ PanelWindow {
     }
 
     // ------------------------------------------------------------- backdrop
+    // The desktop stays faintly there behind the dark, deepest on the left
+    // where the menu stands.
     Rectangle {
         id: backdrop
         anchors.fill: parent
-        color: Theme.alpha(Theme.base, 0.9)
         opacity: 0
+        gradient: Gradient {
+            orientation: Gradient.Horizontal
+            GradientStop { position: 0.0; color: Theme.alpha(Theme.ink, 0.97) }
+            GradientStop { position: 0.5; color: Theme.alpha(Theme.ink, 0.93) }
+            GradientStop { position: 1.0; color: Theme.alpha(Theme.ink, 0.86) }
+        }
 
         TapHandler {
             onTapped: Actions.closePowerMenu()
         }
     }
 
-    // Grid and column, shared with the lock screen.
-    P5Backdrop {
-        id: ground
-        anchors.fill: parent
-        reveal: 0
-        stripeOpacity: 0.05
-        wedgeOpacity: 0.35
-        wedgeSpan: 0.34
-        // The live desktop is still visible behind this, so a dot wash would be
-        // laid over other people's windows rather than over a ground of our
-        // own. The lock owns the halftone; here it just muddies things.
-        halftone: false
-    }
-
-    // ---------------------------------------------------------------- title
+    // ---------------------------------------------------------------- group
     Column {
-        id: title
-        anchors.left: parent.left
-        anchors.leftMargin: root.width * 0.12
+        id: group
+        x: root.width * 0.14
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -60
-        spacing: -14
+        width: 340
         opacity: 0
 
-        SplitText {
-            text: "GLORY"
-            pixelSize: Theme.fsMega
-            split: 4
-        }
+        transform: Translate { id: drift }
 
-        SplitText {
-            text: "TO"
-            pixelSize: Theme.fsMega
-            color: Theme.accent
-            split: 4
-        }
-
-        SplitText {
-            text: "MANKIND."
-            pixelSize: Theme.fsMega
-            split: 4
+        Porthole {
+            size: 26
         }
 
         Text {
-            text: "— YORHA"
-            color: Theme.primary
-            font.family: Theme.fontMono
-            font.pixelSize: Theme.fsSmall
-            font.letterSpacing: 5
-            topPadding: 24
+            topPadding: Theme.padM
+            text: "GLORY TO MANKIND."
+            color: Theme.accent
+            font.family: Theme.fontDisplay
+            font.pixelSize: Theme.fsHuge
+            font.weight: Font.Light
+            font.letterSpacing: 6
             renderType: Text.NativeRendering
         }
-    }
 
-    // -------------------------------------------------------------- actions
-    Column {
-        id: actions
-        anchors.right: parent.right
-        anchors.rightMargin: root.width * 0.12
-        anchors.verticalCenter: parent.verticalCenter
-        spacing: Theme.padM
+        Text {
+            topPadding: Theme.padS
+            leftPadding: 2
+            text: ["YORHA", (Quickshell.env("USER") || "user") + "@" + hostFile.text().trim(),
+                   Sys.uptime ? "UP " + Sys.uptime : ""].filter(t => t !== "").join("  ·  ")
+            color: Theme.muted
+            font.family: Theme.fontMono
+            font.pixelSize: Theme.fsMicro
+            font.letterSpacing: 2
+            renderType: Text.NativeRendering
+        }
 
-        // The widest slab in the stack. Fixed rather than derived so the ragged
-        // x offsets below cannot feed back into the Column's own width.
-        readonly property int stackWidth: 312
-        width: stackWidth
+        Item { width: 1; height: Theme.padXL }
 
+        // ------------------------------------------------------------ menu
         Repeater {
             id: buttonRepeater
 
             model: root.actionModel
 
-            // A carrier item owns the staggered slide so the button keeps its
-            // own hover transform.
             Item {
                 id: entry
                 required property var modelData
                 required property int index
 
-                readonly property int slabWidth: actions.stackWidth
+                readonly property bool selected: root.selectedAction === entry.index
+                readonly property color tone: entry.modelData.danger ? Theme.alarm : Theme.accent
 
-                width: entry.slabWidth
-                height: 52
-
+                width: group.width
+                height: 44
                 opacity: 0
-                transform: [
-                    Translate { id: slide; x: 90 },
-                    Rotation {
-                        id: tilt
-                        angle: -3
-                        origin.x: entry.slabWidth / 2
-                        origin.y: 26
-                    }
-                ]
 
-                P5Button {
-                    id: actionButton
-                    anchors.fill: parent
-                    text: entry.modelData.label
-                    icon: entry.modelData.icon
-                    destructive: entry.modelData.danger
-                    selected: root.selectedAction === entry.index
-                    accent: entry.modelData.danger ? Theme.alarm : Theme.primary
-                    lean: Theme.skew
-                    onClicked: root.invoke(entry.modelData.act)
-                    onHoveredChanged: if (hovered) root.selectedAction = entry.index
-                    onActiveFocusChanged: if (actionButton.activeFocus) root.selectedAction = entry.index
-                    Keys.forwardTo: [keyController]
+                transform: Translate { id: rise; y: 6 }
+
+                // The divider after the third row: what pauses the session
+                // above, what ends it below.
+                Rectangle {
+                    visible: entry.index === 3
+                    anchors.top: parent.top
+                    x: Theme.padL
+                    width: parent.width - Theme.padL * 2
+                    height: 1
+                    color: Theme.alpha(Theme.outline, 0.35)
                 }
 
-                // Staggered entry, one button after another.
+                Rectangle {
+                    id: slab
+                    anchors.fill: parent
+                    anchors.topMargin: 3
+                    anchors.bottomMargin: 3
+                    radius: height / 2
+                    color: entry.selected ? entry.tone : "transparent"
+
+                    Behavior on color {
+                        ColorAnimation { duration: Theme.durBase; easing.type: Easing.OutCubic }
+                    }
+                }
+
+                Rectangle {
+                    id: marker
+                    anchors.left: parent.left
+                    anchors.leftMargin: Theme.padL
+                    anchors.verticalCenter: parent.verticalCenter
+                    width: Theme.marker
+                    height: Theme.marker
+                    radius: width / 2
+                    color: entry.selected ? Theme.ink
+                        : (entry.modelData.danger ? Theme.alpha(Theme.alarm, 0.6) : Theme.overlay)
+                }
+
+                Icon {
+                    id: glyph
+                    anchors.left: marker.right
+                    anchors.leftMargin: Theme.padM
+                    anchors.verticalCenter: parent.verticalCenter
+                    // Fixed width so the labels line up whatever the glyph.
+                    width: 20
+                    horizontalAlignment: Text.AlignHCenter
+                    text: entry.modelData.icon
+                    color: entry.selected ? Theme.ink : Theme.muted
+                    font.pixelSize: Theme.fsLarge
+                }
+
+                Text {
+                    anchors.left: glyph.right
+                    anchors.leftMargin: Theme.padM
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: entry.modelData.label.toUpperCase()
+                    color: entry.selected ? Theme.ink : Theme.text
+                    font.family: Theme.fontDisplay
+                    font.pixelSize: Theme.fsBody
+                    font.weight: Theme.weightDisplay
+                    font.letterSpacing: Theme.tracking * 1.5
+                    renderType: Text.NativeRendering
+                }
+
+                HoverHandler {
+                    cursorShape: Qt.PointingHandCursor
+                    onHoveredChanged: if (hovered) root.selectedAction = entry.index
+                }
+
+                TapHandler {
+                    onTapped: root.invoke(entry.modelData.act)
+                }
+
+                // Staggered entry: each row resolves a beat after the last.
                 Connections {
                     target: root
                     function onOpenChanged() {
@@ -196,48 +225,31 @@ PanelWindow {
 
                 SequentialAnimation {
                     id: entryAnim
-                    PauseAnimation { duration: 40 + entry.index * 55 }
+                    PauseAnimation { duration: 120 + entry.index * 40 }
                     ParallelAnimation {
                         NumberAnimation {
                             target: entry; property: "opacity"
-                            to: 1; duration: Theme.durBase
+                            to: 1; duration: Theme.durSlow; easing.type: Easing.OutCubic
                         }
                         NumberAnimation {
-                            target: slide; property: "x"
-                            from: 90; to: 0
-                            duration: Theme.durSlow
-                            easing.type: Easing.OutCubic
-                        }
-                        // Slabs land out of true and snap square. Sliding alone
-                        // reads like a slide deck; the tilt is what makes it
-                        // land like a card being thrown down. Same direction
-                        // every time — the motion is the flourish, the geometry
-                        // stays disciplined.
-                        NumberAnimation {
-                            target: tilt; property: "angle"
-                            from: -3; to: 0
-                            duration: Theme.durSlow
-                            easing.type: Easing.OutCubic
-                            easing.overshoot: 2.2
+                            target: rise; property: "y"
+                            from: 6; to: 0; duration: Theme.durSlow; easing.type: Easing.OutCubic
                         }
                     }
                 }
             }
         }
-    }
 
-    // Hint line.
-    Text {
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 40
-        anchors.horizontalCenter: parent.horizontalCenter
-        text: "↑ ↓  SELECT     ENTER  CONFIRM     ESC  CANCEL"
-        color: Theme.muted
-        font.family: Theme.fontMono
-        font.pixelSize: Theme.fsMicro
-        font.letterSpacing: 4
-        opacity: backdrop.opacity
-        renderType: Text.NativeRendering
+        Text {
+            topPadding: Theme.padXL
+            leftPadding: Theme.padL
+            text: "↑ ↓  SELECT    ENTER  CONFIRM    ESC  CANCEL"
+            color: Theme.overlay
+            font.family: Theme.fontMono
+            font.pixelSize: Theme.fsMicro
+            font.letterSpacing: 2
+            renderType: Text.NativeRendering
+        }
     }
 
     function invoke(what: string) {
@@ -280,16 +292,15 @@ PanelWindow {
         id: openAnim
         NumberAnimation {
             target: backdrop; property: "opacity"
-            to: 1; duration: Theme.durBase; easing.type: Easing.OutQuad
-        }
-        // One number now drives the slide, the stripe opacity and the wedge.
-        NumberAnimation {
-            target: ground; property: "reveal"
-            from: 0; to: 1; duration: Theme.durLazy; easing.type: Easing.OutExpo
+            to: 1; duration: Theme.durSlow; easing.type: Easing.OutCubic
         }
         NumberAnimation {
-            target: title; property: "opacity"
-            to: 1; duration: Theme.durSlow
+            target: group; property: "opacity"
+            to: 1; duration: Theme.durLazy; easing.type: Easing.OutCubic
+        }
+        NumberAnimation {
+            target: drift; property: "y"
+            from: 14; to: 0; duration: Theme.durLazy; easing.type: Easing.OutQuint
         }
     }
 
@@ -297,14 +308,10 @@ PanelWindow {
         id: closeAnim
         NumberAnimation {
             target: backdrop; property: "opacity"
-            to: 0; duration: Theme.durFast
+            to: 0; duration: Theme.durBase; easing.type: Easing.InCubic
         }
         NumberAnimation {
-            target: ground; property: "reveal"
-            to: 0; duration: Theme.durFast
-        }
-        NumberAnimation {
-            target: title; property: "opacity"
+            target: group; property: "opacity"
             to: 0; duration: Theme.durFast
         }
     }

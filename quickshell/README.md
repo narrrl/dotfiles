@@ -52,9 +52,10 @@ its own panel.
 The shell uses three deliberate surface tiers. **Chrome** (the hull and
 `ChromeSurface`) is the calm, texture-free bar, rail, and tooltip layer. **Transient**
 (`PopoutSurface`) is reserved for expressive menus and detail panels, with one
-clear composition and stronger separation from the desktop. **Cinematic**
-(`P5Backdrop`) belongs only to scene-scale experiences such as power and lock;
-it is never used as decoration inside ordinary chrome or popouts.
+clear composition and stronger separation from the desktop. **Scene**
+surfaces — the lock screen and the power menu — have no panel at all: the
+desktop or the wallpaper dims, and one small group of type (the mark, a line of
+thin display type, a short log, a menu or a field) stands in the dark.
 
 ```
 shell.qml        entrypoint — hull, bar, rail, dashboard, power menu, toasts, OSD per screen
@@ -217,6 +218,12 @@ Authenticates through `/etc/pam.d/hyprlock`, which on this box is just
 styled in an ordinary window (`qs -p lockpreview.qml`) without locking the
 session.
 
+It is the wallpaper, barely softened, with the face set in the dark of the
+porthole: the mark, the time in light display type, the date, a status log
+(battery, network, what is playing, unread notices), and a rounded field that
+fills with dots as you type. The dots breathe while PAM checks; a wrong
+password turns them and the field's rim to rust and nudges the field once.
+
 If the shell ever dies while the session is locked, the compositor keeps the
 session secured by protocol and there is no unlocker left to talk to — recovery
 means restarting Hyprland from a TTY.
@@ -270,9 +277,9 @@ Borders are structure and stay neutral.
 `Theme.tracking`, on a one-pixel soft drop. The two ghosts either side of it
 appear only while `glitch()` runs — NieR's brief data-corruption flicker.
 
-**Texture is tiered.** Chrome (bar, rail, tooltips) and transient panels
-(popouts, OSD, toasts) are flat. The hairline grid and the dot wash live only in
-`P5Backdrop`, behind the lock screen and the power menu.
+**Texture is rare.** Chrome (bar, rail, tooltips), transient panels (popouts,
+OSD, toasts) and the two scene surfaces are flat. Depth comes from the hull's
+dark, the rim hairline and the wallpaper, not from patterns.
 
 **Type has a floor.** Nothing renders below `Theme.fsMicro` (10px).
 
@@ -284,6 +291,8 @@ appear only while `glitch()` runs — NieR's brief data-corruption flicker.
 | `hypr/lua/palette.lua` | window borders, groups |
 | `alacritty/yorha.toml` | the terminal |
 | `fish/conf.d/yorha_theme.fish` | the prompt and pager |
+| `nvim/lua/yorha.lua` | the editor and its statusline |
+| `btop/themes/yorha.theme` | the resource monitor |
 
 Everything else derives. `glow` *is* `accent`, and `primary` is plain `text`.
 `Theme.heat()` is a continuous text → light → red ramp, so a CPU figure that
@@ -308,9 +317,12 @@ network and bluetooth, but keep running as the secret and pairing agents.
   Alacritty only live-reloads when `alacritty.toml` itself changes, so touch
   it after editing the palette.
   The Catppuccin and `takemi.toml` files are left in place, unreferenced.
-- **Neovim** — still the `catppuccin` plugin, flavour mocha, configured in
-  `nvim/lua/plugins/ui.lua`. Not yet moved to the YoRHa palette.
-- **GTK and Qt** — still `catppuccin-mocha-blue`. Not yet moved either.
+- **Neovim** — `nvim/lua/yorha.lua` (loaded by `colors/yorha.lua`, with a
+  matching lualine theme). Syntax in the terminal's earth hues, floats as hull
+  surfaces with rounded rims, menus selecting with the light slab.
+- **btop** — `btop/themes/yorha.theme`. Hairline boxes; gradients climb from
+  grey to the light, and only temperature and CPU load run on into rust.
+- **GTK and Qt** — still `catppuccin-mocha-blue`. Not yet moved.
 - **Fish** — `fish/conf.d/yorha_theme.fish`.
 - **The launcher** — no external theming to keep in step, because it is part of
   this shell (`launcher/`). Fuzzel is gone; `takemi-dmenu` stands in for
