@@ -76,7 +76,6 @@ Item {
                     NumberAnimation {
                         duration: Theme.durSlow
                         easing.type: Easing.OutCubic
-                        easing.overshoot: 1.6
                     }
                 }
 

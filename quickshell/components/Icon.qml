@@ -35,7 +35,7 @@ Text {
         id: bumpAnim
         NumberAnimation {
             target: root; property: "scale"
-            to: 1.35; duration: Theme.durFast; easing.type: Easing.OutExpo
+            to: 1.12; duration: Theme.durFast; easing.type: Easing.OutExpo
         }
         NumberAnimation {
             target: root; property: "scale"

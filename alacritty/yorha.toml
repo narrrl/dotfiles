@@ -53,8 +53,11 @@ magenta = "#a48ba0"
 cyan = "#86a8a0"
 white = "#bcc1bf"
 
+# Bright black doubles as a panel fill in TUIs (Claude Code's side pane, fzf
+# previews), so it sits one step under the outline grey rather than at it:
+# light enough for comments, dark enough not to read as a slab.
 [colors.bright]
-black = "#545c52"
+black = "#464d44"
 red = "#d98068"
 green = "#a5b893"
 yellow = "#d8c491"

@@ -1,11 +1,13 @@
 -- https://wiki.hypr.land/Configuring/Advanced-and-Cool/Animations/
 --
--- Quick and clean. Motion should get out of the way, not perform.
+-- YoRHa motion: calm and mechanical. Things glide in, settle and stop; nothing
+-- overshoots, nothing pops. Matches Theme.easeSnap / easeGlide in
+-- ~/.config/quickshell/config/Theme.qml.
 --
--- An earlier pass overdid it: a 1.56 overshoot on every window, an 88% popin
--- scale, and a borderangle looping forever so the focused border was in
--- constant motion. The bounce is dialled back to a hint, the popin barely
--- scales, and the border angle does not animate at all.
+-- Windows fade in from a hair smaller, the way a NieR menu panel resolves
+-- rather than arrives. Workspaces slide a short way and fade instead of
+-- sweeping the whole screen across, which on a 2560px panel is a lot of
+-- motion for "you are somewhere else now". The border angle never animates.
 
 hl.config({
     animations = {
@@ -14,34 +16,40 @@ hl.config({
 })
 
 -- ------------------------------------------------------------------- curves
-hl.curve("snap", { type = "bezier", points = { { 0.16, 1.00 }, { 0.30, 1.00 } } })
-hl.curve("overshoot", { type = "bezier", points = { { 0.34, 1.12 }, { 0.64, 1.00 } } })
-hl.curve("hard", { type = "bezier", points = { { 0.55, 0.00 }, { 0.90, 0.35 } } })
+-- outQuint: fast off the mark, long quiet settle.
+hl.curve("glide", { type = "bezier", points = { { 0.22, 1.00 }, { 0.36, 1.00 } } })
+-- Material standard, for things that move from one place to another.
+hl.curve("standard", { type = "bezier", points = { { 0.40, 0.00 }, { 0.20, 1.00 } } })
+-- Leaving: ease in, so the exit gathers pace and is gone.
+hl.curve("exit", { type = "bezier", points = { { 0.55, 0.00 }, { 0.90, 0.35 } } })
 hl.curve("linear", { type = "bezier", points = { { 0, 0 }, { 1, 1 } } })
 
 -- --------------------------------------------------------------------- tree
 -- speed is in ds (1ds = 100ms). Unset leaves inherit their parent.
-hl.animation({ leaf = "global", enabled = true, speed = 4, bezier = "snap" })
-hl.animation({ leaf = "border", enabled = true, speed = 5, bezier = "snap" })
+hl.animation({ leaf = "global", enabled = true, speed = 4, bezier = "glide" })
+hl.animation({ leaf = "border", enabled = true, speed = 4, bezier = "glide" })
+hl.animation({ leaf = "borderangle", enabled = false })
 
-hl.animation({ leaf = "windows", enabled = true, speed = 4, bezier = "snap" })
-hl.animation({ leaf = "windowsIn", enabled = true, speed = 4, bezier = "overshoot", style = "popin 96%" })
-hl.animation({ leaf = "windowsOut", enabled = true, speed = 2.6, bezier = "hard", style = "popin 97%" })
-hl.animation({ leaf = "windowsMove", enabled = true, speed = 3.6, bezier = "snap" })
+hl.animation({ leaf = "windows", enabled = true, speed = 4, bezier = "glide" })
+hl.animation({ leaf = "windowsIn", enabled = true, speed = 4, bezier = "glide", style = "popin 94%" })
+hl.animation({ leaf = "windowsOut", enabled = true, speed = 2.4, bezier = "exit", style = "popin 96%" })
+hl.animation({ leaf = "windowsMove", enabled = true, speed = 4, bezier = "standard" })
 
-hl.animation({ leaf = "fade", enabled = true, speed = 3, bezier = "snap" })
-hl.animation({ leaf = "fadeIn", enabled = true, speed = 2.4, bezier = "snap" })
-hl.animation({ leaf = "fadeOut", enabled = true, speed = 1.8, bezier = "hard" })
-hl.animation({ leaf = "fadeSwitch", enabled = true, speed = 2, bezier = "snap" })
-hl.animation({ leaf = "fadeShadow", enabled = true, speed = 3, bezier = "snap" })
-hl.animation({ leaf = "fadeDim", enabled = true, speed = 2.4, bezier = "snap" })
+hl.animation({ leaf = "fade", enabled = true, speed = 3.4, bezier = "glide" })
+hl.animation({ leaf = "fadeIn", enabled = true, speed = 3.4, bezier = "glide" })
+hl.animation({ leaf = "fadeOut", enabled = true, speed = 2.2, bezier = "exit" })
+hl.animation({ leaf = "fadeSwitch", enabled = true, speed = 3, bezier = "glide" })
+hl.animation({ leaf = "fadeShadow", enabled = true, speed = 3.4, bezier = "glide" })
+hl.animation({ leaf = "fadeDim", enabled = true, speed = 3, bezier = "glide" })
 
-hl.animation({ leaf = "layers", enabled = true, speed = 3, bezier = "snap" })
-hl.animation({ leaf = "layersIn", enabled = true, speed = 3, bezier = "snap", style = "slide" })
-hl.animation({ leaf = "layersOut", enabled = true, speed = 2, bezier = "hard", style = "slide" })
+-- Quickshell animates its own surfaces; the compositor only fades them, so the
+-- two motions never stack.
+hl.animation({ leaf = "layers", enabled = true, speed = 2.6, bezier = "glide" })
+hl.animation({ leaf = "layersIn", enabled = true, speed = 2.6, bezier = "glide", style = "fade" })
+hl.animation({ leaf = "layersOut", enabled = true, speed = 2, bezier = "exit", style = "fade" })
 
-hl.animation({ leaf = "workspaces", enabled = true, speed = 3, bezier = "snap", style = "slidevert" })
-hl.animation({ leaf = "workspacesIn", enabled = true, speed = 3, bezier = "snap", style = "slidevert" })
-hl.animation({ leaf = "workspacesOut", enabled = true, speed = 2.4, bezier = "hard", style = "slidevert" })
+hl.animation({ leaf = "workspaces", enabled = true, speed = 4, bezier = "glide", style = "slidefadevert 12%" })
+hl.animation({ leaf = "workspacesIn", enabled = true, speed = 4, bezier = "glide", style = "slidefadevert 12%" })
+hl.animation({ leaf = "workspacesOut", enabled = true, speed = 3, bezier = "exit", style = "slidefadevert 12%" })
 
-hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 3, bezier = "snap", style = "slidevert" })
+hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 4, bezier = "glide", style = "slidefadevert 20%" })

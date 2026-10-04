@@ -53,16 +53,15 @@ BarPill {
             }
         }
 
-        // Declared with room for its own lean, so the slash sits inside the box
-        // the Row gave it instead of hanging several px into the date column.
-        Skew {
+        // A hairline between the date and the time.
+        Rectangle {
             anchors.verticalCenter: parent.verticalCenter
-            width: 22 * Theme.skew + 3
-            height: 22
-            color: Theme.alpha(Theme.accent, 0.6)
+            width: 1
+            height: 18
+            color: Theme.alpha(Theme.outline, 0.6)
         }
 
-        // Archivo Black's digits are not all the same width, so a clock sized to
+        // The display face's digits are not all the same width, so a clock sized to
         // its own text changed width as the minutes rolled over — 11:11 is
         // several px narrower than 08:48 — and shoved the rest of the bar
         // around. Reserve the widest possible reading and centre inside it.

@@ -122,12 +122,10 @@ Item {
     }
 
     // Leading-edge wipe. On the rail this runs vertically down the left side,
-    // mirroring the slash P5Panel puts on horizontal modules.
+    // mirroring the accent bar P5Panel puts on horizontal modules.
     //
     // Held off the edge by `wipeInset`: the icon spans the rail's full width, so
-    // at x = 0 this landed exactly on the slab's own border, and the 1.08 hover
-    // scale then pushed it out past the silhouette onto the desktop. The inset
-    // has to survive that scale, which is why it is not simply 1 or 2.
+    // at x = 0 this landed exactly on the slab's own border.
     //
     // It is the accent rather than `tint` because it only ever appears on
     // hover, and hover is the accent everywhere else in the shell (Theme.glow).
@@ -137,7 +135,7 @@ Item {
         anchors.leftMargin: root.wipeInset
         anchors.verticalCenter: parent.verticalCenter
         width: 2
-        height: root.hovered ? root.height - 4 : 0
+        height: root.hovered ? Theme.marker * 2 : 0
         color: Theme.glow
 
         Behavior on height {
@@ -145,10 +143,6 @@ Item {
         }
     }
 
-    scale: root.hovered ? 1.08 : 1.0
-    Behavior on scale {
-        NumberAnimation { duration: Theme.durBase; easing.type: Easing.OutCubic }
-    }
 
     onAlarmChanged: if (alarm) glyph.bump()
     onLiveChanged: if (live) glyph.bump()

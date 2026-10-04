@@ -32,78 +32,36 @@ Popout {
             subtitle: Media.identity
         }
 
-        // Cover art, chopped.
-        Item {
+        // Cover art in a hairline frame.
+        Rectangle {
             id: artFrame
             anchors.top: header.bottom
             anchors.topMargin: Theme.padM
             anchors.left: parent.left
             width: 108
             height: 108
-
-            Shape {
-                id: artMask
-                anchors.fill: parent
-                visible: false
-                layer.enabled: true
-                // Without this the mask texture is point-sampled, so the
-                // antialiased pixels along the cuts get snapped back to hard
-                // steps before MultiEffect ever sees them — see MaskedArt.
-                layer.smooth: true
-                preferredRendererType: Shape.CurveRenderer
-                ShapePath {
-                    fillColor: "white"
-                    strokeColor: "transparent"
-                    PathPolyline {
-                        path: Geom.chamfer(Geom.parallelogram(108, 108, 0.1), 18, [1, 3])
-                    }
-                }
-            }
+            color: Theme.surface
+            border.width: 1
+            border.color: Theme.overlay
 
             Image {
                 id: art
                 anchors.fill: parent
+                anchors.margins: 1
                 source: Media.artUrl
                 fillMode: Image.PreserveAspectCrop
                 asynchronous: true
                 cache: true
                 visible: status === Image.Ready
-                layer.enabled: true
-                layer.smooth: true
-                layer.effect: MaskedArt { maskItem: artMask }
             }
 
             // Placeholder when the player exposes no artwork.
-            Shape {
-                anchors.fill: parent
-                visible: art.status !== Image.Ready
-                preferredRendererType: Shape.CurveRenderer
-                ShapePath {
-                    fillColor: Theme.surface
-                    strokeColor: Theme.surfaceAlt
-                    strokeWidth: 2
-                    PathPolyline {
-                        path: Geom.chamfer(Geom.parallelogram(108, 108, 0.1), 18, [1, 3])
-                    }
-                }
-            }
-
             Icon {
                 anchors.centerIn: parent
                 visible: art.status !== Image.Ready
                 text: Media.sourceIcon
                 font.pixelSize: 42
                 color: Theme.muted
-            }
-
-            // Spinning rule around the art while playing.
-            Rectangle {
-                anchors.right: parent.right
-                anchors.bottom: parent.bottom
-                width: 30
-                height: 3
-                color: Theme.accent
-                visible: Media.playing
             }
         }
 
@@ -363,10 +321,6 @@ Popout {
             }
         }
 
-        scale: tbHover.hovered && tb.enabled ? 1.12 : 1.0
-        Behavior on scale {
-            NumberAnimation { duration: Theme.durBase; easing.type: Easing.OutCubic }
-        }
 
         HoverHandler {
             id: tbHover

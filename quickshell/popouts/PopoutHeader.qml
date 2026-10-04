@@ -17,7 +17,7 @@ Item {
     Row {
         anchors.left: parent.left
         anchors.top: parent.top
-        spacing: Theme.padS
+        spacing: Theme.padM
 
         Icon {
             anchors.verticalCenter: parent.verticalCenter

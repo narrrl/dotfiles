@@ -296,13 +296,18 @@ network and bluetooth, but keep running as the secret and pairing agents.
 
 ## The rest of the desktop
 
-- **Hyprland** — `hypr/lua/look.lua`. No rounding, no blur, both opacities at
-  `1.0`, 1px borders. The active border runs from the light into the suit's
-  grey; the inactive border is `overlay`. The shadow is soft and wide, so
-  windows float in the opening rather than being printed onto it. `gaps_out`
-  is measured from the hull's opening, since the hull reserves its own zones.
+- **Hyprland** — `hypr/lua/look.lua`. Windows round at 8px, concentric with
+  the opening's 18px corners at a 10px gap (`Theme.frameRadius - gaps_out`);
+  change one and the others follow. No blur, both opacities at `1.0`, 1px
+  borders running from the light into the suit's grey. The shadow is soft and
+  wide, so windows float in the opening. Group tabs are solid hull slabs, the
+  current one lifted a step with its title in the light. Motion
+  (`hypr/lua/animations.lua`) glides and settles with no overshoot; layers only
+  fade, since quickshell animates its own surfaces.
 - **Alacritty** — `alacritty/yorha.toml`, selected by the `import` in
   `alacritty.toml`. Muted earth hues on the void; selection inverts.
+  Alacritty only live-reloads when `alacritty.toml` itself changes, so touch
+  it after editing the palette.
   The Catppuccin and `takemi.toml` files are left in place, unreferenced.
 - **Neovim** — still the `catppuccin` plugin, flavour mocha, configured in
   `nvim/lua/plugins/ui.lua`. Not yet moved to the YoRHa palette.
@@ -333,7 +338,10 @@ rectangles; the knobs are kept so a shape can be brought back on purpose. The
 porthole's curve is the only one on screen, which is what lets it read.
 
 **Motion glides.** No overshoot anywhere: things ease in on `OutCubic` or
-`OutExpo` and settle. NieR's interface is calm and mechanical.
+`OutExpo` and settle. Nothing scales up or nudges sideways on hover either;
+hover brightens and marks, the way NieR's menus do. Meters are thin segment
+rows, album art sits square in a hairline frame, and the bar's player shows a
+five-hairline signal meter.
 
 Each surface is **one continuous slab**, with modules divided by hairline rules
 rather than by gaps. A row of separate floating cards reads as clutter; that is

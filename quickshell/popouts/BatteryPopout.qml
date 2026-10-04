@@ -99,10 +99,10 @@ Popout {
             anchors.topMargin: Theme.padM
             anchors.left: parent.left
             anchors.right: parent.right
-            height: 12
+            height: 4
             segments: 20
-            segmentWidth: (width - 19 * 3) / 20
-            spacing: 3
+            segmentWidth: (width - 19 * 2) / 20
+            spacing: 2
             value: Battery.percent
             activeColor: Battery.tint
         }

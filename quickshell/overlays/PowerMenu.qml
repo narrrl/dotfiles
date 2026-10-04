@@ -179,7 +179,6 @@ PanelWindow {
                     selected: root.selectedAction === entry.index
                     accent: entry.modelData.danger ? Theme.alarm : Theme.primary
                     lean: Theme.skew
-                    lunge: -10
                     onClicked: root.invoke(entry.modelData.act)
                     onHoveredChanged: if (hovered) root.selectedAction = entry.index
                     onActiveFocusChanged: if (actionButton.activeFocus) root.selectedAction = entry.index

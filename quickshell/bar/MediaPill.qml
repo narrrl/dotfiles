@@ -41,40 +41,27 @@ BarPill {
         anchors.left: parent.left
         spacing: Theme.padS
 
-        // Album art, chopped into the house shape.
-        Item {
+        // Album art in a hairline frame.
+        Rectangle {
             id: artFrame
             anchors.verticalCenter: parent.verticalCenter
             width: 24
             height: 24
-
-            Shape {
-                id: artMask
-                anchors.fill: parent
-                visible: false
-                layer.enabled: true
-                layer.smooth: true
-                preferredRendererType: Shape.CurveRenderer
-                ShapePath {
-                    fillColor: "white"
-                    strokeColor: "transparent"
-                    PathPolyline {
-                        path: Geom.chamfer(Geom.parallelogram(24, 24, 0.18), 5, [1, 3])
-                    }
-                }
-            }
+            color: Theme.surface
+            border.width: 1
+            border.color: Theme.overlay
 
             Image {
                 id: art
                 anchors.fill: parent
+                anchors.margins: 1
                 source: Media.artUrl
                 fillMode: Image.PreserveAspectCrop
                 cache: true
                 asynchronous: true
                 visible: status === Image.Ready
-                layer.enabled: true
-                layer.smooth: true
-                layer.effect: MaskedArt { maskItem: artMask }
+                sourceSize.width: 48
+                sourceSize.height: 48
             }
 
             // Fallback: the source app's glyph.
@@ -124,8 +111,10 @@ BarPill {
             }
         }
 
-        // Compact play-state equaliser. It moves only while audio is playing
-        // and freezes into three quiet bars when paused.
+        // Signal meter: five hairline bars, NieR's audio readout rather than a
+        // chunky equaliser. It moves only while audio is playing and settles
+        // into a row of square dots when paused — the channel is open, there
+        // is just nothing on it.
         //
         // Sampled from a timer rather than tweened by an infinite
         // NumberAnimation. DP-1 runs at 240 Hz, and a frame-synced animation
@@ -144,7 +133,7 @@ BarPill {
         Row {
             id: eq
             anchors.verticalCenter: parent.verticalCenter
-            spacing: 2
+            spacing: 3
 
             // Sampling interval — the one knob trading smoothness against cost.
             // Frames are the whole expense: a full-bar repaint runs about 0.3% of
@@ -163,8 +152,8 @@ BarPill {
             // sine would, is three times the motion and reads far busier than
             // this meter is supposed to.
             function level(i: int): real {
-                const lo = 4 + (i * 5) % 13;    // old first NumberAnimation `to`
-                const hi = 14 - (i * 4) % 9;    // old second NumberAnimation `to`
+                const lo = 2 + (i * 3) % 5;
+                const hi = 14 - (i * 4) % 7;
                 const d1 = 320 + i * 90;        // ...and their durations
                 const d2 = 280 + i * 70;
 
@@ -188,12 +177,12 @@ BarPill {
             }
 
             Repeater {
-                model: 3
+                model: 5
 
                 Rectangle {
                     required property int index
-                    width: 3
-                    height: Media.playing ? eq.level(index) : 6
+                    width: 1
+                    height: Media.playing ? eq.level(index) : 2
                     anchors.verticalCenter: parent.verticalCenter
                     color: Media.playing ? Theme.primary : Theme.muted
 
@@ -212,11 +201,16 @@ BarPill {
         function onTrackChanged() { titleGlitch.restart(); }
     }
 
+    // A new track resolves in, the way NieR text does: a brief dip and back.
     SequentialAnimation {
         id: titleGlitch
         NumberAnimation {
-            target: artFrame; property: "rotation"
-            from: -8; to: 0; duration: Theme.durSlow; easing.type: Easing.OutCubic
+            target: meta; property: "opacity"
+            to: 0.25; duration: 60
+        }
+        NumberAnimation {
+            target: meta; property: "opacity"
+            to: 1; duration: Theme.durSlow; easing.type: Easing.OutCubic
         }
     }
 

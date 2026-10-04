@@ -35,9 +35,12 @@ hl.config({
     },
 
     decoration = {
-        -- NieR panels are plain rectangles. The only curve on screen is the
-        -- porthole the quickshell hull cuts round the desktop.
-        rounding = 0,
+        -- Concentric with the porthole: the opening's corners are 18px and
+        -- the windows sit 10px inside them, so 8px keeps every gap the same
+        -- width all the way round the curve. Matches Theme.frameRadius -
+        -- gaps_out; change one and the other has to follow.
+        rounding = 8,
+        rounding_power = 2,
 
         -- Fully opaque, both states. Flat ink on flat ground.
         active_opacity = 1.0,
@@ -76,27 +79,40 @@ hl.config({
     group = {
         col = {
             border_active = c.activeBorder,
-            border_inactive = c.surfaceAlt,
+            border_inactive = c.overlay,
         },
 
+        -- Tabs are solid slabs of the hull, not titles painted over the
+        -- wallpaper. Hyprland paints a tab's fill and its indicator from the
+        -- same colour, so the current tab is told apart by being lifted a step
+        -- and by its title taking the light, not by an accent fill — a light
+        -- fill would swallow its own title.
         groupbar = {
-            font_family = "JetBrainsMono Nerd Font",
-            font_size = 11,
+            font_family = "Noto Sans",
+            font_size = 10,
+            font_weight_active = "medium",
+            font_weight_inactive = "normal",
 
-            height = 24,
-            gradients = false,
+            height = 22,
+            indicator_height = 1,
+            indicator_gap = 0,
+            gradients = true,
+            rounding = 6,
+            gradient_rounding = 6,
+            round_only_edges = true,
+            gradient_round_only_edges = true,
+            keep_upper_gap = false,
+            gaps_in = 2,
+            gaps_out = 0,
 
-            -- --- Active tab ---
             col = {
-                active = c.accent,
+                active = c.overlay,
                 inactive = c.surface,
+                locked_active = c.alarm,
+                locked_inactive = c.surface,
             },
-            text_color = c.ink,
-
-            -- --- Inactive tab ---
+            text_color = c.accent,
             text_color_inactive = c.muted,
-
-            indicator_height = 3,
         },
     },
 

@@ -2,8 +2,8 @@ import QtQuick
 import "root:/config"
 import "root:/components"
 
-// One metric in a popout: a label and its reading on a line, with a wide
-// sheared segmented meter underneath.
+// One metric in a popout: a label and its reading on a line, with a thin
+// segmented meter underneath.
 //
 // This replaces the radial Gauge. A 270° dial was the only curved thing in a
 // shell whose whole geometry is sheared slabs and hard chamfers, so it read as
@@ -78,7 +78,7 @@ Item {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        height: 12
+        height: 4
         segments: root.segments
         spacing: root.segmentSpacing
         // Fill the row exactly rather than leaving a ragged tail on the right.

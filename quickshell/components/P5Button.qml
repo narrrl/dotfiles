@@ -12,7 +12,9 @@ FocusScope {
     property bool destructive: false
     property bool selected: false
     property real lean: Theme.skew
-    property real lunge: 4
+    // Sideways nudge on hover. Zero: NieR buttons do not move, the marker
+    // and the inversion carry the state.
+    property real lunge: 0
     property bool wide: false
 
     signal clicked()

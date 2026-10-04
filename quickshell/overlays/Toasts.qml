@@ -80,14 +80,9 @@ PanelWindow {
                     }
                 }
 
-                // Countdown rule that drains along the bottom edge.
-                //
-                // It used to be a full-bleed rectangle across the whole toast,
-                // which meant it ran straight through the card's chopped
-                // bottom-left corner and out the other side — a stray bar
-                // hanging off the card at the one place the silhouette is
-                // supposed to be cut. It lives inside the cut now, and ends
-                // where the leaning right edge does.
+                // Countdown hairline that drains along the bottom edge. The
+                // chop and lean terms are zero under the YoRHa theme; they are
+                // kept so the fuse still fits if a shape is brought back.
                 readonly property real fuseSpan: Math.max(0,
                     width - card.chop - card.implicitHeight * card.lean)
 
@@ -96,7 +91,7 @@ PanelWindow {
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 1
                     x: card.chop
-                    height: 2
+                    height: 1
                     width: toast.fuseSpan
                     lean: card.lean
                     color: Theme.alpha(card.tone, 0.7)

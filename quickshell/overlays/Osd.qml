@@ -171,8 +171,8 @@ PanelWindow {
                     anchors.verticalCenter: parent.verticalCenter
                     // Natural width, not a fixed one — SplitText offsets its
                     // ghosts with left/right anchor margins, so pinning the
-                    // width and right-aligning the text would flatten the RGB
-                    // split away. The title's left edge is anchored, so a
+                    // width and right-aligning the text would flatten the
+                    // glitch flicker away. The title's left edge is anchored, so a
                     // widening readout only moves its own left edge.
                     text: Math.round(root.level * 100) + "%"
                     pixelSize: Theme.fsBody
@@ -181,10 +181,10 @@ PanelWindow {
 
             MeterBar {
                 width: parent.width
-                height: 10
+                height: 4
                 segments: 20
-                segmentWidth: (width - 19 * 3) / 20
-                spacing: 3
+                segmentWidth: (width - 19 * 2) / 20
+                spacing: 2
                 value: root.level * 100
                 activeColor: root.tone
             }
