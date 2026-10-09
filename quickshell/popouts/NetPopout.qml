@@ -5,12 +5,12 @@ import "root:/config"
 import "root:/components"
 import "root:/services"
 
-// Link state, throughput, and the Wi-Fi picker.
+// Link state, throughput, the wired ports, and the Wi-Fi picker.
 Popout {
     id: root
 
     contentWidth: 360
-    contentHeight: 300
+    contentHeight: 300 + (wired.visible ? wired.height + Theme.padM : 0)
 
     // Scan only while the popout is actually on screen.
     onShownChanged: Net.setScanning(shown)
@@ -76,13 +76,49 @@ Popout {
             }
         }
 
-        SectionRule {
-            id: apsLabel
+        // One row per Ethernet port; a click brings the link up or down.
+        Column {
+            id: wired
             anchors.top: controls.bottom
             anchors.topMargin: Theme.padM
             anchors.left: parent.left
             anchors.right: parent.right
-            text: Net.scanning ? "Scanning…" : "Networks"
+            visible: Net.wiredDevices.length > 0
+            spacing: 2
+
+            SectionRule {
+                width: parent.width
+                text: "Wired"
+            }
+
+            Item {
+                width: parent.width
+                height: Theme.padS - 2
+            }
+
+            Repeater {
+                model: Net.wiredDevices
+
+                delegate: ListRow {
+                    required property var modelData
+
+                    width: wired.width
+                    icon: modelData.hasLink ? "󰈀" : "󰈂"
+                    label: "Ethernet"
+                    detail: Net.wiredDetail(modelData)
+                    current: modelData.connected
+                    onClicked: Net.toggleWired(modelData)
+                }
+            }
+        }
+
+        SectionRule {
+            id: apsLabel
+            anchors.top: wired.visible ? wired.bottom : controls.bottom
+            anchors.topMargin: Theme.padM
+            anchors.left: parent.left
+            anchors.right: parent.right
+            text: Net.scanning ? "Scanning…" : "Wi-Fi"
         }
 
         ListView {

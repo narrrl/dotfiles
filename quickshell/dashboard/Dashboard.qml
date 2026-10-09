@@ -65,7 +65,18 @@ PanelWindow {
     implicitHeight: root.bodyHeight + 1
     color: "transparent"
 
-    mask: Region { item: body }
+    // A Region follows its item's own geometry, not its parents', so masking
+    // to the body, which rides on the sliding sheet, would freeze the mask
+    // wherever the sheet was when it was built — above the window, letting
+    // every click through to whatever is below and dropping the focus grab.
+    mask: Region { item: hitbox }
+
+    Item {
+        id: hitbox
+        x: root.fillet
+        width: root.bodyWidth
+        height: parent.height
+    }
 
     HyprlandFocusGrab {
         active: root.open

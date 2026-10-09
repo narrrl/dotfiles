@@ -27,13 +27,26 @@ PanelWindow {
         id: shade
         anchors.fill: parent
         color: Theme.ink
-        opacity: Idle.dimmed ? 0.6 : 0
+        opacity: 0
 
-        Behavior on opacity {
-            NumberAnimation {
-                duration: Idle.dimmed ? 8000 : Theme.durBase
-                easing.type: Idle.dimmed ? Easing.InOutSine : Easing.OutCubic
-            }
+        // States, not a Behavior: a Behavior whose duration is bound to
+        // Idle.dimmed can start before that binding updates, so waking up
+        // would replay the slow fade in reverse.
+        states: State {
+            name: "dimmed"
+            when: Idle.dimmed
+            PropertyChanges { shade.opacity: 0.6 }
         }
+
+        transitions: [
+            Transition {
+                to: "dimmed"
+                NumberAnimation { property: "opacity"; duration: 8000; easing.type: Easing.InOutSine }
+            },
+            Transition {
+                from: "dimmed"
+                NumberAnimation { property: "opacity"; duration: Theme.durBase; easing.type: Easing.OutCubic }
+            }
+        ]
     }
 }

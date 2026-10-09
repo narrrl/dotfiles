@@ -4,9 +4,10 @@
 -- lua/, and each require() is its own scope: an error in one file does not stop
 -- the others from loading.
 --
--- Order matters only in two places: palette must exist before anything paints
--- with it, and monitors must exist before the lid handler binds to them. Both
--- are handled by the requires below, top to bottom.
+-- Order matters only in three places: palette must exist before anything
+-- paints with it, monitors must exist before the lid handler binds to them,
+-- and game mode reads the look and the animations as configured. All three are
+-- handled by the requires below, top to bottom.
 
 -- what the desktop looks like
 require("lua/palette")
@@ -26,6 +27,9 @@ require("lua/autostart")
 -- how windows behave
 require("lua/rules/windows")
 require("lua/rules/layers")
+
+-- after look and animations: it reads their values to put back
+require("lua/gamemode")
 
 -- how it is driven
 require("lua/binds/apps")

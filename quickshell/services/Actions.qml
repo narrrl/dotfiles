@@ -168,8 +168,41 @@ Singleton {
     function logout() { root.run(["uwsm", "stop"]); }
     function reboot() { root.run(["systemctl", "reboot"]); }
     function shutdown() { root.run(["systemctl", "poweroff"]); }
-    function suspend() { root.lock(); root.run(["systemctl", "suspend"]); }
-    function hibernate() { root.lock(); root.run(["systemctl", "hibernate"]); }
+    function suspend() { root.sleep(["systemctl", "suspend"]); }
+    function hibernate() { root.sleep(["systemctl", "hibernate"]); }
+
+    // Set by lock/Lock.qml once the compositor has the lock surfaces up.
+    property bool lockSecure: false
+    // A sleep waiting for the lock. Suspending first would leave the desktop
+    // on screen for a moment on wake, before the lock had drawn.
+    property var pendingSleep: null
+
+    function sleep(argv: var) {
+        root.lock();
+        if (root.lockSecure) {
+            root.run(argv);
+            return;
+        }
+        root.pendingSleep = argv;
+        sleepFallback.restart();
+    }
+
+    function _sleepNow() {
+        if (!root.pendingSleep) return;
+        const argv = root.pendingSleep;
+        root.pendingSleep = null;
+        sleepFallback.stop();
+        root.run(argv);
+    }
+
+    onLockSecureChanged: if (root.lockSecure) root._sleepNow()
+
+    // A lock that never comes up must not keep the machine awake on battery.
+    Timer {
+        id: sleepFallback
+        interval: 3000
+        onTriggered: root._sleepNow()
+    }
     function reloadShell() { Quickshell.reload(true); }
 
     // ------------------------------------------------------------- helpers
@@ -195,6 +228,7 @@ Singleton {
         function toggleDnd(): void { Notifs.toggleDnd(); }
         function clearNotifications(): void { Notifs.clearAll(); }
         function toggleStayAwake(): void { Idle.toggleStayAwake(); }
+        function gameMode(on: bool): void { GameMode.active = on; }
         function overview(): void { root.toggleOverview(); }
         function overviewNext(): void { root.overviewStep(1); }
         function overviewPrev(): void { root.overviewStep(-1); }

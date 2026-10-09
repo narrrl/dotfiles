@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Hyprland
 import "root:/config"
 import "root:/components"
+import "root:/services"
 
 // Workspace indicator: soft pills that stretch open when focused. Occupied
 // workspaces fill in, urgent ones snap to the alarm colour.
@@ -104,7 +105,7 @@ Item {
 
                     // Urgent is the one pip that has to be seen peripherally.
                     SequentialAnimation on opacity {
-                        running: pip.urgent && !pip.focused
+                        running: pip.urgent && !pip.focused && !GameMode.active
                         loops: Animation.Infinite
                         alwaysRunToEnd: true
                         NumberAnimation { to: 0.4; duration: 520; easing.type: Easing.InOutQuad }

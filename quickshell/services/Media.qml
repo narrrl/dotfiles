@@ -74,7 +74,7 @@ Singleton {
     // MPRIS position is pull-only; tick it so the seek bar moves.
     Timer {
         interval: 1000
-        running: root.playing && root.positionSupported
+        running: root.playing && root.positionSupported && !GameMode.active
         repeat: true
         onTriggered: if (root.active) root.active.positionChanged()
     }

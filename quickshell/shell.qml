@@ -1,3 +1,10 @@
+// The Samsung on DP-1 drops off the bus when its display powers down, so DPMS
+// off (services/Idle.qml) removes an output under every window on it. With
+// Qt's threaded render loop the render thread can still be swapping a surface
+// the GUI thread just destroyed, which segfaults in Mesa and takes the lock
+// screen down with it. The basic loop renders on the GUI thread, so it cannot.
+//@ pragma Env QSG_RENDER_LOOP=basic
+
 import QtQuick
 import Quickshell
 import "root:/config"

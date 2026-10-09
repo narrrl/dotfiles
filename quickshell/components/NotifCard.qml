@@ -206,7 +206,10 @@ Item {
 
         Row {
             x: Theme.marker + Theme.padS
-            visible: root.showActions && (root.notif?.actions?.length ?? 0) > 0
+            // Gone once the app has closed the notification: nothing is
+            // listening for the action any more.
+            visible: root.showActions && !Notifs.isRetracted(root.notif)
+                && (root.notif?.actions?.length ?? 0) > 0
             spacing: Theme.padS
             topPadding: 4
 
@@ -265,10 +268,7 @@ Item {
                     }
 
                     TapHandler {
-                        onTapped: {
-                            actionChip.modelData.invoke();
-                            root.dismissed();
-                        }
+                        onTapped: Notifs.invoke(root.notif, actionChip.modelData)
                     }
                 }
             }

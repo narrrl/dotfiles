@@ -130,7 +130,7 @@ PanelWindow {
             statusText: Math.round(Battery.percent) + "% · " + Battery.timeLabel
             suppressTooltip: battPopout.detailActive
             alarm: Battery.critical
-            pulsing: Battery.critical
+            pulsing: Battery.critical && !GameMode.active
             onClicked: battPopout.togglePinned()
         }
     }

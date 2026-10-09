@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Shapes
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Wayland
 import Quickshell.Services.Notifications
 import "root:/config"
@@ -15,6 +16,10 @@ import "root:/services"
 // with each notification an entry in it divided by its own header hairline.
 // The drawer grows and shrinks with the entries and slides back behind the
 // frame when the last one goes.
+//
+// A fullscreen window covers the bar and the rail, so there is no frame to
+// lower the drawer out of. Then it floats free in the corner as a plain
+// rounded panel instead.
 PanelWindow {
     id: root
 
@@ -30,17 +35,20 @@ PanelWindow {
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
     exclusionMode: ExclusionMode.Ignore
 
+    readonly property HyprlandMonitor monitor: Hyprland.monitorFor(root.screen)
+    readonly property bool floating: root.monitor?.activeWorkspace?.hasFullscreen ?? false
+
     // One pixel over the bar and the rail, so the drawer covers the rim the
     // hull draws along both edges instead of sitting inside it.
     anchors { top: true; right: true }
     margins {
-        top: Theme.barHeight - 1
-        right: Theme.railWidth - 1
+        top: root.floating ? Theme.padM : Theme.barHeight - 1
+        right: root.floating ? Theme.padM : Theme.railWidth - 1
     }
 
-    readonly property real fillet: Theme.frameRadius
+    readonly property real fillet: root.floating ? 0 : Theme.frameRadius
     readonly property real corner: Theme.frameRadius
-    readonly property real seam: 1
+    readonly property real seam: root.floating ? 0 : 1
     readonly property real drawerWidth: 400
 
     // Height of the entries, eased, so the drawer grows rather than jumps.
@@ -75,6 +83,10 @@ PanelWindow {
             if (Actions.focusedScreenName() !== root.modelData.name) return;
             root.live = [notif, ...root.live].slice(0, root.maxLive);
         }
+        // Closed by its app or from the log: take it off screen too.
+        function onNotifRetracted(notif) {
+            root.retire(notif);
+        }
     }
 
     function retire(notif) {
@@ -99,6 +111,7 @@ PanelWindow {
             // onto the rail through the bottom fillet — Popout's "topRight".
             Shape {
                 id: silhouette
+                visible: !root.floating
                 anchors.fill: parent
                 preferredRendererType: Shape.CurveRenderer
 
@@ -125,6 +138,15 @@ PanelWindow {
                 }
             }
 
+            Rectangle {
+                visible: root.floating
+                anchors.fill: parent
+                radius: root.corner
+                color: Theme.hull
+                border.width: 1
+                border.color: Theme.rim
+            }
+
             Column {
                 id: stack
                 x: root.fillet
@@ -132,8 +154,11 @@ PanelWindow {
                 width: root.drawerWidth
                 bottomPadding: Theme.padS
 
+                // A ScriptModel, not the bare list: it hands the Repeater only
+                // what changed, so a new toast does not rebuild the others and
+                // restart their fuses.
                 Repeater {
-                    model: root.live
+                    model: ScriptModel { values: [...root.live] }
 
                     Item {
                         id: toast
@@ -146,10 +171,9 @@ PanelWindow {
                             id: card
                             width: parent.width
                             notif: toast.modelData
-                            onDismissed: {
-                                Notifs.dismiss(toast.modelData);
-                                root.retire(toast.modelData);
-                            }
+                            // Closing it retracts it, which retires the toast;
+                            // nothing may run here after that, the entry is gone.
+                            onDismissed: Notifs.dismiss(toast.modelData)
                         }
 
                         // Countdown: a hairline draining along the entry's

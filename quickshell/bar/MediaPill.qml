@@ -170,7 +170,7 @@ BarPill {
 
             Timer {
                 interval: eq.tickMs
-                running: Media.playing && eq.visible && (eq.Window.window?.visible ?? true)
+                running: Media.playing && eq.visible && (eq.Window.window?.visible ?? true) && !GameMode.active
                 repeat: true
                 onTriggered: eq.phase++
                 // Restart the cycle from its trough, so playback always begins

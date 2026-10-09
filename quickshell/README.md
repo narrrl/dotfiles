@@ -119,6 +119,20 @@ not disturb and stay awake, plus night light when `hyprsunset` is installed
 (it runs at 4200 K for as long as the switch is on). On is the light slab
 with ink type, the same as a selection everywhere else; off is a hairline.
 
+## Game mode
+
+While a fullscreen game is on screen, Hyprland switches off its animations and
+shadows and turns on direct scanout (`~/.config/hypr/lua/gamemode.lua`). It
+also tells the shell through `qs ipc call shell gameMode true`. The game covers
+the hull, but covered surfaces still render, so the shell stops what it does by
+itself: the fluxo stream, the backlight poll, the media tick and equaliser, and
+the rail and workspace pulses. Toasts wait in the log, except critical ones.
+Both sides come back when the game leaves fullscreen, closes or is switched
+away from.
+
+A game is a window with the `game` content type, or one whose class matches
+`GAME_CLASSES` in `gamemode.lua` (`steam_app_<id>` and `gamescope` so far).
+
 ## Modules
 
 | Module | Where | Left click | Right click | Middle | Scroll | Hover |

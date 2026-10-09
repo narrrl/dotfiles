@@ -13,6 +13,7 @@ WlSessionLock {
     id: lock
 
     locked: Actions.lockRequested
+    onSecureChanged: Actions.lockSecure = lock.secure
 
     WlSessionLockSurface {
         id: lockSurface

@@ -167,7 +167,17 @@ Singleton {
         id: retry
         interval: 2000
         repeat: false
-        onTriggered: source.running = true
+        onTriggered: source.running = !GameMode.active
+    }
+
+    // Nothing reads the meters while a game covers the bar. Drop the stream
+    // and pick it up again afterwards; the first lines back refresh every value.
+    Connections {
+        target: GameMode
+
+        function onActiveChanged() {
+            source.running = !GameMode.active;
+        }
     }
 
     // ------------------------------------------------------------ formatting

@@ -49,9 +49,10 @@ Singleton {
     onMicPercentChanged: micBumped()
     onMicMutedChanged: micBumped()
 
+    // Capped at 100%: past it PipeWire only amplifies in software, and clips.
     function setVolume(v: real) {
         if (!sink?.audio) return;
-        sink.audio.volume = Math.max(0, Math.min(1.5, v));
+        sink.audio.volume = Math.max(0, Math.min(1, v));
     }
 
     function changeVolume(delta: real) {
@@ -65,7 +66,7 @@ Singleton {
 
     function setMicVolume(v: real) {
         if (!source?.audio) return;
-        source.audio.volume = Math.max(0, Math.min(1.5, v));
+        source.audio.volume = Math.max(0, Math.min(1, v));
     }
 
     function toggleMicMute() {

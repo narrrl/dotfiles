@@ -107,8 +107,15 @@ Singleton {
         root.lastCost = 0;
     }
 
+    // Set while a run is being killed on purpose, so its exit is not reported
+    // as a failure.
+    property bool stopping: false
+
     function stop(): void {
-        if (proc.running) proc.running = false;
+        if (proc.running) {
+            root.stopping = true;
+            proc.running = false;
+        }
         root.busy = false;
     }
 
@@ -125,7 +132,10 @@ Singleton {
 
         root.exitCode = 0;
         root.stderrText = "";
-        proc.running = false;
+        if (proc.running) {
+            root.stopping = true;
+            proc.running = false;
+        }
         // stdin is closed explicitly. Inherited from the shell it never ends,
         // and the CLI waits three seconds for input that is never coming
         // before it starts on the question.
@@ -236,6 +246,10 @@ Singleton {
         }
 
         onExited: (code, status) => {
+            if (root.stopping) {
+                root.stopping = false;
+                return;
+            }
             root.busy = false;
             root.exitCode = code;
             if (code === 0 || root.error !== "") return;

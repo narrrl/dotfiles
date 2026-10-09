@@ -19,8 +19,10 @@ Singleton {
     // The wallpaper to use when no particular monitor is being asked about.
     property string path: ""
 
+    // Encoded segment by segment: a `#` or `?` in a file name would otherwise
+    // be read as the start of a fragment or a query.
     readonly property url source: root.path !== ""
-        ? Qt.resolvedUrl("file://" + root.path)
+        ? "file://" + root.path.split("/").map(encodeURIComponent).join("/")
         : Theme.fallbackWallpaper
 
     signal changed()

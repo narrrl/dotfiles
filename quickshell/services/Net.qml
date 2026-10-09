@@ -16,10 +16,13 @@ Singleton {
     readonly property var devices: Networking.devices?.values ?? []
 
     readonly property var wifiDevices: devices.filter(d => d.type === DeviceType.Wifi)
-    readonly property var wiredDevices: devices.filter(d => d.type === DeviceType.Wired)
+    // Docker's veth pairs show up as wired too; NetworkManager leaves them
+    // unmanaged, and so does the popout.
+    readonly property var wiredDevices: devices.filter(d => d.type === DeviceType.Wired && d.nmManaged)
 
     readonly property WifiDevice wifi: wifiDevices.length > 0 ? wifiDevices[0] : null
-    readonly property WiredDevice wired: wiredDevices.length > 0 ? wiredDevices[0] : null
+    // The port in use, or failing that the first one there is.
+    readonly property WiredDevice wired: wiredDevices.find(d => d.connected) ?? wiredDevices[0] ?? null
 
     readonly property bool wiredUp: wired?.connected ?? false
 
@@ -55,14 +58,8 @@ Singleton {
         if (!root.wifiEnabled) return "󰤭";
         if (!root.activeWifi) return "󰤯";
         const s = root.activeWifi.signalStrength ?? 0;
-        // Strength is only sampled while a scan is running, which the shell
-        // does on demand. Connected-but-unsampled should read as full, not dead.
-        if (s <= 0) return "󰤨";
-        if (s >= 80) return "󰤨";
-        if (s >= 60) return "󰤥";
-        if (s >= 40) return "󰤢";
-        if (s >= 20) return "󰤟";
-        return "󰤯";
+        // Connected but not yet sampled should read as full, not dead.
+        return s <= 0 ? "󰤨" : root.signalIcon(s);
     }
 
     readonly property string label: {
@@ -72,12 +69,27 @@ Singleton {
         return "Offline";
     }
 
-    function signalIcon(strength: int): string {
-        if (strength >= 80) return "󰤨";
-        if (strength >= 60) return "󰤥";
-        if (strength >= 40) return "󰤢";
-        if (strength >= 20) return "󰤟";
+    // Strength is a fraction, 0 to 1, not a percentage.
+    function signalIcon(strength: real): string {
+        if (strength >= 0.8) return "󰤨";
+        if (strength >= 0.6) return "󰤥";
+        if (strength >= 0.4) return "󰤢";
+        if (strength >= 0.2) return "󰤟";
         return "󰤯";
+    }
+
+    // "1 Gb/s" when up, otherwise why not. NetworkManager reports Mb/s.
+    function wiredDetail(d): string {
+        if (!d.hasLink) return d.name + "  ·  no cable";
+        if (!d.connected) return d.name + "  ·  disconnected";
+        const mbps = d.linkSpeed ?? 0;
+        if (mbps <= 0) return d.name;
+        return d.name + "  ·  " + (mbps >= 1000 ? (mbps / 1000) + " Gb/s" : mbps + " Mb/s");
+    }
+
+    function toggleWired(d) {
+        if (d.connected) d.disconnect();
+        else if (d.network) d.network.connect();
     }
 
     function secured(n): bool {

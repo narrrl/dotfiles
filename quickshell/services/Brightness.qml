@@ -37,6 +37,8 @@ Singleton {
             const v = parseInt(text().trim());
             if (!isNaN(v) && v !== root.raw) {
                 root.raw = v;
+                // Settled, or moved by something else: step from here again.
+                if (!setter.running && root.pending < 0) root.target = -1;
                 root.bumped();
             }
         }
@@ -45,24 +47,44 @@ Singleton {
     // sysfs writes do not always fire inotify for backlight, so poll gently too.
     Timer {
         interval: 1000
-        running: true
+        running: !GameMode.active
         repeat: true
         onTriggered: currentFile.reload()
     }
 
+    // The level last asked for, until the backlight reports it. Steps build on
+    // it rather than on `percent`, which only catches up on the next read, so
+    // a fast scroll adds up instead of repeating one step.
+    property int target: -1
+    // A level asked for while a write is still running. Restarting the write
+    // would kill it half done, so the newest request waits and the rest drop.
+    property int pending: -1
+
     Process {
         id: setter
+        onExited: {
+            currentFile.reload();
+            if (root.pending < 0) return;
+            const next = root.pending;
+            root.pending = -1;
+            root._write(next);
+        }
+    }
+
+    function _write(p: int) {
+        setter.command = ["brightnessctl", "-d", root.device, "-q", "set", p + "%"];
+        setter.running = true;
     }
 
     function setPercent(p: real) {
         const clamped = Math.max(1, Math.min(100, Math.round(p)));
-        setter.running = false;
-        setter.command = ["brightnessctl", "-d", root.device, "-q", "set", clamped + "%"];
-        setter.running = true;
+        root.target = clamped;
+        if (setter.running) root.pending = clamped;
+        else root._write(clamped);
     }
 
     function change(delta: real) {
-        setPercent(percent + delta);
+        setPercent((root.target >= 0 ? root.target : percent) + delta);
     }
 
     readonly property string icon: {

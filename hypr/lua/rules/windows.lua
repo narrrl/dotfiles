@@ -30,6 +30,11 @@ local GAMESCOPE = "^(gamescope)$"
 -- })
 hl.window_rule({ match = { class = "^$", title = "^$" }, no_blur = true })
 
+-- Hold idle off while any window is fullscreen. Players do not all ask for
+-- that themselves (Brave goes through D-Bus, which nothing here listens to),
+-- and the shell's dim and lock (quickshell/services/Idle.qml) respect inhibitors.
+hl.window_rule({ match = { class = ".*" }, idle_inhibit = "fullscreen" })
+
 -- ==========================================
 -- FLOATING & CENTERED DIALOGS
 -- ==========================================
