@@ -1,10 +1,10 @@
 -- https://wiki.hypr.land/Configuring/Basics/Window-Rules/#layer-rules
 --
--- Quickshell surfaces: the bar, popouts, the OSD and the launcher. Note
--- decoration.blur is off in lua/look.lua, so these only take effect if blur is
--- switched back on.
+-- The two free-standing Quickshell panels, the launcher and the ask panel.
+-- Everything else is opaque hull. decoration.blur is off in lua/look.lua, so
+-- these only take effect if blur is switched back on.
 
-for _, namespace in ipairs({ "bottom", "top", "takemi-launcher" }) do
+for _, namespace in ipairs({ "takemi-launcher", "takemi-ask" }) do
     hl.layer_rule({
         match = { namespace = namespace },
         blur = true,

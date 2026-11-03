@@ -36,9 +36,9 @@ Item {
     }
 
     // ------------------------------------------------------- background
-    // Whatever hyprpaper is actually displaying, not a path written down once
-    // and left to rot. `screenName` lets a multi-monitor lock show each screen
-    // its own picture; it falls back to the first wallpaper hyprpaper reports.
+    // The picture the backdrop is drawing (services/Wallpaper.qml), so the
+    // lock fades in from exactly what was on screen. `screenName` is passed to
+    // Wallpaper.forMonitor() in case screens ever get pictures of their own.
     property string screenName: ""
 
     Image {

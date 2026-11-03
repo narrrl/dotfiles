@@ -244,9 +244,8 @@ Singleton {
     readonly property url texDots: "root:/assets/dots.png"
     readonly property url texScanline: "root:/assets/scanline.png"
 
-    // Last resort only. The live wallpaper comes from the Wallpaper singleton,
-    // which asks hyprpaper what is actually on screen — a path written down
-    // here goes stale the moment the wallpaper is switched, which is exactly
-    // what happened to the lock screen.
+    // Last resort only, for when ~/.config/quickshell/wallpaper is empty or
+    // missing. The live wallpaper comes from the Wallpaper singleton, which
+    // the backdrop and the lock screen both read.
     readonly property url fallbackWallpaper: "file:///home/narl/.wallpapers/space-1.jpg"
 }

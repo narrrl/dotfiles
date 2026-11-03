@@ -9,9 +9,10 @@ hl.on("hyprland.start", function()
     -- (systemctl --user mask dunst.service).
     hl.exec_cmd("uwsm app -- qs")
 
+    -- nm-applet stays for its secrets agent (Wi-Fi passwords, VPN); its tray
+    -- icon is hidden by the rail. The wallpaper is drawn by the shell
+    -- (quickshell/backdrop), so there is no hyprpaper.
     hl.exec_cmd("uwsm app -- nm-applet --indicator")
-    -- hyprpaper is not started here: its systemd unit is enabled for
-    -- graphical-session.target, and a second copy here ran alongside it.
 
     -- clipboard history, text and images
     hl.exec_cmd("wl-paste --type text --watch cliphist store")

@@ -62,7 +62,7 @@ local function later(fn)
 end
 
 -- Clearing `mirror` alone brings the image back, but Hyprland never
--- re-announces the output to clients: hyprpaper and Quickshell keep seeing
+-- re-announces the output to clients: Quickshell keeps seeing
 -- only the panel, however often they restart. Cycling the output through
 -- disabled makes it a fresh wl_output. Undeclared outputs get their auto
 -- defaults back, apply_external() then overrides what lua/monitors.lua knows

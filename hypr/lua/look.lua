@@ -55,8 +55,8 @@ hl.config({
             range = 24,
             render_power = 3,
             offset = { 0, 6 },
-            color = "rgba(000000aa)",
-            color_inactive = "rgba(00000066)",
+            color = c.shadow,
+            color_inactive = c.shadowInactive,
         },
 
         -- Off. Every surface here is opaque, so there is nothing to blur, and

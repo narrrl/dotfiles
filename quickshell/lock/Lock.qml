@@ -21,8 +21,8 @@ WlSessionLock {
 
         LockFace {
             anchors.fill: parent
-            // So each screen blurs its own wallpaper rather than all of them
-            // sharing whichever one hyprpaper happened to list first.
+            // So each screen blurs its own wallpaper, should screens ever get
+            // different ones (see Wallpaper.forMonitor).
             screenName: lockSurface.screen ? lockSurface.screen.name : ""
             onUnlocked: Actions.lockRequested = false
         }

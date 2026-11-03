@@ -25,6 +25,10 @@ c.accentSoft = "rgb(bcc1bf)"
 
 -- ------------------------------------------------------------------ neutrals
 c.ink = "rgb(090a08)"
+-- Shadows are ink, not pure black: the same green-black the shell punches
+-- text out of.
+c.shadow = "rgba(090a08aa)"
+c.shadowInactive = "rgba(090a0866)"
 
 c.base = "rgb(0f110e)"
 c.mantle = "rgb(0c0d0b)"
