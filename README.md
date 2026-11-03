@@ -37,29 +37,41 @@ The palette is written once per program; the two shell colours live in
 
 ## Keys
 
-`SUPER` is the modifier.
+`SUPER` is the modifier, and the other modifiers each mean one thing:
 
-| Keys | Does |
+| Modifier | Means |
 |---|---|
-| `SUPER+RETURN` / `E` / `SPACE` | terminal / files / launcher |
-| `SUPER+D` / `W` / `A` / `P` | dashboard / overview / ask Claude / power menu |
-| `SUPER+CTRL+L` | lock |
-| `ALT+TAB` | switch windows across every workspace |
-| `ALT+M` | clipboard history |
-| `SUPER+H/J/K/L` | focus; `+SHIFT` moves, `+ALT` resizes |
-| `SUPER+1…0` | workspace; `+SHIFT` moves the window there |
-| `SUPER+S` | scratchpad; `+SHIFT` sends the window there |
-| `SUPER+F` / `SUPER+SHIFT+F` | fullscreen / maximize |
-| `SUPER+V` / `SUPER+O` / `SUPER+SHIFT+Q` | float / pin / close |
-| `SUPER+N`, `SUPER+TAB` | group, cycle the group |
-| `PRINT` | screenshot an area (`+CTRL` the window, `+SHIFT` to a file) |
-| `SUPER+PRINT` | record an area (`+SHIFT` the monitor); again to stop |
-| `SUPER+SHIFT+C` | colour picker |
-| `SUPER+.` / `SUPER+/` / `SUPER+SHIFT+W` | emoji / keybind cheatsheet / wallpaper (launcher modes `;` `?` `@`) |
-| `SUPER+SHIFT+N` / `I` | do not disturb / stay awake |
-| `SUPER+SHIFT+R` | reload the shell |
+| `SUPER` + key | open or go to what the key names |
+| `+SHIFT` | the same, but take the window along (or the bigger version) |
+| `+CTRL` | a switch for the session |
+| `+ALT` | resize |
+| `PRINT` | pictures: `+SHIFT` to a file, `+CTRL` without selecting, `+SUPER` video |
 
-`hyprctl binds` lists everything, with descriptions.
+`ALT` on its own is left to the apps, except `ALT+TAB`. Letters resolve by
+symbol, so they mean the same on Dvorak and QWERTY.
+
+| Open | | Window | | Session (`SUPER+CTRL`) | |
+|---|---|---|---|---|---|
+| `RETURN` | terminal | `H/J/K/L` | focus; `+SHIFT` move, `+ALT` resize | `L` | lock |
+| `SPACE` | launcher | `1…0` | workspace; `+SHIFT` move window | `N` | do not disturb |
+| `E` | file explorer | `S` | scratchpad; `+SHIFT` send window | `I` | stay awake |
+| `R` | read a PDF | `F` / `M` | fullscreen / maximize | `M` | mirror the laptop |
+| `B` | bluetooth | `V` | float; `+SHIFT` float and pin | `W` | wallpaper |
+| `C` | clipboard; `+SHIFT` pick a colour | `G` | group; `TAB` cycles it | `SPACE` | keyboard layout |
+| `.` / `/` | emoji / keybind cheatsheet | `SHIFT+Q` | close | `C` | phone camera |
+| `D` / `W` | dashboard / overview | | | `R` | reload the shell |
+| `A` | ask Claude | | | | |
+| `N` | notifications; `+SHIFT` clear | | | | |
+| `P` | power menu | | | | |
+
+| Capture | |
+|---|---|
+| `PRINT` | screenshot an area (`+CTRL` the window, `+SHIFT` to a file) |
+| `SUPER+PRINT` | record an area (`+CTRL` the monitor); again to stop |
+| `SUPER+Z` / `SUPER+SHIFT+Z` | replay buffer on/off / save the last two minutes |
+| `ALT+TAB` | switch windows across every workspace |
+
+`SUPER+/` shows every bind, read live from Hyprland.
 
 ## Setup
 
@@ -68,7 +80,7 @@ Arch, with `hyprland`, `uwsm`, `quickshell`, and from `packages`: `grim`,
 `brightnessctl`, `playerctl`, `hyprpolkitagent`, `adw-gtk-theme`, `darkly-bin`,
 `papirus-icon-theme`, `bibata-cursor-theme-bin`, `noto-fonts`,
 `ttf-jetbrains-mono-nerd`. `fluxo` is a cargo install. Optional:
-`hyprsunset` (night light switch), `gpu-screen-recorder` (`ALT+Z` replay).
+`hyprsunset` (night light switch), `gpu-screen-recorder` (`SUPER+Z` replay).
 
 Clone into `~/.config` (the `.gitignore` is an allowlist), start Hyprland
 through uwsm, and `hypr/lua/autostart.lua` brings up the shell. The wallpaper

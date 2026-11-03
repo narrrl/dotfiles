@@ -1,4 +1,5 @@
--- Takemi shell (quickshell) IPC. Config lives in ~/.config/quickshell.
+-- Shell (quickshell) IPC. Config lives in ~/.config/quickshell.
+-- The layout of the keys is described in lua/binds/apps.lua.
 
 local mod = "SUPER"
 
@@ -6,16 +7,17 @@ local function shell(call, opts)
     hl.bind(opts.key, hl.dsp.exec_cmd("qs ipc call shell " .. call), { description = opts.description })
 end
 
-shell("lock", { key = mod .. " + CTRL + L", description = "lock screen" })
-shell("power", { key = mod .. " + P", description = "power menu" })
-shell("ask", { key = mod .. " + A", description = "ask claude" })
+-- ------------------------------------------------------------------ panels
 shell("dashboard", { key = mod .. " + D", description = "dashboard" })
-shell("overview", { key = mod .. " + W", description = "overview of every workspace" })
+shell("overview", { key = mod .. " + W", description = "overview of every window" })
+shell("ask", { key = mod .. " + A", description = "ask claude" })
+shell("notifications", { key = mod .. " + N", description = "notifications" })
+shell("clearNotifications", { key = mod .. " + SHIFT + N", description = "clear notifications" })
+shell("power", { key = mod .. " + P", description = "power menu" })
 
 -- Launcher modes, opened straight in their prefix.
 shell("prompt ';'", { key = mod .. " + period", description = "emoji picker" })
 shell("prompt '?'", { key = mod .. " + slash", description = "keybind cheatsheet" })
-shell("prompt '@'", { key = mod .. " + SHIFT + W", description = "wallpaper picker" })
 
 -- Alt+Tab: hold Alt, tap Tab through focus history, let go to switch. The
 -- overview sees the release itself; the release bind is a backstop for the
@@ -23,11 +25,18 @@ shell("prompt '@'", { key = mod .. " + SHIFT + W", description = "wallpaper pick
 shell("overviewNext", { key = "ALT + Tab", description = "switch windows" })
 shell("overviewPrev", { key = "ALT + SHIFT + Tab", description = "switch windows, backwards" })
 hl.bind("ALT + ALT_L", hl.dsp.exec_cmd("qs ipc call shell overviewCommit"), { release = true })
-shell("toggleDnd", { key = mod .. " + SHIFT + N", description = "toggle do not disturb" })
-shell("toggleStayAwake", { key = mod .. " + SHIFT + I", description = "keep the screen awake" })
-shell("clearNotifications", { key = mod .. " + CTRL + SHIFT + N", description = "clear notifications" })
-shell("reloadConfig", { key = mod .. " + SHIFT + R", description = "reload shell config" })
 
--- Not a shell call, but it lives with the other session toggles.
+-- ----------------------------------------------------------------- session
+shell("lock", { key = mod .. " + CTRL + L", description = "lock screen" })
+shell("toggleDnd", { key = mod .. " + CTRL + N", description = "do not disturb" })
+shell("toggleStayAwake", { key = mod .. " + CTRL + I", description = "stay awake (no idle)" })
+shell("prompt '@'", { key = mod .. " + CTRL + W", description = "wallpaper picker" })
+shell("reloadConfig", { key = mod .. " + CTRL + R", description = "reload the shell" })
+
+-- Not shell calls, but they live with the other session switches.
 local mirror = require("lua/mirror")
-hl.bind(mod .. " + SHIFT + P", mirror.toggle, { description = "mirror laptop to all screens" })
+hl.bind(mod .. " + CTRL + M", mirror.toggle, { description = "mirror the laptop to every screen" })
+
+-- dvorak-intl <-> us-intl, see lua/input.lua
+hl.bind(mod .. " + CTRL + SPACE", hl.dsp.exec_cmd("hyprctl switchxkblayout all next"),
+    { description = "next keyboard layout" })

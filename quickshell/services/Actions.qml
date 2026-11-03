@@ -57,6 +57,8 @@ Singleton {
 
     signal overviewStepped(int delta)
     signal overviewCommitted()
+    // The bell's log, on the focused monitor's rail (SUPER+N).
+    signal notificationsRequested()
 
     function togglePowerMenu() {
         if (!root.powerMenuOpen)
@@ -225,6 +227,7 @@ Singleton {
         function reloadConfig(): void { root.reloadShell(); }
         function toggleDnd(): void { Notifs.toggleDnd(); }
         function clearNotifications(): void { Notifs.clearAll(); }
+        function notifications(): void { root.notificationsRequested(); }
         function toggleStayAwake(): void { Idle.toggleStayAwake(); }
         function gameMode(on: bool): void { GameMode.active = on; }
         function overview(): void { root.toggleOverview(); }

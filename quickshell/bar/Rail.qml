@@ -247,4 +247,13 @@ PanelWindow {
         triggerHovered: bellIcon.hovered
         fromEdge: Edges.Left
     }
+
+    Connections {
+        target: Actions
+        function onNotificationsRequested() {
+            if (root.screen.name !== Hyprland.focusedMonitor?.name) return;
+            notifPopout.togglePinned();
+            Notifs.markRead();
+        }
+    }
 }

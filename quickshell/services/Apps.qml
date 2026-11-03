@@ -594,6 +594,9 @@ Singleton {
                     seen[key] = e;
                     out.push(e);
                 }
+                // The ten workspace keys read better as a range.
+                for (const e of out)
+                    e.name = e.name.replace(/\b1( \/ \d){9}$/, "1…0");
                 root.binds = out;
             }
         }

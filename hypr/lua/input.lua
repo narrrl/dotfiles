@@ -3,7 +3,7 @@
 hl.config({
     input = {
         -- index 0 = dvorak-intl (default), index 1 = us-intl
-        -- switch with $mainMod ALT, SPACE (see lua/binds/windows.lua)
+        -- switch with SUPER+CTRL+SPACE (see lua/binds/shell.lua)
         kb_layout = "us,us",
         kb_variant = "dvorak-intl,intl",
         kb_model = "",

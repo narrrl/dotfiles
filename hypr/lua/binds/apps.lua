@@ -1,14 +1,26 @@
 -- Launching things.
 -- https://wiki.hypr.land/Configuring/Basics/Binds/
+--
+-- How the keys are laid out, across every file in binds/:
+--
+--   SUPER + key          open or go to the thing the key names
+--   SUPER + SHIFT + key  the same, but take the focused window along
+--                        (or the bigger version of it)
+--   SUPER + CTRL + key   switches for the session: lock, quiet, awake,
+--                        mirror, layout, wallpaper, camera, reload
+--   SUPER + ALT + hjkl   resize
+--   PRINT                pictures; SHIFT to a file, CTRL without selecting,
+--                        SUPER for video
+--
+-- ALT alone is left to the apps, except ALT+TAB. Letters resolve by symbol
+-- (lua/input.lua), so they mean the same on Dvorak and QWERTY.
 
 local apps = require("lua/apps")
-local mod = "SUPER" -- Sets "Windows" key as main modifier
+local mod = "SUPER"
 
 hl.bind(mod .. " + RETURN", hl.dsp.exec_cmd(apps.terminal), { description = "terminal" })
-hl.bind(mod .. " + E", hl.dsp.exec_cmd(apps.fileManager), { description = "file manager" })
 hl.bind(mod .. " + SPACE", hl.dsp.exec_cmd(apps.menu), { description = "app launcher" })
-hl.bind(mod .. " + M", hl.dsp.exec_cmd(apps.pdfs), { description = "pdf picker" })
+hl.bind(mod .. " + E", hl.dsp.exec_cmd(apps.fileManager), { description = "file explorer" })
+hl.bind(mod .. " + R", hl.dsp.exec_cmd(apps.pdfs), { description = "read a pdf" })
 hl.bind(mod .. " + B", hl.dsp.exec_cmd(apps.bluetooth), { description = "bluetooth menu" })
-
--- Clipboard history. On release so the picker does not inherit the held ALT.
-hl.bind("ALT + m", hl.dsp.exec_cmd(apps.clipboard), { release = true, description = "clipboard history" })
+hl.bind(mod .. " + C", hl.dsp.exec_cmd(apps.clipboard), { description = "clipboard history" })

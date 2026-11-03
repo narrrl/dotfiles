@@ -197,6 +197,7 @@ qs ipc call shell wallpaper ~/.wallpapers/space-1.jpg
 qs ipc call shell ask
 qs ipc call shell askAbout "why is the sky blue"
 qs ipc call shell clearNotifications
+qs ipc call shell notifications        # the bell's log on the focused monitor
 qs ipc call shell reloadConfig
 ```
 

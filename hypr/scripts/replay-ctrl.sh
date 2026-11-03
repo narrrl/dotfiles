@@ -2,8 +2,8 @@
 # Replay buffer: gpu-screen-recorder keeps the last two minutes of the screen
 # and audio in RAM, and `save` writes them out to ~/Videos/replay.
 #
-#   replay-ctrl.sh toggle    start or stop the buffer       (ALT+Z)
-#   replay-ctrl.sh save      write out the last two minutes (ALT+SHIFT+Z)
+#   replay-ctrl.sh toggle    start or stop the buffer       (SUPER+Z)
+#   replay-ctrl.sh save      write out the last two minutes (SUPER+SHIFT+Z)
 #   replay-ctrl.sh start|stop
 #
 # HEVC because this machine's Radeon (Vega 10) has no AV1 encoder; gsr would
@@ -43,7 +43,7 @@ start() {
         -sc "$HOME/.config/hypr/scripts/replay-notification.sh" \
         -o "$DIR" >/dev/null 2>&1 &
     echo $! > "$PID_FILE"
-    notify-send -a "$APP" -u low "Replay on" "Keeping the last two minutes. ALT+SHIFT+Z saves them."
+    notify-send -a "$APP" -u low "Replay on" "Keeping the last two minutes. SUPER+SHIFT+Z saves them."
 }
 
 stop() {
@@ -61,7 +61,7 @@ save() {
         kill -USR1 "$(cat "$PID_FILE")"
     else
         rm -f "$PID_FILE"
-        notify-send -a "$APP" -u low "Replay" "Not running. ALT+Z starts it."
+        notify-send -a "$APP" -u low "Replay" "Not running. SUPER+Z starts it."
     fi
 }
 
