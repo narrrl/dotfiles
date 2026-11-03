@@ -13,7 +13,7 @@ also does notifications, the launcher, the lock screen, idle and the wallpaper.
 | | |
 |---|---|
 | ![Dashboard](screenshots/dashboard.jpg) | ![Launcher](screenshots/launcher.jpg) |
-| Dashboard (`SUPER+D`) — time, month, meters, player, quick switches | Launcher (`SUPER+SPACE`) — apps, `>` shell, `=` calc, `:` clipboard |
+| Dashboard (`SUPER+D`) — time, month, meters, player, quick switches | Launcher (`SUPER+SPACE`) — apps, `>` shell, `=` calc, `:` clipboard, `;` emoji, `?` keys, `@` wallpaper |
 | ![Notifications](screenshots/toasts.jpg) | ![Overview](screenshots/overview.jpg) |
 | Notifications, grouped by sender in the bell's log | Overview (`ALT+TAB`, `SUPER+W`) — every workspace, live |
 | ![Power menu](screenshots/power.jpg) | ![Lock screen](screenshots/lock.jpg) |
@@ -55,6 +55,7 @@ The palette is written once per program; the two shell colours live in
 | `PRINT` | screenshot an area (`+CTRL` the window, `+SHIFT` to a file) |
 | `SUPER+PRINT` | record an area (`+SHIFT` the monitor); again to stop |
 | `SUPER+SHIFT+C` | colour picker |
+| `SUPER+.` / `SUPER+/` / `SUPER+SHIFT+W` | emoji / keybind cheatsheet / wallpaper (launcher modes `;` `?` `@`) |
 | `SUPER+SHIFT+N` / `I` | do not disturb / stay awake |
 | `SUPER+SHIFT+R` | reload the shell |
 

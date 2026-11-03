@@ -524,6 +524,129 @@ Singleton {
         return scored.slice(0, 60).map(e => e.item);
     }
 
+    // ----------------------------------------------------------------- emoji
+    // `;` in the launcher. The table is assets/emoji.tsv ("glyph<TAB>name"),
+    // generated once from Python's unicodedata; single code points only.
+    property var emoji: []
+
+    FileView {
+        id: emojiFile
+        path: Qt.resolvedUrl("root:/assets/emoji.tsv")
+        onLoaded: {
+            const out = [];
+            for (const line of text().split("\n")) {
+                const tab = line.indexOf("\t");
+                if (tab <= 0) continue;
+                out.push({ kind: "emoji", glyph: line.slice(0, tab),
+                           name: line.slice(tab + 1), sub: "", icon: "" });
+            }
+            root.emoji = out;
+        }
+    }
+
+    function searchEmoji(term: string): var {
+        const t = term.trim().toLowerCase();
+        if (t === "") return root.emoji.slice(0, 60);
+        const scored = [];
+        for (const e of root.emoji) {
+            const s = root.fuzzy(e.name, t);
+            if (s >= 0) scored.push({ item: e, score: s });
+        }
+        scored.sort((a, b) => b.score - a.score);
+        return scored.slice(0, 60).map(e => e.item);
+    }
+
+    // Copied, then typed into whatever had focus once the launcher is gone.
+    function pickEmoji(item: var): void {
+        Quickshell.execDetached(["wl-copy", "--", item.glyph]);
+        Quickshell.execDetached(["sh", "-c", 'sleep 0.25; exec wtype -- "$1"', "sh", item.glyph]);
+    }
+
+    // -------------------------------------------------------------- keybinds
+    // `?` in the launcher: every Hyprland bind that carries a description,
+    // read live from `hyprctl binds -j`, so the sheet cannot drift from the
+    // config.
+    property var binds: []
+
+    function refreshBinds(): void {
+        bindList.running = false;
+        bindList.running = true;
+    }
+
+    Process {
+        id: bindList
+        command: ["hyprctl", "binds", "-j"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                let list = [];
+                try { list = JSON.parse(this.text); } catch (e) { return; }
+                const mods = [[64, "SUPER"], [4, "CTRL"], [8, "ALT"], [1, "SHIFT"]];
+                const seen = {};
+                const out = [];
+                for (const b of list) {
+                    if (!b.description) continue;
+                    const m = mods.filter(x => b.modmask & x[0]).map(x => x[1]);
+                    const combo = m.concat([b.key.length === 1 ? b.key.toUpperCase() : b.key]).join(" + ");
+                    // hjkl and friends share one description; list it once.
+                    const key = b.description + "|" + m.join("+");
+                    if (seen[key]) { seen[key].name += " / " + b.key.toUpperCase(); continue; }
+                    const e = { kind: "bind", name: combo, sub: b.description, icon: "" };
+                    seen[key] = e;
+                    out.push(e);
+                }
+                root.binds = out;
+            }
+        }
+    }
+
+    function searchBinds(term: string): var {
+        const t = term.trim();
+        if (t === "") return root.binds;
+        const scored = [];
+        for (const b of root.binds) {
+            const s = Math.max(root.fuzzy(b.sub, t), root.fuzzy(b.name, t));
+            if (s >= 0) scored.push({ item: b, score: s });
+        }
+        scored.sort((a, b) => b.score - a.score);
+        return scored.map(e => e.item);
+    }
+
+    // ------------------------------------------------------------ wallpapers
+    // `@` in the launcher: the pictures in ~/.wallpapers, each shown by its
+    // own thumbnail. Choosing one hands it to the Wallpaper service.
+    readonly property string wallpaperDir: Quickshell.env("HOME") + "/.wallpapers"
+    property var wallpapers: []
+
+    function refreshWallpapers(): void {
+        wallList.running = false;
+        wallList.running = true;
+    }
+
+    Process {
+        id: wallList
+        command: ["find", root.wallpaperDir, "-maxdepth", "1", "-type", "f",
+            "(", "-iname", "*.jpg", "-o", "-iname", "*.jpeg", "-o", "-iname", "*.png",
+            "-o", "-iname", "*.webp", ")"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                root.wallpapers = this.text.split("\n").filter(l => l !== "").sort().map(path => ({
+                    kind: "wallpaper",
+                    path: path,
+                    name: path.slice(path.lastIndexOf("/") + 1),
+                    sub: path === Wallpaper.path ? "current" : "",
+                    icon: "",
+                    image: "file://" + path.split("/").map(encodeURIComponent).join("/")
+                }));
+            }
+        }
+    }
+
+    function searchWallpapers(term: string): var {
+        const t = term.trim();
+        if (t === "") return root.wallpapers;
+        return root.wallpapers.filter(w => root.fuzzy(w.name, t) >= 0);
+    }
+
     // ------------------------------------------------------------ calculator
     // Arithmetic only. The expression is checked against a whitelist before it
     // goes anywhere near the JS engine — a launcher that evals whatever you

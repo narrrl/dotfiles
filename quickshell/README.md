@@ -453,7 +453,11 @@ network and bluetooth, but keep running as the secret and pairing agents.
 - **Fish** — `fish/conf.d/yorha_theme.fish`.
 - **The launcher** — no external theming to keep in step, because it is part of
   this shell (`launcher/`). Fuzzel is gone; `takemi-dmenu` stands in for
-  `fuzzel --dmenu` where a script needs a picker.
+  `fuzzel --dmenu` where a script needs a picker. A first character switches
+  mode: `>` shell, `=` calculator, `:` clipboard history, `;` emoji (copied and
+  typed; table in `assets/emoji.tsv`), `?` every described Hyprland bind, read
+  live from `hyprctl binds -j`, and `@` the pictures in `~/.wallpapers` with
+  thumbnails. `qs ipc call shell prompt '<prefix>'` opens straight into one.
 - **No glass anywhere.** Alacritty is `opacity = 1.0, blur = false`, and
   Hyprland's `decoration:blur` is disabled.
 

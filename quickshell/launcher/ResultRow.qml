@@ -65,19 +65,48 @@ Item {
             visible: source !== ""
         }
 
+        // A picture of its own (wallpapers): a small rounded thumbnail.
+        ClippingRectangle {
+            anchors.verticalCenter: parent.verticalCenter
+            visible: !!root.entry.image
+            width: 46
+            height: 26
+            radius: 4
+            color: Theme.surface
+
+            Image {
+                anchors.fill: parent
+                source: root.entry.image ?? ""
+                sourceSize.width: 92
+                fillMode: Image.PreserveAspectCrop
+                asynchronous: true
+            }
+        }
+
+        // The glyph itself, for emoji.
+        Text {
+            anchors.verticalCenter: parent.verticalCenter
+            width: 26
+            visible: root.entry.kind === "emoji"
+            text: root.entry.glyph ?? ""
+            horizontalAlignment: Text.AlignHCenter
+            font.pixelSize: 20
+        }
+
         // Entries with no icon still need to occupy the same gutter, or their
         // labels wander left and the column stops being a column.
         Icon {
             anchors.verticalCenter: parent.verticalCenter
             width: 26
-            text: "󰣆"
+            text: root.entry.kind === "bind" ? "󰌌" : "󰣆"
             color: root.selected ? Theme.treatmentSelectedText : Theme.muted
-            visible: !root.entry.icon && root.entry.kind !== "dmenu"
+            visible: !root.entry.icon && !root.entry.image
+                && root.entry.kind !== "dmenu" && root.entry.kind !== "emoji"
         }
 
         Column {
             anchors.verticalCenter: parent.verticalCenter
-            width: parent.width - 26 - Theme.padM * 2 - trailing.width
+            width: parent.width - (root.entry.image ? 46 : 26) - Theme.padM * 2 - trailing.width
             spacing: -1
 
             Text {

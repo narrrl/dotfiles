@@ -65,10 +65,12 @@ PanelWindow {
         : root.prefix === ">" ? "shell"
         : root.prefix === "=" ? "calc"
         : root.prefix === ":" ? "clip"
+        : root.prefix === ";" ? "emoji"
+        : root.prefix === "?" ? "keys"
+        : root.prefix === "@" ? "wall"
         : "app"
 
-    readonly property bool prefixed: root.mode === "shell"
-        || root.mode === "calc" || root.mode === "clip"
+    readonly property bool prefixed: root.mode !== "app" && root.mode !== "dmenu"
 
     readonly property string body: root.prefixed
         ? root.query.slice(1)
@@ -105,6 +107,9 @@ PanelWindow {
 
         if (root.mode === "dmenu") return Apps.searchDmenu(root.body);
         if (root.mode === "clip") return Apps.searchClips(root.body);
+        if (root.mode === "emoji") return Apps.searchEmoji(root.body);
+        if (root.mode === "keys") return Apps.searchBinds(root.body);
+        if (root.mode === "wall") return Apps.searchWallpapers(root.body);
 
         if (root.mode === "shell") {
             if (root.body.trim() === "") return [];
@@ -131,7 +136,11 @@ PanelWindow {
 
     // Typing the ":" prefix is the other way into the clipboard, and the
     // history may have moved on since the window opened.
-    onModeChanged: if (root.mode === "clip") Apps.refreshClips()
+    onModeChanged: {
+        if (root.mode === "clip") Apps.refreshClips();
+        else if (root.mode === "keys") Apps.refreshBinds();
+        else if (root.mode === "wall") Apps.refreshWallpapers();
+    }
     onOpenChanged: {
         if (root.open) {
             PopupCoordinator.dismissAll();
@@ -186,6 +195,9 @@ PanelWindow {
         case "dmenu": Apps.finishDmenu(item.name); break;
         case "clip": Apps.pasteClip(item); break;
         case "calc": Apps.copy(item.value); break;
+        case "emoji": Apps.pickEmoji(item); break;
+        case "wallpaper": Wallpaper.set(item.path); break;
+        case "bind": break;
         case "shell": Apps.runShell(root.body, false); break;
         case "shellterm": Apps.runShell(root.body, true); break;
         default: Apps.launch(item, root.arg); break;
@@ -241,6 +253,9 @@ PanelWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         text: root.mode === "shell" ? "" : root.mode === "calc" ? "󰃬"
                             : root.mode === "clip" ? "󰅇"
+                            : root.mode === "emoji" ? "󰞅"
+                            : root.mode === "keys" ? "󰌌"
+                            : root.mode === "wall" ? "󰸉"
                             : root.mode === "dmenu" ? "󰘳"
                             : root.arg !== "" ? "󰏌" : "󰍉"
                         color: root.arg !== "" ? Theme.accent : Theme.primary
@@ -301,6 +316,9 @@ PanelWindow {
                                 : root.mode === "shell" ? "command…"
                                 : root.mode === "calc" ? "expression…"
                                 : root.mode === "clip" ? "clipboard history…"
+                                : root.mode === "emoji" ? "emoji…"
+                                : root.mode === "keys" ? "what does what…"
+                                : root.mode === "wall" ? "wallpaper…"
                                 : root.mode === "dmenu"
                                     ? (Apps.dmenuPrompt || "choose…")
                                     : "search, or paste a link"
@@ -368,7 +386,7 @@ PanelWindow {
                         width: list.width
                         entry: modelData
                         selected: index === root.selected
-                        badge: root.arg !== "" ? "OPEN  ⏎" : "⏎"
+                        badge: root.mode === "keys" ? "" : root.arg !== "" ? "OPEN  ⏎" : "⏎"
                         onActivated: {
                             root.selected = index;
                             root.activate();
@@ -413,11 +431,15 @@ PanelWindow {
                         ? "J K  MOVE     L  PIN     H  UNPIN     i  TYPE     ESC  QUIT"
                         : root.mode === "dmenu"
                             ? "⏎  CHOOSE     ESC  SELECT     ↑↓  MOVE"
-                            : root.mode === "clip"
+                            : root.mode === "clip" || root.mode === "emoji"
                                 ? "⏎  COPY     ESC  SELECT     ↑↓  MOVE"
+                            : root.mode === "wall"
+                                ? "⏎  SET     ESC  SELECT     ↑↓  MOVE"
+                            : root.mode === "keys"
+                                ? "TYPE TO FILTER     ESC  SELECT     ↑↓  MOVE"
                                 : root.pinned
                                     ? "⏎  OPEN     ESC  SELECT     ↑↓  PICK"
-                                    : "ESC  SELECT     TAB  PIN     >  SHELL     =  CALC     :  CLIP"
+                                    : "TAB  PIN   >  SHELL   =  CALC   :  CLIP   ;  EMOJI   @  WALL   ?  KEYS"
                 }
             }
         }

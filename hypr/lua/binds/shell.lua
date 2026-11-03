@@ -12,6 +12,11 @@ shell("ask", { key = mod .. " + A", description = "ask claude" })
 shell("dashboard", { key = mod .. " + D", description = "dashboard" })
 shell("overview", { key = mod .. " + W", description = "overview of every workspace" })
 
+-- Launcher modes, opened straight in their prefix.
+shell("prompt ';'", { key = mod .. " + period", description = "emoji picker" })
+shell("prompt '?'", { key = mod .. " + slash", description = "keybind cheatsheet" })
+shell("prompt '@'", { key = mod .. " + SHIFT + W", description = "wallpaper picker" })
+
 -- Alt+Tab: hold Alt, tap Tab through focus history, let go to switch. The
 -- overview sees the release itself; the release bind is a backstop for the
 -- case where Alt comes up before the overview has the keyboard.
