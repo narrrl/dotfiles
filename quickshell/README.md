@@ -42,7 +42,8 @@ cost 4.4% of the height on top of what the bar already takes.
 - **bar** — identity and workspaces on the left (a ring after them while the
   `Super+S` scratchpad holds windows, filled while it is open); the focused window, the
   player, the CPU/MEM/GPU readout and the clock on the right.
-- **rail** — network, bluetooth, audio, mic, backlight, battery, tray,
+- **rail** — network, bluetooth, audio, mic, backlight (only while a built-in
+  panel is lit), battery, tray,
   notifications, power. While something records the mic, uses a camera or
   shares the screen, a lit icon heads the rail (`services/Privacy.qml`, read
   from PipeWire). Popouts grow leftward out of it, into the screen.
@@ -296,7 +297,11 @@ The choice is one line in `quickshell/wallpaper` (`~` allowed), watched live.
 | 15 min | suspend, on battery only |
 
 Every stage respects idle inhibitors, so a fullscreen video holds them all
-off. `Super+Shift+I` does the same by hand and puts a cup on the rail while it
+off.
+
+Any suspend locks first, including ones the shell did not start (the lid, a
+terminal `systemctl suspend`): `Idle` holds a logind delay inhibitor, locks on
+`PrepareForSleep`, and releases it once the lock surface is secure. `Super+Shift+I` does the same by hand and puts a cup on the rail while it
 is on.
 
 ## Lock screen
@@ -374,7 +379,9 @@ appear only while `glitch()` runs — NieR's brief data-corruption flicker.
 OSD, toasts) and the two scene surfaces are flat. Depth comes from the hull's
 dark, the rim hairline and the wallpaper, not from patterns.
 
-**Type has a floor.** Nothing renders below `Theme.fsMicro` (10px).
+**Type has a floor.** Nothing renders below `Theme.fsMicro`. The scale was
+drawn for a 24" 1080p panel; `Theme.typeScale` (1.1) sets it a step larger for
+the 27" 1440p one, so `fsMicro` is 11px there. Geometry does not scale.
 
 **Changing the palette.** The colours are written once per program:
 
@@ -389,6 +396,11 @@ dark, the rim hairline and the wallpaper, not from patterns.
 | `gtk-3.0/gtk.css`, `gtk-4.0/gtk.css` | GTK and libadwaita apps |
 | `qt6ct/colors/yorha.conf` | Qt apps |
 | `zathura/yorha` | the document viewer |
+
+The shell has two hues. Terminal, editor, btop, GTK and zathura *content*
+also uses a set of muted earth hues (sand, moss, sky, lichen, heather) for
+syntax and status; they are listed as `c.content` in `hypr/lua/palette.lua`
+and never appear in chrome.
 
 Everything else derives. `glow` *is* `accent`, and `primary` is plain `text`.
 `Theme.heat()` is a continuous text → light → red ramp, so a CPU figure that

@@ -14,9 +14,7 @@
 !brave-flags.conf
 !chromium-flags.conf
 !README.md
-!rice.png
-!rice-2.png
-!rice-3.png
+!screenshots/
 !btop
 !systemd/
 fish/fish_variables
