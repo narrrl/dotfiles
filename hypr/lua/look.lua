@@ -70,7 +70,7 @@ hl.config({
         force_default_wallpaper = 0,
         disable_hyprland_logo = true,
         -- 0 = off, 1 = always, 2 = fullscreen only (G7 is a 240Hz VRR panel)
-        vrr = 0,
+        vrr = 2,
         font_family = "JetBrainsMono Nerd Font",
         background_color = c.base,
         focus_on_activate = true,
