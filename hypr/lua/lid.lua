@@ -4,6 +4,11 @@
 --
 --     panel off  <=>  lid is shut AND something else is plugged in
 --
+-- and one more for the hinge itself: shutting the lid with nothing else
+-- plugged in suspends. logind is set to ignore the lid (HandleLidSwitch=ignore,
+-- so docked lid-shut stays awake); this is what puts an undocked laptop to
+-- sleep. The shell locks before any suspend (quickshell/services/Idle.qml).
+--
 -- Both halves are re-checked every time, so the session can never end up with
 -- zero outputs. Undocking with the lid shut brings the panel back; booting
 -- alone after a docked shutdown just works, because nothing about the previous
@@ -52,6 +57,16 @@ end
 
 -- ---------------------------------------------------------------- reconciling
 
+local function count_externals(ignore)
+    local n = 0
+    for _, mon in ipairs(monitors.externals_present()) do
+        if mon.name ~= ignore then
+            n = n + 1
+        end
+    end
+    return n
+end
+
 -- nil until the first decision, so the first pass always applies.
 local panel_off = nil
 
@@ -66,12 +81,7 @@ local function reconcile(ignore)
         return
     end
 
-    local externals = 0
-    for _, mon in ipairs(monitors.externals_present()) do
-        if mon.name ~= ignore then
-            externals = externals + 1
-        end
-    end
+    local externals = count_externals(ignore)
 
     local want_off = lid_closed() and externals > 0
 
@@ -96,6 +106,9 @@ end
 hl.bind("switch:on:Lid Switch", function()
     last_switch_closed = true
     reconcile()
+    if count_externals() == 0 then
+        hl.exec_cmd("systemctl suspend")
+    end
 end, { locked = true })
 
 hl.bind("switch:off:Lid Switch", function()
