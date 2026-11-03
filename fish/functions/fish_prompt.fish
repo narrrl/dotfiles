@@ -1,13 +1,13 @@
 function fish_prompt --description 'Write out the prompt'
         set -l last_status $status
         set -l normal (set_color normal)
-        # White at rest, crimson when the last command failed — the prompt
-        # arrow is the one place the shell says "something is wrong", so it is
-        # the one place that earns the accent. Was brgreen/brpurple, which
-        # spent colour on states that are not worth any.
-        set -l status_color (set_color ffffff)
+        # The planet light at rest, the hull red when the last command failed —
+        # the prompt arrow is the one place the shell says "something is
+        # wrong", so it is the one place that earns the alarm. VCS info sits
+        # in the muted grey. Colours from quickshell/config/Theme.qml.
+        set -l status_color (set_color eef1ea)
         set -l cwd_color (set_color $fish_color_cwd)
-        set -l vcs_color (set_color 6b6b70)
+        set -l vcs_color (set_color 79847a)
         set -l prompt_status ""
     
         # Since we display the prompt on a new line allow the directory names to be longer.

@@ -1,8 +1,9 @@
 -- https://wiki.hypr.land/Configuring/Advanced-and-Cool/Animations/
 --
 -- YoRHa motion: calm and mechanical. Things glide in, settle and stop; nothing
--- overshoots, nothing pops. Matches Theme.easeSnap / easeGlide in
--- ~/.config/quickshell/config/Theme.qml.
+-- overshoots, nothing pops. The curves are the same as Theme.easeGlide /
+-- easeStandard / easeExit / easeDrift in ~/.config/quickshell/config/Theme.qml,
+-- under the same names.
 --
 -- The screen is a porthole: the hull (quickshell/bar/Frame.qml) sits on the
 -- top layer, so anything that moves past the edge of the opening passes
@@ -34,7 +35,6 @@ hl.curve("glide", { type = "bezier", points = { { 0.22, 1.00 }, { 0.36, 1.00 } }
 hl.curve("standard", { type = "bezier", points = { { 0.40, 0.00 }, { 0.20, 1.00 } } })
 -- Leaving: ease in, so the exit gathers pace and is gone.
 hl.curve("exit", { type = "bezier", points = { { 0.55, 0.00 }, { 0.90, 0.35 } } })
-hl.curve("linear", { type = "bezier", points = { { 0, 0 }, { 1, 1 } } })
 -- easeInOutSine-ish with a long tail: starts without a jolt, settles slowly.
 -- For motion big enough that a fast start would read as a shove.
 hl.curve("drift", { type = "bezier", points = { { 0.35, 0.00 }, { 0.15, 1.00 } } })

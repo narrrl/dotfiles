@@ -50,6 +50,25 @@ c.deep = c.surfaceAlt
 c.warn = c.alarm
 c.ok = c.text
 
+-- ----------------------------------------------------------- content hues
+-- Not shell colours. The shell has the light and the red and nothing else;
+-- these are for *content* — terminal ANSI, syntax, TUI meters, GTK
+-- success/warning — where text needs more than one voice. All muted earth,
+-- none brighter than the text grey, so content never outshouts the chrome.
+-- Mirrored by hand in alacritty/yorha.toml, nvim/lua/yorha.lua,
+-- btop/themes/yorha.theme, fish/conf.d/yorha_theme.fish, gtk-*/gtk.css and
+-- zathura/yorha. Nothing in Hyprland reads them; they are written here so the
+-- whole set lives next to the two knobs.
+c.content = {
+    faint = "rgb(464d44)", -- between overlay and outline: comments, TUI panels
+    sand = "rgb(c9b27c)", sandBright = "rgb(d8c491)", -- warning, keywords
+    moss = "rgb(8fa37e)", mossBright = "rgb(a5b893)", -- success, strings
+    sky = "rgb(7f9aa8)", skyBright = "rgb(96afbc)", -- ANSI blue
+    lichen = "rgb(86a8a0)", lichenBright = "rgb(9cbdb4)", -- ANSI cyan
+    heather = "rgb(a48ba0)", heatherBright = "rgb(b8a0b4)", -- ANSI magenta
+    alarmBright = "rgb(d98068)", -- ANSI bright red
+}
+
 -- The focused window is lit by the planet: full light at the top-left, the
 -- suit's grey at the far corner. One family, so it reads as light falling
 -- across the frame rather than as two colours.

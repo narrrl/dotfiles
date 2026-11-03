@@ -17,6 +17,10 @@ import Quickshell
 //
 // There is still no third colour. The only warm thing in the wallpaper is the
 // tiny red of the hull's indicator lights, and that is what `alarm` is.
+//
+// That rule is for the shell. Terminal, editor, btop and GTK *content* get a
+// set of muted earth hues for syntax and status; they are written down as
+// `c.content` in ~/.config/hypr/lua/palette.lua and never used for chrome.
 Singleton {
     id: root
 
@@ -169,13 +173,18 @@ Singleton {
     // Letter-spacing for uppercase labels and headings.
     readonly property real tracking: 2.5
 
-    readonly property int fsMicro: 10
-    readonly property int fsSmall: 11
-    readonly property int fsBody: 12
-    readonly property int fsLarge: 15
-    readonly property int fsTitle: 20
-    readonly property int fsHuge: 34
-    readonly property int fsMega: 92
+    // The scale was drawn for a 24" 1080p panel (~92 PPI). On the 27" 1440p
+    // one (~109 PPI) the same pixel sizes come out about 15% smaller on the
+    // glass, so text is set a step larger; geometry stays where it is.
+    readonly property real typeScale: 1.1
+
+    readonly property int fsMicro: Math.round(10 * typeScale)
+    readonly property int fsSmall: Math.round(11 * typeScale)
+    readonly property int fsBody: Math.round(12 * typeScale)
+    readonly property int fsLarge: Math.round(15 * typeScale)
+    readonly property int fsTitle: Math.round(20 * typeScale)
+    readonly property int fsHuge: Math.round(34 * typeScale)
+    readonly property int fsMega: Math.round(92 * typeScale)
 
     readonly property int fsRailIcon: 17
 
@@ -235,9 +244,12 @@ Singleton {
     readonly property int durSlow: 380
     readonly property int durLazy: 700
 
-    readonly property var easeSnap: [0.22, 1.0, 0.36, 1.0, 1, 1]       // outQuint
-    readonly property var easeGlide: [0.4, 0.0, 0.2, 1.0, 1, 1]        // standard
-    readonly property var easeIn: [0.55, 0.0, 0.9, 0.35, 1, 1]
+    // The same four curves Hyprland moves windows with
+    // (~/.config/hypr/lua/animations.lua), under the same names.
+    readonly property var easeGlide: [0.22, 1.0, 0.36, 1.0, 1, 1]      // outQuint
+    readonly property var easeStandard: [0.4, 0.0, 0.2, 1.0, 1, 1]     // Material standard
+    readonly property var easeExit: [0.55, 0.0, 0.9, 0.35, 1, 1]       // ease in
+    readonly property var easeDrift: [0.35, 0.0, 0.15, 1.0, 1, 1]      // long tail
 
     // -------------------------------------------------------------- textures
     // A 1px dot every 8px, the ground NieR's menus are printed on.
