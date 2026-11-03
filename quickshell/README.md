@@ -308,8 +308,8 @@ is on.
 
 ## Lock screen
 
-Authenticates through `/etc/pam.d/hyprlock`, which on this box is just
-`auth include login`. The visuals live in `lock/LockFace.qml` so they can be
+Authenticates through the stock `/etc/pam.d/login` stack, so it does not
+depend on a lock-screen package still being installed. The visuals live in `lock/LockFace.qml` so they can be
 styled in an ordinary window (`qs -p lockpreview.qml`) without locking the
 session.
 

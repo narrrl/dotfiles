@@ -4,8 +4,8 @@ import Quickshell.Wayland
 import "root:/services"
 import "root:/lock"
 
-// Session lock. Replaces hyprlock; authenticates through the existing
-// /etc/pam.d/hyprlock stack, which is just `auth include login`.
+// Session lock. Replaces hyprlock; authenticates through the stock
+// /etc/pam.d/login stack (hyprlock's own PAM file left with its package).
 //
 // The visuals live in LockFace so they can be exercised in an ordinary window
 // (see lockpreview.qml) without locking the session to test a colour.

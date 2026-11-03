@@ -391,7 +391,7 @@ Item {
     PamContext {
         id: pam
 
-        config: "hyprlock"
+        config: "login"
         user: Quickshell.env("USER") || "USER"
 
         onPamMessage: {
