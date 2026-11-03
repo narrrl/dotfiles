@@ -232,5 +232,8 @@ Singleton {
         function overviewPrev(): void { root.overviewStep(-1); }
         function overviewCommit(): void { if (root.overviewHold) root.overviewCommitted(); }
         function wallpaper(path: string): void { Wallpaper.set(path); }
+        // Steps whichever screen is lit: the panel's backlight or the
+        // external monitor over DDC (services/Brightness.qml).
+        function brightness(delta: int): void { Brightness.change(delta); }
     }
 }

@@ -114,7 +114,7 @@ PanelWindow {
             icon: Brightness.icon
             readout: Math.round(Brightness.percent) + "%"
             label: "Brightness"
-            statusText: Math.round(Brightness.percent) + "%"
+            statusText: Math.round(Brightness.percent) + "% · " + Brightness.outputName
             hint: "Scroll to adjust"
             onScrolled: delta => Brightness.change(delta > 0 ? 5 : -5)
         }

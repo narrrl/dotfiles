@@ -9,8 +9,10 @@ hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), held)
 hl.bind("XF86AudioMute", hl.dsp.exec_cmd("fluxo vol mute"), held)
 hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("fluxo mic mute"), held)
-hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl s +10%"), held)
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl s 10%-"), held)
+-- Through the shell, which steps whichever screen is lit: the panel's
+-- backlight, or the external monitor over DDC when docked lid-shut.
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("qs ipc call shell brightness 10"), held)
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("qs ipc call shell brightness -10"), held)
 
 -- Transport. Requires playerctl.
 local locked = { locked = true }

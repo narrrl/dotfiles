@@ -42,8 +42,9 @@ cost 4.4% of the height on top of what the bar already takes.
 - **bar** — identity and workspaces on the left (a ring after them while the
   `Super+S` scratchpad holds windows, filled while it is open); the focused window, the
   player, the CPU/MEM/GPU readout and the clock on the right.
-- **rail** — network, bluetooth, audio, mic, backlight (only while a built-in
-  panel is lit), battery, tray,
+- **rail** — network, bluetooth, audio, mic, brightness (the built-in
+  panel's backlight while it is lit, otherwise the external monitor over
+  DDC/CI with `ddcutil`), battery, tray,
   notifications, power. While something records the mic, uses a camera or
   shares the screen, a lit icon heads the rail (`services/Privacy.qml`, read
   from PipeWire). Popouts grow leftward out of it, into the screen.
