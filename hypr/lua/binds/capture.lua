@@ -13,7 +13,17 @@ hl.bind("SHIFT + PRINT", hl.dsp.exec_cmd(shot .. "region save"), { description =
 hl.bind("CTRL + PRINT", hl.dsp.exec_cmd(shot .. "window copy"), { description = "screenshot the window to the clipboard" })
 hl.bind("CTRL + SHIFT + PRINT", hl.dsp.exec_cmd(shot .. "window save"), { description = "screenshot the window to a file" })
 
+-- --------------------------------------------------------------- recording
+-- A toggle: press once to pick an area (or take the monitor) and start, press
+-- again to stop. Saved to ~/Videos/Recordings by scripts/record.sh.
+hl.bind("SUPER + PRINT", hl.dsp.exec_cmd(scripts .. "record.sh region"), { description = "record an area (again to stop)" })
+hl.bind("SUPER + SHIFT + PRINT", hl.dsp.exec_cmd(scripts .. "record.sh screen"), { description = "record the screen (again to stop)" })
+
+-- ------------------------------------------------------------ colour picker
+hl.bind("SUPER + SHIFT + C", hl.dsp.exec_cmd("hyprpicker --autocopy --no-fancy"), { description = "pick a colour to the clipboard" })
+
 -- ------------------------------------------------------- replay and camera
+-- replay-ctrl.sh needs gpu-screen-recorder.
 -- On release, so the shortcut is not caught mid-chord.
 local on_release = { release = true }
 

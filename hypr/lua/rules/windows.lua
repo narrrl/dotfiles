@@ -43,11 +43,40 @@ for _, match in ipairs({ { title = DIALOG_TITLES }, { class = DIALOG_CLASSES } }
     hl.window_rule({
         match = match,
         float = true,
-        size = { 800, 600 },
+        -- Sized for the 1440p panel; 800x600 left file pickers cramped.
+        size = { 1100, 720 },
         center = true,
         no_blur = true,
     })
 end
+
+-- GTK file chooser by class, for the portal dialogs whose title is in the
+-- user's language and so slips past DIALOG_TITLES.
+hl.window_rule({
+    match = { class = "^(xdg-desktop-portal-gtk)$" },
+    float = true,
+    size = { 1100, 720 },
+    center = true,
+})
+
+-- The polkit password prompt: small, centred, on top of whatever asked.
+hl.window_rule({
+    match = { class = "^(hyprpolkitagent|org.hyprland.polkitagent)$" },
+    float = true,
+    center = true,
+    pin = true,
+})
+
+-- Browser Picture-in-Picture: a small pinned float in the bottom-right corner
+-- of the opening, keeping its aspect when resized.
+hl.window_rule({
+    match = { title = "^(Picture[- ]in[- ][Pp]icture)$" },
+    float = true,
+    pin = true,
+    keep_aspect_ratio = true,
+    size = { 640, 360 },
+    move = "monitor_w-window_w-72 monitor_h-window_h-24",
+})
 
 -- ==========================================
 -- WORKSPACE ASSIGNMENTS
@@ -78,5 +107,10 @@ hl.window_rule({
     -- center = true,
 })
 
--- Allow tearing for games started with Gamescope
+-- Steam games run fullscreen. (steam_app_<id> is the class Proton and native
+-- titles get.)
+hl.window_rule({ match = { class = "^(steam_app_.*)$" }, fullscreen = true, idle_inhibit = "always" })
+
+-- Allow tearing for games started with Gamescope (only takes effect if
+-- general.allow_tearing is switched on in lua/look.lua).
 hl.window_rule({ match = { class = GAMESCOPE }, immediate = true })
