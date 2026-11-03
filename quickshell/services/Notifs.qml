@@ -50,9 +50,8 @@ Singleton {
         actionsSupported: true
         actionIconsSupported: true
         imageSupported: true
-        // No reply field in the toasts or the log yet, so don't let apps offer
-        // a reply action that goes nowhere.
-        inlineReplySupported: false
+        // Answered by the reply field in NotifCard.
+        inlineReplySupported: true
         persistenceSupported: true
 
         onNotification: notif => {
@@ -106,6 +105,8 @@ Singleton {
     signal popupRequested(Notification notif)
     signal notifRetracted(Notification notif)
 
+    onRetractedChanged: if (root.replying && root.isRetracted(root.replying)) root.replying = null
+
     function isRetracted(notif: Notification): bool {
         return !notif || root.retracted[notif.id] === true;
     }
@@ -154,6 +155,41 @@ Singleton {
     function invoke(notif: Notification, action: NotificationAction) {
         if (!notif || root.isRetracted(notif)) return;
         action.invoke();
+        root.dismiss(notif);
+    }
+
+    // ------------------------------------------------------------ replying
+    // The notification whose reply field is open, or null. Only one at a
+    // time; the surfaces showing notifications take the keyboard while it is
+    // set, and a toast holds its countdown.
+    property var replying: null
+    // Which surface the field is open in, "toast" or "log": only that window
+    // takes the keyboard.
+    property string replySurface: ""
+
+    function startReply(notif: Notification, surface: string) {
+        if (!notif || root.isRetracted(notif) || !notif.hasInlineReply) return;
+        root.replySurface = surface;
+        root.replying = notif;
+    }
+
+    function cancelReply() {
+        root.replying = null;
+    }
+
+    // The field holds the keyboard exclusively. If it is left open and
+    // forgotten, give the keyboard back rather than keep it.
+    onReplyingChanged: if (root.replying) replyTimeout.restart(); else replyTimeout.stop()
+    Timer {
+        id: replyTimeout
+        interval: 120000
+        onTriggered: root.replying = null
+    }
+
+    function sendReply(notif: Notification, text: string) {
+        root.replying = null;
+        if (!notif || root.isRetracted(notif) || text.trim() === "") return;
+        notif.sendInlineReply(text);
         root.dismiss(notif);
     }
 

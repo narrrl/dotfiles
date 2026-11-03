@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Wayland
 import "root:/config"
 import "root:/components"
@@ -23,6 +24,9 @@ PanelWindow {
 
     WlrLayershell.layer: WlrLayer.Top
     WlrLayershell.namespace: "takemi-rail"
+    // The notification log hangs off the rail; it takes the keyboard only
+    // while a reply field is open in it.
+    WlrLayershell.keyboardFocus: Notifs.replying && Notifs.replySurface === "log" && root.screen === Quickshell.screens.find(s => s.name === Hyprland.focusedMonitor?.name) ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
     anchors {
         top: true

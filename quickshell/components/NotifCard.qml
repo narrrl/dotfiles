@@ -25,6 +25,9 @@ Item {
     // Off inside a group in the log, whose header already names the sender:
     // the entry keeps only its urgency dot, the hairline and the close mark.
     property bool showSender: true
+    // "toast" or "log": where this card is, so a reply field opened here is
+    // the one that gets the keyboard.
+    property string surface: "log"
 
     readonly property bool critical: root.notif?.urgency === NotificationUrgency.Critical
     readonly property color tone: root.notif
@@ -37,6 +40,13 @@ Item {
     readonly property real chop: 0
 
     readonly property bool hovered: hover.hovered
+
+    // Apps that take an answer in place (chat clients) get a REPLY chip; it
+    // opens a field under the entry. Enter sends, Escape puts it away.
+    readonly property bool canReply: root.showActions && !Notifs.isRetracted(root.notif)
+        && (root.notif?.hasInlineReply ?? false)
+    readonly property bool replying: root.canReply && Notifs.replying === root.notif
+        && Notifs.replySurface === root.surface
 
     signal dismissed()
 
@@ -209,12 +219,14 @@ Item {
             // Gone once the app has closed the notification: nothing is
             // listening for the action any more.
             visible: root.showActions && !Notifs.isRetracted(root.notif)
-                && (root.notif?.actions?.length ?? 0) > 0
+                && ((root.notif?.actions?.length ?? 0) > 0 || root.canReply)
             spacing: Theme.padS
             topPadding: 4
 
             Repeater {
-                model: root.notif?.actions ?? []
+                // "inline-reply" is how the reply itself is announced, not a
+                // button of its own; the REPLY chip below stands for it.
+                model: (root.notif?.actions ?? []).filter(a => a.identifier !== "inline-reply")
 
                 // A hairline pill. Hover lifts and lights it; it never inverts.
                 Item {
@@ -272,11 +284,137 @@ Item {
                     }
                 }
             }
+
+            Item {
+                id: replyChip
+                visible: root.canReply && !root.replying
+                implicitWidth: replyRow.implicitWidth + Theme.padM * 2
+                implicitHeight: 24
+
+                Rectangle {
+                    anchors.fill: parent
+                    radius: height / 2
+                    color: replyHover.hovered ? Theme.treatmentHoverFill : "transparent"
+                    border.width: 1
+                    border.color: replyHover.hovered ? Theme.treatmentHoverMark : Theme.overlay
+                }
+
+                Row {
+                    id: replyRow
+                    anchors.centerIn: parent
+                    spacing: Theme.padS
+
+                    Icon {
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: "󰑚"
+                        color: replyLabel.color
+                        font.pixelSize: Theme.fsSmall
+                    }
+
+                    Text {
+                        id: replyLabel
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: "REPLY"
+                        color: replyHover.hovered ? Theme.accent : Theme.text
+                        font.family: Theme.fontDisplay
+                        font.pixelSize: Theme.fsMicro
+                        font.letterSpacing: Theme.tracking
+                        renderType: Text.NativeRendering
+                    }
+                }
+
+                HoverHandler {
+                    id: replyHover
+                    cursorShape: Qt.PointingHandCursor
+                }
+
+                TapHandler {
+                    onTapped: Notifs.startReply(root.notif, root.surface)
+                }
+            }
+        }
+
+        // The reply field: a hairline capsule with the cursor in it, the same
+        // shape as the chips it replaces.
+        Item {
+            x: Theme.marker + Theme.padS
+            width: parent.width - x
+            height: root.replying ? 30 : 0
+            visible: root.replying
+
+            Rectangle {
+                anchors.fill: parent
+                anchors.topMargin: 4
+                radius: height / 2
+                color: Theme.surface
+                border.width: 1
+                border.color: replyInput.activeFocus ? Theme.accent : Theme.overlay
+            }
+
+            Text {
+                anchors.left: parent.left
+                anchors.leftMargin: Theme.padM
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.verticalCenterOffset: 2
+                visible: replyInput.text === ""
+                text: root.notif?.inlineReplyPlaceholder || "Reply…"
+                color: Theme.muted
+                font.family: Theme.fontDisplay
+                font.pixelSize: Theme.fsSmall
+                renderType: Text.NativeRendering
+            }
+
+            TextInput {
+                id: replyInput
+                anchors.left: parent.left
+                anchors.right: sendMark.left
+                anchors.leftMargin: Theme.padM
+                anchors.rightMargin: Theme.padS
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.verticalCenterOffset: 2
+                clip: true
+                color: Theme.accent
+                selectionColor: Theme.accent
+                selectedTextColor: Theme.ink
+                font.family: Theme.fontDisplay
+                font.pixelSize: Theme.fsSmall
+                renderType: Text.NativeRendering
+
+                onAccepted: Notifs.sendReply(root.notif, text)
+                Keys.onEscapePressed: Notifs.cancelReply()
+            }
+
+            Icon {
+                id: sendMark
+                anchors.right: parent.right
+                anchors.rightMargin: Theme.padM
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.verticalCenterOffset: 2
+                text: "󰒊"
+                color: replyInput.text !== "" ? Theme.accent : Theme.muted
+                font.pixelSize: Theme.fsBody
+
+                TapHandler {
+                    onTapped: Notifs.sendReply(root.notif, replyInput.text)
+                }
+            }
         }
     }
 
     HoverHandler {
         id: hover
+    }
+
+    // The window takes the keyboard a moment after `replying` turns on, so
+    // ask for focus once more when it does.
+    onReplyingChanged: {
+        replyInput.text = "";
+        if (root.replying) focusLater.restart();
+    }
+    Timer {
+        id: focusLater
+        interval: 50
+        onTriggered: replyInput.forceActiveFocus()
     }
 
     // Middle click dismisses, matching the old dunst muscle memory.

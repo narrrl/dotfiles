@@ -32,7 +32,8 @@ PanelWindow {
 
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.namespace: "takemi-toasts"
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+    // Exclusive only while a reply field is open in one of the toasts.
+    WlrLayershell.keyboardFocus: Notifs.replying && Notifs.replySurface === "toast" && root.screen === Quickshell.screens.find(s => s.name === Hyprland.focusedMonitor?.name) ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
     exclusionMode: ExclusionMode.Ignore
 
     readonly property HyprlandMonitor monitor: Hyprland.monitorFor(root.screen)
@@ -171,6 +172,7 @@ PanelWindow {
                             id: card
                             width: parent.width
                             notif: toast.modelData
+                            surface: "toast"
                             // Closing it retracts it, which retires the toast;
                             // nothing may run here after that, the entry is gone.
                             onDismissed: Notifs.dismiss(toast.modelData)
@@ -218,10 +220,19 @@ PanelWindow {
                             to: 1; duration: Theme.durSlow; easing.type: Easing.OutCubic
                         }
 
+                        // Replying holds the fuse, so the toast cannot go
+                        // away under the cursor mid-sentence.
+                        readonly property bool replying: Notifs.replying === toast.modelData && Notifs.replySurface === "toast"
+                        onReplyingChanged: {
+                            if (!life.duration) return;
+                            if (replying) life.pause();
+                            else if (life.paused) life.resume();
+                        }
+
                         // Hovering an entry pauses its fuse.
                         HoverHandler {
                             onHoveredChanged: {
-                                if (!life.duration) return;
+                                if (!life.duration || toast.replying) return;
                                 if (hovered) life.pause();
                                 else if (life.paused) life.resume();
                             }
@@ -229,7 +240,12 @@ PanelWindow {
 
                         TapHandler {
                             acceptedButtons: Qt.LeftButton
-                            onTapped: root.retire(toast.modelData)
+                            // A tap on a chip inside the entry reaches this
+                            // handler too, possibly first. Decide a tick later,
+                            // once the chip has had its say (REPLY keeps it).
+                            onTapped: Qt.callLater(() => {
+                                if (!toast.replying) root.retire(toast.modelData);
+                            })
                         }
                     }
                 }
