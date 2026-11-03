@@ -242,7 +242,6 @@ Singleton {
     // -------------------------------------------------------------- textures
     // A 1px dot every 8px, the ground NieR's menus are printed on.
     readonly property url texDots: "root:/assets/dots.png"
-    readonly property url texScanline: "root:/assets/scanline.png"
 
     // Last resort only, for when ~/.config/quickshell/wallpaper is empty or
     // missing. The live wallpaper comes from the Wallpaper singleton, which

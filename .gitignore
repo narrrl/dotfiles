@@ -4,12 +4,9 @@
 
 # Configurations
 !alacritty/
-!dunst/
 !hypr/
-!hyprpanel/
 !nvim/
 !quickshell/
-!waybar/
 !zathura/
 !mimeapps.list
 !fish/
@@ -17,16 +14,12 @@
 !brave-flags.conf
 !chromium-flags.conf
 !README.md
-!plans/
-!DESIGN-IS-2026-08-11/
 !rice.png
 !rice-2.png
 !rice-3.png
 !btop
-!wireplumber/
 !systemd/
 fish/fish_variables
-waybar/fluxo-rs
 !fluxo/
 
 # Desktop theming. These live outside the per-app configs above, but they are

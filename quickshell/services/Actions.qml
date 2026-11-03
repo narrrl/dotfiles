@@ -15,7 +15,6 @@ Singleton {
     // ------------------------------------------------------------- UI state
     property bool powerMenuOpen: false
     property bool lockRequested: false
-    property bool sidebarOpen: false
     property bool launcherOpen: false
     property bool askOpen: false
     property bool dashboardOpen: false
@@ -56,7 +55,6 @@ Singleton {
     // `qs ipc call shell askAbout "$(wl-paste)"` is a one-shot question.
     property string askSeed: ""
 
-    signal osdRequested(string kind)
     signal overviewStepped(int delta)
     signal overviewCommitted()
 

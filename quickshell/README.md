@@ -71,7 +71,7 @@ overlays/        power menu, notification toasts, the volume/brightness/keyboard
 lock/            session lock
 overview/        every monitor, workspace and window at once
 backdrop/        the wallpaper, drawn by the shell
-assets/          the dot and scanline tiles, generated with ImageMagick
+assets/          the dot tile, generated with ImageMagick
 ```
 
 `Panel` is the base surface everything sits on. It does not auto-size —
@@ -416,7 +416,6 @@ network and bluetooth, but keep running as the secret and pairing agents.
   `alacritty.toml`. Muted earth hues on the void; selection inverts.
   Alacritty only live-reloads when `alacritty.toml` itself changes, so touch
   it after editing the palette.
-  The Catppuccin and `takemi.toml` files are left in place, unreferenced.
 - **Neovim** — `nvim/lua/yorha.lua` (loaded by `colors/yorha.lua`, with a
   matching lualine theme). Syntax in the terminal's earth hues, floats as hull
   surfaces with rounded rims, menus selecting with the light slab.
