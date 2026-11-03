@@ -48,7 +48,20 @@ PanelWindow {
         { label: "Log Out",   icon: "󰗽", danger: true,  act: "logout" },
         { label: "Reboot",    icon: "󰜉", danger: true,  act: "reboot" },
         { label: "Shut Down", icon: "󰐥", danger: true,  act: "shutdown" }
-    ]
+    ].filter(a => a.act !== "hibernate" || root.canHibernate)
+
+    // Hibernating without a resume device writes the image and then boots
+    // fresh, losing the session. The kernel reports one in /sys/power/resume
+    // ("major:minor"; "0:0" is none), so Hibernate is only offered then.
+    readonly property bool canHibernate: {
+        const v = resumeFile.text().trim();
+        return v !== "" && v !== "0:0";
+    }
+
+    FileView {
+        id: resumeFile
+        path: "/sys/power/resume"
+    }
 
     FileView {
         id: hostFile
