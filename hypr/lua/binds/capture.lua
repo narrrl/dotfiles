@@ -23,7 +23,8 @@ hl.bind("SUPER + SHIFT + PRINT", hl.dsp.exec_cmd(scripts .. "record.sh screen"),
 hl.bind("SUPER + SHIFT + C", hl.dsp.exec_cmd("hyprpicker --autocopy --no-fancy"), { description = "pick a colour to the clipboard" })
 
 -- ------------------------------------------------------- replay and camera
--- replay-ctrl.sh needs gpu-screen-recorder.
+-- ALT+Z keeps the last two minutes in RAM, ALT+SHIFT+Z writes them out
+-- (scripts/replay-ctrl.sh, gpu-screen-recorder).
 -- On release, so the shortcut is not caught mid-chord.
 local on_release = { release = true }
 
