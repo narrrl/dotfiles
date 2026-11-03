@@ -17,9 +17,10 @@ Column {
     visible: root.shownItems.length > 0
 
     // Applets whose whole job the rail already does. blueman keeps running as
-    // the pairing agent, but its icon was a second bluetooth glyph a few slots
-    // below the rail's own.
-    readonly property var hiddenIds: ["blueman"]
+    // the pairing agent and nm-applet as the secrets agent, but their icons
+    // were a second bluetooth and network glyph a few slots below the rail's
+    // own.
+    readonly property var hiddenIds: ["blueman", "nm-applet"]
 
     readonly property var shownItems: SystemTray.items.values
         .filter(item => root.hiddenIds.indexOf(item.id) === -1)

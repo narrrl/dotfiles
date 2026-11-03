@@ -50,7 +50,9 @@ Singleton {
         actionsSupported: true
         actionIconsSupported: true
         imageSupported: true
-        inlineReplySupported: true
+        // No reply field in the toasts or the log yet, so don't let apps offer
+        // a reply action that goes nowhere.
+        inlineReplySupported: false
         persistenceSupported: true
 
         onNotification: notif => {
