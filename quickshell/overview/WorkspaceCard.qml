@@ -24,7 +24,9 @@ Item {
     signal activate(string address)
     signal activateWorkspace(int id)
 
-    readonly property bool special: card.ws.id < 0
+    // ws goes null for a frame when its workspace is destroyed (the last
+    // window on it closed) before the card is.
+    readonly property bool special: (card.ws?.id ?? 0) < 0
     // The picked window, if it is one of the hidden members of a group here:
     // the group's slot shows it instead of the member that is in front.
     readonly property var pickedGroup: {
@@ -180,7 +182,7 @@ Item {
         Text {
             id: labelText
             anchors.centerIn: parent
-            text: card.special ? card.ws.name.replace(/^special:/, "") : String(card.ws.id)
+            text: !card.ws ? "" : card.special ? card.ws.name.replace(/^special:/, "") : String(card.ws.id)
             color: card.current ? Theme.ink : Theme.muted
             font.family: card.special ? Theme.fontMono : Theme.fontDisplay
             font.pixelSize: Theme.fsSmall

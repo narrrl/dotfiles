@@ -15,9 +15,15 @@ Item {
     readonly property HyprlandToplevel toplevel: Hyprland.activeToplevel
 
     // Only speak for the monitor this bar lives on.
+    // activeToplevel is not cleared when focus moves to an empty workspace, so
+    // also require the window to be on the focused workspace (or a special
+    // one, which sits over it).
     readonly property bool mine: toplevel !== null
         && (root.monitor === null || toplevel.monitor === null
             || toplevel.monitor.id === root.monitor.id)
+        && (toplevel.workspace === null || Hyprland.focusedWorkspace === null
+            || toplevel.workspace.id === Hyprland.focusedWorkspace.id
+            || toplevel.workspace.name.startsWith("special:"))
 
     readonly property string incomingTitle: mine && toplevel.title ? toplevel.title : "—"
 
