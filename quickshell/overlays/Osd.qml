@@ -119,7 +119,13 @@ PanelWindow {
             if (event.name !== "activelayout") return;
             // "keyboard-name,Layout name" — the layout name may hold commas.
             const at = event.data.indexOf(",");
-            root.keymap = at < 0 ? event.data : event.data.slice(at + 1);
+            const device = at < 0 ? "" : event.data.slice(0, at);
+            const name = at < 0 ? event.data : event.data.slice(at + 1);
+            // Virtual keyboards (wtype, ydotool, IMEs) announce themselves
+            // with a keymap Hyprland cannot name and reports as "error"; that
+            // is not the user switching layouts.
+            if (name === "error" || /virtual|ydotool|wtype/i.test(device)) return;
+            root.keymap = name;
             root.flash("layout");
         }
     }
