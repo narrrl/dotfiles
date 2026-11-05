@@ -1,0 +1,60 @@
+# YoRHa dark — matched to ~/.config/quickshell/config/Theme.qml and
+# ~/.config/alacritty/yorha.toml.
+#
+# The void ground and sage text of the space-1 wallpaper. Boxes are hairline
+# grey, not four competing hues; the light marks what is selected. Every
+# gradient climbs from the suit's grey up to the light, and only temperature
+# and load run on into the hull's rust, the shell's one colour for "wrong".
+
+theme[main_bg]="#0f110e"
+theme[main_fg]="#ccd2cb"
+theme[title]="#eef1ea"
+theme[hi_fg]="#eef1ea"
+theme[selected_bg]="#20241f"
+theme[selected_fg]="#eef1ea"
+theme[inactive_fg]="#545c52"
+theme[graph_text]="#9fa7a2"
+theme[meter_bg]="#20241f"
+theme[proc_misc]="#9fa7a2"
+
+theme[cpu_box]="#383e35"
+theme[mem_box]="#383e35"
+theme[net_box]="#383e35"
+theme[proc_box]="#383e35"
+theme[div_line]="#2a2f28"
+
+theme[temp_start]="#8e978d"
+theme[temp_mid]="#c9b27c"
+theme[temp_end]="#c8684f"
+
+theme[cpu_start]="#79847a"
+theme[cpu_mid]="#bcc1bf"
+theme[cpu_end]="#c8684f"
+
+theme[free_start]="#545c52"
+theme[free_mid]="#79847a"
+theme[free_end]="#9fa7a2"
+
+theme[cached_start]="#545c52"
+theme[cached_mid]="#7f9aa8"
+theme[cached_end]="#96afbc"
+
+theme[available_start]="#545c52"
+theme[available_mid]="#86a8a0"
+theme[available_end]="#9cbdb4"
+
+theme[used_start]="#79847a"
+theme[used_mid]="#bcc1bf"
+theme[used_end]="#eef1ea"
+
+theme[download_start]="#545c52"
+theme[download_mid]="#8fa37e"
+theme[download_end]="#a5b893"
+
+theme[upload_start]="#545c52"
+theme[upload_mid]="#c9b27c"
+theme[upload_end]="#d8c491"
+
+theme[process_start]="#79847a"
+theme[process_mid]="#9fa7a2"
+theme[process_end]="#eef1ea"

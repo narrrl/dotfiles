@@ -1,0 +1,12 @@
+# Written by `claude-account router install`. Do not edit by hand.
+[Unit]
+Description=Router for <name>.headroom.localhost
+After=network-online.target
+
+[Service]
+ExecStart=/home/narl/.local/bin/claude-account router serve --port 80
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

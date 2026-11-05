@@ -1,0 +1,54 @@
+# YoRHa — zathura colours from the shell palette (quickshell/config/Theme.qml).
+# Dark hull, bone text, one light pill for the active item; rust only for
+# errors. Pages are recoloured onto the hull so documents sit in the dark.
+
+set default-bg                rgba(15,17,14,1)
+set default-fg                rgba(204,210,203,1)
+
+set statusbar-bg              rgba(22,25,21,1)
+set statusbar-fg              rgba(159,167,162,1)
+set inputbar-bg               rgba(22,25,21,1)
+set inputbar-fg               rgba(238,241,234,1)
+
+set notification-bg           rgba(22,25,21,1)
+set notification-fg           rgba(204,210,203,1)
+set notification-error-bg     rgba(22,25,21,1)
+set notification-error-fg     rgba(200,104,79,1)
+set notification-warning-bg   rgba(22,25,21,1)
+set notification-warning-fg   rgba(201,178,124,1)
+
+set completion-bg             rgba(22,25,21,1)
+set completion-fg             rgba(204,210,203,1)
+set completion-group-bg       rgba(15,17,14,1)
+set completion-group-fg       rgba(121,132,122,1)
+set completion-highlight-bg   rgba(188,193,191,1)
+set completion-highlight-fg   rgba(9,10,8,1)
+
+set index-bg                  rgba(15,17,14,1)
+set index-fg                  rgba(204,210,203,1)
+set index-active-bg           rgba(188,193,191,1)
+set index-active-fg           rgba(9,10,8,1)
+
+set render-loading-bg         rgba(15,17,14,1)
+set render-loading-fg         rgba(121,132,122,1)
+
+# Search hits: soft bone wash; the current hit is warm sand.
+set highlight-color           rgba(188,193,191,0.30)
+set highlight-fg              rgba(9,10,8,1)
+set highlight-active-color    rgba(201,178,124,0.45)
+
+set signature-success-color   rgba(143,163,126,0.6)
+set signature-warning-color   rgba(201,178,124,0.6)
+set signature-error-color     rgba(200,104,79,0.6)
+
+# Paper becomes hull, ink becomes text. Images keep their own colours.
+set recolor                   true
+set recolor-lightcolor        rgba(15,17,14,1)
+set recolor-darkcolor         rgba(204,210,203,1)
+set recolor-reverse-video     true
+set recolor-keephue           true
+
+set font                      "JetBrainsMono Nerd Font 10"
+set statusbar-h-padding       14
+set statusbar-v-padding       6
+set page-v-padding            8

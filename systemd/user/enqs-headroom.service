@@ -1,0 +1,14 @@
+# Written by `enqs-headroom service install`.
+[Unit]
+Description=Router for <name>.headroom.localhost
+Documentation=https://gitlab.enqs.de/npu/claude-code-enqs/-/wikis/Headroom
+After=network-online.target
+
+[Service]
+Environment=ENQS_HEADROOM_ROUTER_PORT=80
+ExecStart=/home/narl/.local/bin/enqs-headroom serve --port 80
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

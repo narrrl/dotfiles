@@ -15,7 +15,7 @@ ExecStart=rclone mount google_drive: %h/remote/gdrive \
   --log-level INFO
 
 # The command to unmount gracefully.
-ExecStop=fusermount -u %h/gdrive
+ExecStop=fusermount -u %h/remote/gdrive
 Restart=on-failure
 RestartSec=10
 

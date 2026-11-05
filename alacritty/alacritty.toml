@@ -12,7 +12,10 @@ WINIT_X11_SCALE_FACTOR = "1.0"
 position = "None"
 dynamic_padding = true
 decorations = "None"
-opacity = 0.9
+
+## Fully opaque, no blur. YoRHa surfaces are flat and opaque —
+## glass and translucency read as a different design language entirely.
+opacity = 1.0
 blur = false
 startup_mode = "Windowed"
 dynamic_title = true
@@ -24,10 +27,11 @@ decorations_theme_variant = "None"
 columns = 82
 lines = 24
 
-## Blank space added around the window in pixels.
+## Blank space added around the window in pixels. Roomier than the old 3/0 —
+## the text needs to sit inside the border, not against it.
 [window.padding]
-x = 3
-y = 0
+x = 12
+y = 8
 
 ## SCROLLING ------------------------------------------------------
 [scrolling]
@@ -103,4 +107,9 @@ ipc_socket = true
 ## GENERAL --------------------------------------------------------
 
 ## Import additional configuration files.
-import = ["~/.config/alacritty/colors.toml", "~/.config/alacritty/fonts.toml"]
+import = ["~/.config/alacritty/yorha.toml", "~/.config/alacritty/fonts.toml"]
+
+[[keyboard.bindings]]
+key = "Return"
+mods = "Shift"
+chars = "\u001B\r"

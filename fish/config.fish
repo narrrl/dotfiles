@@ -16,9 +16,6 @@ set fish_cursor_replace_one underscore blink
 set fish_cursor_visual block
 # starship init fish | source
 fish_vi_key_bindings
-if test -e ~/.cache/wal/colors.fish
-    source ~/.cache/wal/colors.fish
-end
 zoxide init --cmd cd fish | source
 set -gx PATH ~/.local/bin $PATH
 # if not pgrep --full ssh-agent | string collect > /dev/null
@@ -37,3 +34,4 @@ if status is-login && test -z "$DISPLAY" -a -z "$WAYLAND_DISPLAY"
         exec uwsm start default
     end
 end
+

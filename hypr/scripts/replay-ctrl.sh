@@ -1,104 +1,77 @@
 #!/bin/sh
+# Replay buffer: gpu-screen-recorder keeps the last two minutes of the screen
+# and audio in RAM, and `save` writes them out to ~/Videos/replay.
+#
+#   replay-ctrl.sh toggle    start or stop the buffer       (SUPER+Z)
+#   replay-ctrl.sh save      write out the last two minutes (SUPER+SHIFT+Z)
+#   replay-ctrl.sh start|stop
+#
+# HEVC because this machine's Radeon (Vega 10) has no AV1 encoder; gsr would
+# otherwise fall back to h264. Saved clips are announced by
+# replay-notification.sh.
 
-PROGRAM_NAME="gpu-screen-recorder"
-PID_FILE="/tmp/gpu-screen-recorder.pid"
+APP="Replay"
+PID_FILE="${XDG_RUNTIME_DIR:-/tmp}/gpu-screen-recorder.pid"
+DIR="$HOME/Videos/replay"
+
+running() {
+    [ -f "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null
+}
 
 start() {
-    if [ -f "$PID_FILE" ]; then
-        PID=$(cat "$PID_FILE")
-        if ps -p "$PID" > /dev/null; then
-            notify-send -u low "$PROGRAM_NAME" "$PROGRAM_NAME is already active."
-            exit 0
-        fi
+    if running; then
+        notify-send -a "$APP" -u low "Replay" "Already buffering."
+        return
     fi
-
-    video_path="$HOME/Videos/replay/"
-    mkdir -p "$video_path"
-    notify-send -u low "$PROGRAM_NAME" "$PROGRAM_NAME is starting ..."
+    mkdir -p "$DIR"
     gpu-screen-recorder \
-		-w screen \
-		-f 60 \
-		-a default_output -a default_input \
-		-fm vfr \
-		-c mkv \
-		-encoder gpu \
-		-bm qp \
-		-cr full \
-		-tune quality \
-		-k av1_10bit \
-		-q high \
-		-r 120 \
-		-replay-storage ram \
-		-ab 320 \
-		-cursor yes \
-		-sc "$HOME/.config/hypr/scripts/replay-notification.sh" \
-		-o "$video_path" &> /dev/null &
-	echo $! > "$PID_FILE"
+        -w screen \
+        -f 60 \
+        -a default_output -a default_input \
+        -fm vfr \
+        -c mkv \
+        -encoder gpu \
+        -bm qp \
+        -cr full \
+        -tune quality \
+        -k hevc \
+        -q high \
+        -r 120 \
+        -replay-storage ram \
+        -ab 320 \
+        -cursor yes \
+        -sc "$HOME/.config/hypr/scripts/replay-notification.sh" \
+        -o "$DIR" >/dev/null 2>&1 &
+    echo $! > "$PID_FILE"
+    notify-send -a "$APP" -u low "Replay on" "Keeping the last two minutes. SUPER+SHIFT+Z saves them."
 }
 
 stop() {
-    if [ -f "$PID_FILE" ]; then
-        PID=$(cat "$PID_FILE")
-        if ps -p "$PID" > /dev/null; then
-            kill "$PID"
-            rm "$PID_FILE"
-            notify-send -u low "$PROGRAM_NAME" "$PROGRAM_NAME has been stopped."
-        else
-            rm "$PID_FILE" # Stale PID file
-            notify-send -u low "$PROGRAM_NAME" "$PROGRAM_NAME is not running."
-        fi
+    if running; then
+        kill -INT "$(cat "$PID_FILE")"
+        notify-send -a "$APP" -u low "Replay off" "The buffer is gone."
     else
-        notify-send -u low "$PROGRAM_NAME" "$PROGRAM_NAME is not running."
+        notify-send -a "$APP" -u low "Replay" "Not running."
     fi
-}
-
-toggle() {
-    if [ -f "$PID_FILE" ]; then
-        PID=$(cat "$PID_FILE")
-        if ps -p "$PID" > /dev/null; then
-			stop
-        else
-            rm "$PID_FILE" # Stale PID file
-			start
-        fi
-    else
-		start
-    fi
+    rm -f "$PID_FILE"
 }
 
 save() {
-	if [ -f "$PID_FILE" ]; then
-		PID=$(cat "$PID_FILE")
-		if ps -p "$PID" > /dev/null; then
-			pkill -SIGUSR1 -f gpu-screen-recorder
-		else
-			# The process is not running, but the PID file exists.
-			# This can happen if the process crashed.
-			# We'll remove the stale PID file.
-			rm "$PID_FILE"
-			notify-send -u low "$PROGRAM_NAME" "$PROGRAM_NAME is not running."
-		fi
-	else
-		notify-send -u low "$PROGRAM_NAME" "$PROGRAM_NAME is not running."
-	fi
+    if running; then
+        kill -USR1 "$(cat "$PID_FILE")"
+    else
+        rm -f "$PID_FILE"
+        notify-send -a "$APP" -u low "Replay" "Not running. SUPER+Z starts it."
+    fi
 }
 
 case "$1" in
-    start)
-        start
-        ;;
-    stop)
-        stop
-        ;;
-	save)
-		save
-		;;
-	toggle)
-		toggle
-		;;
+    start) start ;;
+    stop) stop ;;
+    save) save ;;
+    toggle) if running; then stop; else start; fi ;;
     *)
-        echo "Usage: $0 {start|stop|save}"
-        exit 1
+        echo "usage: $0 start|stop|toggle|save" >&2
+        exit 2
+        ;;
 esac
-
-exit 0

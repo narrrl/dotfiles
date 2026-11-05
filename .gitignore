@@ -4,24 +4,37 @@
 
 # Configurations
 !alacritty/
-!dunst/
 !hypr/
-!hyprpanel/
 !nvim/
-!waybar/
+!quickshell/
 !zathura/
 !mimeapps.list
-!fuzzel/
 !fish/
 !packages
 !brave-flags.conf
 !chromium-flags.conf
 !README.md
-!rice.png
-!rice-2.png
-!rice-3.png
+!screenshots/
 !btop
-!wireplumber/
 !systemd/
 fish/fish_variables
-waybar/fluxo-rs
+!fluxo/
+
+# Desktop theming. These live outside the per-app configs above, but they are
+# what makes an app that is neither GTK-aware nor shell-aware match the rice,
+# so the branch carries them.
+!gtk-3.0/
+gtk-3.0/*
+!gtk-3.0/settings.ini
+!gtk-3.0/gtk.css
+!gtk-4.0/
+gtk-4.0/*
+!gtk-4.0/settings.ini
+!gtk-4.0/gtk.css
+!xsettingsd/
+!qt6ct/
+qt6ct/*
+!qt6ct/qt6ct.conf
+!qt6ct/colors/
+qt6ct/colors/*
+!qt6ct/colors/yorha.conf

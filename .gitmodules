@@ -1,27 +1,3 @@
-[submodule "waybar/catppuccin-waybar"]
-	path = waybar/catppuccin-waybar
-	url = https://github.com/catppuccin/waybar.git
-[submodule "hypr/catppuccin-hyprland"]
-	path = hypr/catppuccin-hyprland
-	url = https://github.com/catppuccin/hyprland.git
-[submodule "hypr/catppuccin-hyprlock"]
-	path = hypr/catppuccin-hyprlock
-	url = https://github.com/catppuccin/hyprlock.git
-[submodule "zathura/catppuccin-zathura"]
-	path = zathura/catppuccin-zathura
-	url = https://github.com/catppuccin/zathura.git
-[submodule "nvim/pack/nvim/start/mini.nvim"]
-	path = nvim/pack/nvim/start/mini.nvim
-	url = https://github.com/echasnovski/mini.nvim
-[submodule "nvim/pack/nvim/start/nvim-lspconfig"]
-	path = nvim/pack/nvim/start/nvim-lspconfig
-	url = https://github.com/neovim/nvim-lspconfig
-[submodule "btop/catppuccin-btop"]
-	path = btop/catppuccin-btop
-	url = https://github.com/catppuccin/btop.git
-[submodule "fuzzel/catppuccin-fuzzel"]
-	path = fuzzel/catppuccin-fuzzel
-	url = https://github.com/catppuccin/fuzzel.git
 [submodule "nvim"]
 	path = nvim
 	url = https://git.narl.io/nvrl/nvim-config.git

@@ -1,0 +1,39 @@
+#!/bin/sh
+# fuzzel --dmenu, backed by the Takemi launcher in Quickshell.
+#
+# Reads choices on stdin, prints the chosen line on stdout, prints nothing if
+# the launcher was dismissed. Accepts the handful of fuzzel flags the callers
+# in this config actually pass so they did not have to be rewritten.
+#
+# The launcher lives in the already-running shell process, so unlike fuzzel
+# there is nothing to start; the cost here is the two-file handshake, which
+# exists because `qs ipc call` returns immediately and a dmenu has to block.
+set -eu
+
+prompt=""
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --dmenu|-d) ;;
+        --prompt) prompt="${2-}"; shift ;;
+        --prompt=*) prompt="${1#--prompt=}" ;;
+        *) ;;
+    esac
+    shift
+done
+
+dir=$(mktemp -d)
+trap 'rm -rf "$dir"' EXIT INT TERM
+cat > "$dir/in"
+
+qs ipc call shell dmenu "$dir/in" "$dir/out" "$prompt" >/dev/null
+
+# Give up after two minutes rather than wedging a caller forever if the shell
+# is reloaded out from under us mid-choice.
+i=0
+while [ ! -e "$dir/out" ]; do
+    i=$((i + 1))
+    [ "$i" -gt 2400 ] && exit 1
+    sleep 0.05
+done
+
+cat "$dir/out"

@@ -1,0 +1,501 @@
+# Takemi — YoRHa dark
+
+A NieR:Automata flavoured Quickshell desktop for Hyprland, kept dark and lit
+like its wallpaper: a lone figure at a porthole, the void outside, one planet's
+light. The planet white for anything live, the hull red for anything wrong,
+grey-green for everything else. Hairlines, small dots, soft rounded corners,
+letter-spaced capitals, and selection shown by inverting the row. The bar, the
+rail and a thin border are one hull around the desktop, and the desktop is the
+porthole cut out of it.
+
+Replaces Waybar, dunst and hyprlock.
+
+## Running
+
+```sh
+qs                       # starts the shell (Hyprland does this via autostart.lua)
+qs -p lockpreview.qml    # the lock screen in an ordinary window, for styling
+```
+
+Hyprland starts it from `~/.config/hypr/lua/autostart.lua`.
+
+## Layout
+
+Two surfaces. Status moves off the bar and onto a vertical rail, because on a
+1080p panel horizontal space is cheap and vertical space is not: a 48px rail
+costs 2.5% of the width, where another 48px strip along the bottom would have
+cost 4.4% of the height on top of what the bar already takes.
+
+```
+████████████████████████████████████████████████
+█ ◉ │ 1 2 3 │ window title  ♪ TRACK │ CPU │ 20:04 █  bar   — 40px, part of the hull
+█╭──────────────────────────────────────────╮ ▐▌█
+█│                                          │ ▐▌█  rail  — 48px, part of the hull
+█│                 windows                  │ ▐▌█
+█│                                          │ ▐▌█
+█╰──────────────────────────────────────────╯   █  frame — 8px left and bottom
+████████████████████████████████████████████████
+```
+
+- **hull** — `bar/Frame.qml`: one surface round the whole screen, with the
+  desktop as a rounded opening. The bar and the rail sit on it.
+- **bar** — identity and workspaces on the left (a ring after them while the
+  `Super+S` scratchpad holds windows, filled while it is open); the focused window, the
+  player, the CPU/MEM/GPU readout and the clock on the right.
+- **rail** — network, bluetooth, audio, mic, brightness (the built-in
+  panel's backlight while it is lit, otherwise the external monitor over
+  DDC/CI with `ddcutil`), battery, tray,
+  notifications, power. While something records the mic, uses a camera or
+  shares the screen, a lit icon heads the rail (`services/Privacy.qml`, read
+  from PipeWire). Popouts grow leftward out of it, into the screen.
+
+Modules are divided by hairlines. `BarPill` is chromeless by default — a module
+is *content inside* the hull, not a surface of its own — and marks hover with
+an accent underline. Pass `standalone: true` for the rare thing that really is
+its own panel.
+
+The shell uses three deliberate surface tiers. **Chrome** (the hull and
+`ChromeSurface`) is the calm, texture-free bar, rail, and tooltip layer. **Transient**
+(`PopoutSurface`) is reserved for expressive menus and detail panels, with one
+clear composition and stronger separation from the desktop. **Scene**
+surfaces — the lock screen and the power menu — have no panel at all: the
+desktop or the wallpaper dims, and one small group of type (the mark, a line of
+thin display type, a short log, a menu or a field) stands in the dark.
+
+```
+shell.qml        entrypoint — hull, bar, rail, dashboard, power menu, toasts, OSD per screen
+config/          palette, type scale, geometry, motion curves
+components/      the primitives: panels, sliders, list rows, display text
+services/        data sources, all singletons
+bar/             the two surfaces and their modules
+popouts/         hover panels hanging off rail and bar modules
+overlays/        power menu, notification toasts, the volume/brightness/keyboard OSD, idle dim
+lock/            session lock
+overview/        every monitor, workspace and window at once
+backdrop/        the wallpaper, drawn by the shell
+assets/          the dot tile, generated with ImageMagick
+```
+
+`Panel` is the base surface everything sits on. It does not auto-size —
+callers set implicit sizes from their own layout (`row.implicitWidth +
+contentPad * 2`), which keeps the shape maths out of binding loops.
+
+## Popouts
+
+Hover panels (`components/Popout.qml`) are part of the hull, not cards
+floating near their trigger. Each one sits flush against the frame edge it
+opens from, is painted in the hull colour, joins the frame through concave
+fillets, carries the rim round its open side, and slides out from behind the
+frame. `PopoutSurface` notices it is inside a `Popout` and leaves the fill and
+the frame to the hull; in the launcher and the ask panel it is still a
+free-standing panel with corner ticks.
+
+Placement is explicit: centred on the trigger, then — if that would land the
+panel within `dockReach` of one of the opening's corners — docked into the
+corner instead, attached to the bar and the rail at once (`dock` is `top`,
+`right`, `topRight` or `bottomRight`). Without docking, a panel near the rail
+left a thin strip of opening between itself and the rail.
+
+## Notifications
+
+The shell is the notification server (`services/Notifs.qml`). New ones arrive
+as toasts in a corner drawer (`overlays/Toasts.qml`); the bell on the rail
+opens the log (`popouts/NotifPopout.qml`), which is grouped by sender. A
+sender with one notification is just that entry. A sender with several gets a
+header — its name, a count, a mark to clear only that sender — over its
+newest entry and a `+ 2 more` line; a click on either opens the rest.
+
+## Dashboard
+
+`dashboard/Dashboard.qml` is a drawer that slides down out of the underside of
+the bar — clock click, `SUPER + D`, or `qs ipc call shell dashboard`. It is
+painted in the hull colour and joins the bar through two concave fillets, so it
+reads as more of the hull rather than as a floating card (caelestia's idea).
+Four columns divided by hairlines: operator and time, the month, the system
+meters, and what is playing. Escape or focusing anything else puts it away; a
+`HyprlandFocusGrab` handles the latter, and `Actions.dashboardClosedAt` stops
+the clock click that cleared the grab from opening it straight back up.
+
+Under the columns, past a hairline, a row of switches: Wi-Fi, Bluetooth, do
+not disturb and stay awake, plus night light when `hyprsunset` is installed
+(it runs at 4200 K for as long as the switch is on). On is the light slab
+with ink type, the same as a selection everywhere else; off is a hairline.
+
+## Game mode
+
+While a fullscreen game is on screen, Hyprland switches off its animations and
+shadows and turns on direct scanout (`~/.config/hypr/lua/gamemode.lua`). It
+also tells the shell through `qs ipc call shell gameMode true`. The game covers
+the hull, but covered surfaces still render, so the shell stops what it does by
+itself: the fluxo stream, the backlight poll, the media tick and equaliser, and
+the rail and workspace pulses. Toasts wait in the log, except critical ones.
+Both sides come back when the game leaves fullscreen, closes or is switched
+away from.
+
+A game is a window with the `game` content type, or one whose class matches
+`GAME_CLASSES` in `gamemode.lua` (`steam_app_<id>` and `gamescope` so far).
+
+## Modules
+
+| Module | Where | Left click | Right click | Middle | Scroll | Hover |
+|---|---|---|---|---|---|---|
+| Sigil | bar | app menu | reload shell | | | |
+| Workspaces | bar | switch | | | | |
+| Clock | bar | dashboard | | | | calendar |
+| Network | rail | pin details | | | | state + networks |
+| Bluetooth | rail | pin details | | | | state + devices |
+| Volume | rail | pin audio | | | volume | state + scroll hint + audio |
+| Mic | rail | pin audio | | | mic volume | state + scroll hint + audio |
+| Brightness | rail | | | | brightness | state + scroll hint |
+| Battery | rail | pin panel | | | | power detail |
+| Tray | rail | activate | app menu | secondary | | |
+| Bell | rail | pin history + mark read | | | | state + history |
+| Power | rail | power menu | | | | |
+| Media | bar | play/pause | next | raise player | next/prev | full player |
+| CPU/MEM/GPU | bar | btop | | | | resource dashboard |
+
+Popouts open on a short dwell and stay while the pointer is over the trigger or
+the panel. Hover openings remain passive. Clicking remaps a detail panel as a
+keyboard-focused popup: Tab moves through its controls, Escape dismisses it,
+and an outside click closes it. A shell-wide coordinator keeps only one
+transient surface mapped at a time, including tray context menus, so sweeping
+across the rail cannot stack several animated panels over one another.
+
+Audio is the reference vertical-slice popout: current output percentage leads,
+output and input have distinct bands, and application streams form a subordinate
+mixer list. Output/input mute actions and **Open audio mixer** are explicit
+buttons inside the panel; scrolling the rail icons remains the fast level
+adjustment.
+
+The power menu is fully keyboard-driven as well as clickable: `Up`/`Down` or
+`J`/`K` moves the active slab, `Enter`/`Space` confirms it, and `Escape`
+dismisses the screen.
+
+## Keybinds
+
+Set in `~/.config/hypr/lua/binds/shell.lua`:
+
+- `Super+Ctrl+L` — lock
+- `Super+P` — power menu
+- `Super+Shift+N` — toggle do not disturb
+- `Alt+Tab` / `Alt+Shift+Tab` — overview, walking focus history; let go of Alt to switch
+- `Super+W` — overview, without the hold
+- `Super+Tab` / `Super+Shift+Tab` — next / previous window in a group
+- `Super+Shift+I` — stay awake (no dim, lock or screen-off until toggled back)
+- `Super+Ctrl+Shift+N` — clear notifications
+- `Super+A` — ask panel
+- `Super+Shift+R` — reload the shell
+
+All of these go through Quickshell's IPC, so they work from any script:
+
+```sh
+qs ipc call shell lock
+qs ipc call shell power
+qs ipc call shell toggleDnd
+qs ipc call shell toggleStayAwake
+qs ipc call shell wallpaper ~/.wallpapers/space-1.jpg
+qs ipc call shell ask
+qs ipc call shell askAbout "why is the sky blue"
+qs ipc call shell clearNotifications
+qs ipc call shell notifications        # the bell's log on the focused monitor
+qs ipc call shell reloadConfig
+```
+
+## Ask
+
+`Super+A` drops a panel off the top edge and hands whatever you type to
+`claude -p`, streamed token by token. It is the subscription that answers —
+the CLI already holds the credentials, so nothing here has an API key and
+nothing here has to be given one.
+
+The panel is a chat, not a coding session. Settings sources, MCP servers and
+project files are switched off by default, which keeps a question asked from
+the desktop from arriving with the last project's hooks, `CLAUDE.md` and tone
+attached. The thread survives closing the panel; `Ctrl+L` starts a new one.
+
+| Key | Does |
+|---|---|
+| `Enter` | ask |
+| `Shift+Enter` | newline |
+| `Ctrl+M` | next model, written back to `ask.json` |
+| `Ctrl+Y` | copy the last answer |
+| `Ctrl+L` | new conversation |
+| `Ctrl+S` | stop the answer |
+| `Escape` | hide, keeping the thread |
+
+Configured in `ask.json`, watched and reloaded live:
+
+```json
+{
+  "model": "sonnet",
+  "systemPrompt": "…",
+  "keepContext": true,
+  "settingSources": "",
+  "allowedTools": ["WebSearch", "WebFetch"],
+  "disallowedTools": ["Bash", "Edit", "Write"],
+  "workingDirectory": "/home/narl",
+  "maxTurns": 6
+}
+```
+
+`settingSources` is the escape hatch: set it to `"user,project,local"` and the
+panel becomes your ordinary Claude Code, hooks and all.
+
+## Data sources
+
+Hardware telemetry comes from `fluxo`, whose hardware modules are configured to
+emit raw pipe-delimited values rather than display strings — `services/Sys.qml`
+parses them and does its own formatting. The previous human-readable Waybar
+formats are preserved in `~/.config/fluxo/config.toml.waybar-bak`.
+
+Everything else is native: PipeWire for audio, BlueZ for bluetooth,
+NetworkManager for Wi-Fi, UPower for battery, MPRIS for media, and Quickshell's
+own notification server. These are event-driven, so the bar and OSD react the
+instant a volume key is pressed instead of on the next poll.
+
+## Overview
+
+`overview/Overview.qml`. Each monitor is a row of small portholes, one per
+workspace at that monitor's aspect ratio, with live captures of the windows
+where they sit (`ScreencopyView`, so windows on hidden workspaces show too).
+The monitor's name heads its row once there is more than one. A group shows
+the member in front with a `1/3` tag; picking a hidden member puts it in
+front.
+
+`Alt+Tab` opens it with the previous window picked, more Tabs walk back
+through focus history, and letting go of Alt switches. Hyprland keeps the
+Alt+Tab bind while the overview has the keyboard, so those presses arrive
+over IPC (`overviewNext` / `overviewPrev`); the Alt release comes to the
+overview itself, with a release bind on `ALT_L` as a backstop. Hover picks
+only once the pointer moves, so a resting pointer cannot override the
+keyboard. Enter, a click, or `1`–`9` for a workspace also go; Escape or a
+click on the dark cancels.
+
+Focus is dispatched a moment after the overview lets go of the keyboard:
+Hyprland ignores focus changes while a layer holds it exclusively.
+
+## Wallpaper
+
+`backdrop/Backdrop.qml` draws it on the background layer; there is no
+hyprpaper. The picture is drawn 8% larger than the screen and drifts with the
+workspace: 1 sits at the top of it and each step down moves it a fixed
+distance, a little slower than Hyprland's own slide, so the windows arrive
+first and the scene behind catches up. It never moves on its own, so an idle
+desktop costs the compositor nothing. While the workspace holds windows it
+settles a shade darker.
+
+The choice is one line in `quickshell/wallpaper` (`~` allowed), watched live.
+`qs ipc call shell wallpaper <path>` rewrites it.
+
+## Idle
+
+`services/Idle.qml`, on Wayland's idle-notify protocol instead of hypridle:
+
+| After | Does |
+|---|---|
+| 4 min | the screen dims slowly (`overlays/IdleDim.qml`); any input lifts it |
+| 5 min | lock |
+| 6 min | displays off; any input wakes them |
+| 15 min | suspend, on battery only |
+
+Every stage respects idle inhibitors, so a fullscreen video holds them all
+off.
+
+Any suspend locks first, including ones the shell did not start (the lid, a
+terminal `systemctl suspend`): `Idle` holds a logind delay inhibitor, locks on
+`PrepareForSleep`, and releases it once the lock surface is secure. `Super+Shift+I` does the same by hand and puts a cup on the rail while it
+is on.
+
+## Lock screen
+
+Authenticates through the stock `/etc/pam.d/login` stack, so it does not
+depend on a lock-screen package still being installed. The visuals live in `lock/LockFace.qml` so they can be
+styled in an ordinary window (`qs -p lockpreview.qml`) without locking the
+session.
+
+It is the wallpaper, barely softened, with the face set in the dark of the
+porthole: the mark, the time in light display type, the date, "Take your
+time." glowing faintly with the odd flicker (`components/GlowText.qml`), a
+status log
+(battery, network, what is playing, unread notices), and a rounded field that
+fills with dots as you type. The dots breathe while PAM checks; a wrong
+password turns them and the field's rim to rust and nudges the field once.
+
+If the shell ever dies while the session is locked, the compositor keeps the
+session secured by protocol and there is no unlocker left to talk to — recovery
+means restarting Hyprland from a TTY.
+
+## What was retired
+
+- `waybar.service` — disabled. Its config is still in `~/.config/waybar`.
+- `hyprpaper` — replaced by `backdrop/`. Turn its unit off with
+  `systemctl --user disable --now hyprpaper`.
+- `hypridle` — never installed; `services/Idle.qml` does the job.
+- `dunst.service` — masked, so it cannot be D-Bus activated and steal
+  `org.freedesktop.Notifications`. Undo with
+  `systemctl --user unmask dunst.service`.
+- `hyprlock` — no longer bound. `hyprlock.conf` is untouched.
+
+## Optional
+
+`power-profiles-daemon` is not installed (TLP is), so the power-profile
+switching in `services/Battery.qml` stays dormant. Nothing else depends on it.
+
+The display face is Noto Sans, upright and widely tracked — the nearest free
+face to NieR's FOT-Rodin that is already installed. Change `Theme.fontDisplay`
+and everything follows.
+
+## Palette discipline
+
+YoRHa dark: NieR:Automata's interface language, painted from the wallpaper
+(`~/.wallpapers/space-1.jpg`) rather than from the game's beige. Two hues, and
+**hue is meaning**; nothing gets a colour for decoration.
+
+- **Light (`accent`, `#eef1ea`)** means live: the focused workspace, the
+  selected row, the hovered control, a channel that is on, an unread badge. It
+  is the planet's white, barely a colour at all — NieR marks attention with
+  brightness and inversion, not with hue.
+- **Red (`alarm`, `#c8684f`)** means wrong or destructive: critical battery, an
+  urgent workspace, a critical notification, reboot and shut down. It is the
+  hull's indicator lights, the only warm thing in the wallpaper.
+- **Grey-green** is everything else, and that includes *off*. A muted speaker,
+  a muted mic and Do Not Disturb drop to `muted` grey with their off glyph.
+- **Ink** is the text on an inverted slab and the faint drop under display
+  type.
+
+**Selection is the NieR cursor.** Focus and selection invert the row: a slab of
+the light with ink punched out of it. Hover lifts the surface one step and
+brings the marker up to full light, but never inverts. Destructive-active is
+the same slab in red. The `treatment*` tokens in `Theme.qml` encode all of
+this; use them rather than picking colours per widget.
+
+**Dots, not slashes.** The current row, a button under the pointer, the end of
+a header rule and a notification's urgency carry a small dot (`Theme.marker`).
+Borders are structure and stay neutral.
+
+**Flicker, not print.** Display text (`SplitText`) is upright, tracked by
+`Theme.tracking`, on a one-pixel soft drop. The two ghosts either side of it
+appear only while `glitch()` runs — NieR's brief data-corruption flicker.
+
+**Texture is rare.** Chrome (bar, rail, tooltips), transient panels (popouts,
+OSD, toasts) and the two scene surfaces are flat. Depth comes from the hull's
+dark, the rim hairline and the wallpaper, not from patterns.
+
+**Type has a floor.** Nothing renders below `Theme.fsMicro`. The scale was
+drawn for a 24" 1080p panel; `Theme.typeScale` (1.1) sets it a step larger for
+the 27" 1440p one, so `fsMicro` is 11px there. Geometry does not scale.
+
+**Changing the palette.** The colours are written once per program:
+
+| File | Covers |
+|---|---|
+| `quickshell/config/Theme.qml` | the shell: `accent`, `alarm`, the neutral ramp, the hull |
+| `hypr/lua/palette.lua` | window borders, groups |
+| `alacritty/yorha.toml` | the terminal |
+| `fish/conf.d/yorha_theme.fish` | the prompt and pager |
+| `nvim/lua/yorha.lua` | the editor and its statusline |
+| `btop/themes/yorha.theme` | the resource monitor |
+| `gtk-3.0/gtk.css`, `gtk-4.0/gtk.css` | GTK and libadwaita apps |
+| `qt6ct/colors/yorha.conf` | Qt apps |
+| `zathura/yorha` | the document viewer |
+
+The shell has two hues. Terminal, editor, btop, GTK and zathura *content*
+also uses a set of muted earth hues (sand, moss, sky, lichen, heather) for
+syntax and status; they are listed as `c.content` in `hypr/lua/palette.lua`
+and never appear in chrome.
+
+Everything else derives. `glow` *is* `accent`, and `primary` is plain `text`.
+`Theme.heat()` is a continuous text → light → red ramp, so a CPU figure that
+has gone red means the same thing as a battery that has gone red. Tray icons
+are flattened to one colour (subtext, the accent on hover) for the same reason:
+app brand colours wreck the palette faster than anything else in the shell.
+nm-applet and blueman are hidden from the tray, since the rail already shows
+network and bluetooth, but keep running as the secret and pairing agents.
+
+## The rest of the desktop
+
+- **Hyprland** — `hypr/lua/look.lua`. Windows round at 8px, concentric with
+  the opening's 18px corners at a 10px gap (`Theme.frameRadius - gaps_out`);
+  change one and the others follow. No blur, both opacities at `1.0`, 1px
+  borders running from the light into the suit's grey. The shadow is soft and
+  wide, so windows float in the opening. Group tabs are thin rounded lines with
+  no titles, the current one in the light; the bar writes the title once and
+  adds the window's place in the group (`2/3`). Motion
+  (`hypr/lua/animations.lua`) glides and settles with no overshoot: windows
+  resolve in from a hair smaller, workspaces drift a short way vertically and
+  fade (sliding behind the hull), the `SUPER+S` scratchpad lowers out from
+  under the bar like the dashboard, and layers only fade, since quickshell
+  animates its own surfaces.
+- **Alacritty** — `alacritty/yorha.toml`, selected by the `import` in
+  `alacritty.toml`. Muted earth hues on the void; selection inverts.
+  Alacritty only live-reloads when `alacritty.toml` itself changes, so touch
+  it after editing the palette.
+- **Neovim** — `nvim/lua/yorha.lua` (loaded by `colors/yorha.lua`, with a
+  matching lualine theme). Syntax in the terminal's earth hues, floats as hull
+  surfaces with rounded rims, menus selecting with the light slab.
+- **btop** — `btop/themes/yorha.theme`. Hairline boxes; gradients climb from
+  grey to the light, and only temperature and CPU load run on into rust.
+- **GTK** — the `adw-gtk3-dark` theme (package `adw-gtk-theme`) for the
+  libadwaita shapes, recoloured by `gtk-3.0/gtk.css` and `gtk-4.0/gtk.css`.
+  libadwaita apps such as Nautilus read the same overrides as CSS variables.
+  Selection is the light slab with ink text; only destructive actions are red.
+  The theme name is also in `xsettingsd/xsettingsd.conf` and has to be set with
+  `gsettings` for portal-aware apps.
+- **Type** — one sans and one mono everywhere: Noto Sans for interface text
+  and JetBrainsMono Nerd Font for figures and code, in the shell
+  (`Theme.fontDisplay` / `fontMono`), GTK (`settings.ini` and the gsettings
+  `font-name` / `monospace-font-name`), qt6ct and Hyprland's own text.
+- **Qt** — qt6ct with `qt6ct/colors/yorha.conf`, the same palette in
+  `QPalette` roles, drawn with the Darkly style (package `darkly-bin`) for
+  rounded controls. Fusion is the fallback if Darkly is missing.
+- **zathura** — `zathura/yorha`, included from `zathurarc`. Pages are
+  recoloured onto the hull with text in bone; images keep their colours.
+  Search hits are a soft bone wash, and the current hit is sand.
+- **Fish** — `fish/conf.d/yorha_theme.fish`.
+- **The launcher** — no external theming to keep in step, because it is part of
+  this shell (`launcher/`). Fuzzel is gone; `takemi-dmenu` stands in for
+  `fuzzel --dmenu` where a script needs a picker. A first character switches
+  mode: `>` shell, `=` calculator, `:` clipboard history, `;` emoji (copied and
+  typed; table in `assets/emoji.tsv`), `?` every described Hyprland bind, read
+  live from `hyprctl binds -j`, and `@` the pictures in `~/.wallpapers` with
+  thumbnails. `qs ipc call shell prompt '<prefix>'` opens straight into one.
+- **No glass anywhere.** Alacritty is `opacity = 1.0, blur = false`, and
+  Hyprland's `decoration:blur` is disabled.
+
+There are **no gradients in the chrome**; every fill is flat. `Theme.sheen`
+still exists as a no-op property so old call sites need not be chased down.
+
+## Geometry discipline
+
+**The hull.** Borrowed from caelestia's screen border: the bar, the rail and a
+thin band down the left and along the bottom (`Theme.frame`) are one surface,
+drawn by `bar/Frame.qml`, and the desktop is a rounded opening cut out of it
+(`Theme.frameRadius`). Read against the wallpaper, you are inside the ship and
+the windows sit in the porthole. The hull is on the top layer, over the
+windows, with a transparent opening and no input region, so a window moving
+past the opening's edge — a workspace switch, the scratchpad drawer — passes
+behind the frame rather than over the bar. `hypr/lua/rules/layers.lua` orders
+the bar and the rail above it. The bar and the rail draw
+no surface of their own and ignore exclusive zones; Frame reserves all four
+zones itself, so every piece is placed from the screen edge.
+
+**Soft, everywhere else.** The porthole is the shape the desktop is built
+around, and every smaller surface is a gentler echo of it. `Theme.skew` and
+`Theme.cut` are `0`; `Panel` and `Skew` draw `Geom.roundedRect` with
+`Theme.radiusS` (pills, chips, meter tracks), `radiusM` (rows, buttons) or
+`radiusL`. `radiusL` is `frameRadius - padS`: anything inset by `padS` inside
+one of the frame's curves — a hovered notification in the drawer's corner —
+gets a corner concentric with it, so the gap stays even and nothing pokes past
+the curve. Free-standing panels (launcher, ask) take `frameRadius` itself.
+Toggles, transport buttons, workspace pips and today's date are pills or
+discs; album art is rounded via `ClippingRectangle`.
+
+**Motion glides.** No overshoot anywhere: things ease in on `OutCubic` or
+`OutExpo` and settle. Nothing scales up or nudges sideways on hover either;
+hover brightens and marks, the way NieR's menus do. Meters are one continuous
+rounded line that glides to its level, and the bar's player shows a
+five-line signal meter.
+
+Each surface is **one continuous slab**, with modules divided by hairline rules
+rather than by gaps. A row of separate floating cards reads as clutter; that is
+what the dividers exist to avoid.
